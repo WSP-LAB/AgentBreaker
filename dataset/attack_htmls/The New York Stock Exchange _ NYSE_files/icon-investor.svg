@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="investor" transform="translate(-1256 -389)">
+    <g id="Group_3617" data-name="Group 3617" transform="translate(1264 398.5)">
+      <path id="Path_8359" data-name="Path 8359" d="M120.021,118h-2V102h-4v16h-2V100h8Z" transform="translate(-92.011 -83.874)" fill="#71c5e8"/>
+      <path id="Path_8360" data-name="Path 8360" d="M172.021,118h-2V102h-4v16h-2V100h8Z" transform="translate(-131.011 -83.874)" fill="#71c5e8"/>
+      <path id="Path_8361" data-name="Path 8361" d="M68.021,118h-2V102h-4v16h-2V100h8Z" transform="translate(-53.011 -83.874)" fill="#71c5e8"/>
+      <rect id="Rectangle_294" data-name="Rectangle 294" width="46.968" height="2" transform="translate(0.033 43.081)"/>
+      <path id="Path_8362" data-name="Path 8362" d="M79.978,49.624h-48V47.9L56,35.5,79.978,47.9Zm-43.112-2H75.084L56,37.749Z" transform="translate(-31.978 -35.498)"/>
+      <path id="Path_8363" data-name="Path 8363" d="M82.045,185.02h-2V182H42.021v3.02h-2V180H82.045Z" transform="translate(-38.01 -143.875)"/>
+    </g>
+    <rect id="Rectangle_295" data-name="Rectangle 295" width="64" height="64" transform="translate(1256 389)" fill="none"/>
+  </g>
+</svg>

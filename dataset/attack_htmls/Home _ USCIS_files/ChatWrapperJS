@@ -1,0 +1,629 @@
+var chatWrapper = {
+    'agentVisible': false,
+    'baseLiveAgentURL': 'https://d.la11-core2.sfdc-pu91w7.salesforceliveagent.com/chat',
+    'baseLiveAgentContentURL': 'https://c.la11-core2.sfdc-pu91w7.salesforceliveagent.com/content',
+    'buttonId': '5733d00000000w7',
+    'buttonName': 'OAIS_Chat',
+    'chatbotVisible': false,
+    'displayHelpButton': false,
+    'deploymentId': '5723d00000000wv',
+    'enabledFeatures': 'LiveAgent',
+    'entryFeature': 'LiveAgent',
+    'environmentUrl': 'https://uscis.my.salesforce.com',
+    'environmentSiteUrl': 'https://uscis.my.site.com/OAISChat',
+    'en': { 'chatButtonInstance': '5733d00000000w7' },
+    'es': { 'chatButtonInstance': '5733d00000000wC' },
+    'eswLiveAgentDevName': 'EmbeddedServiceLiveAgent_Parent04I3d000000003oEAA_18db5145484',
+    'isOfflineSupportEnabled': false,
+    'language': 'en',
+    'offlineFormRecordTypeId': '012t0000000TSto',
+    'orgId': '00DG0000000hO5S',
+    'srcUrl': 'https://uscis.my.salesforce.com/embeddedservice/5.0/esw.min.js',
+    'EVENT_INVOKE_AGENT': 'launchagent',
+    'EVENT_INVOKE_CHATBOT': 'launchchatbot',
+    'EVENT_CLOSE_CHATBOT': 'closechatbot',
+    'EVENT_AGENT_AVAILABLE': 'isagentavailable',
+};
+ 
+var chatWrapperConstants = {
+    'mapping': { //Mapping for JSON Structure and PreChat Details. If Salesforce API name is blank then not currently mapped to Salesforce Objects.
+        //5/6/23: Commenting out first and last name here because they are not expected to be known prior to launching a live chat transcript
+        //However, leaving them here so that they can be easily added back in if the Ask Emma client ever wants to ask for an pass that info in the future 
+        // 'FIRST_NAME': { jsonName: 'firstName', label: 'First Name', displayToAgent: true, salesforceApiName: 'FirstName', transcriptFields: ["First_Name__c"]  },
+        // 'LAST_NAME': { jsonName: 'lastName', label: 'Last Name', displayToAgent: true, salesforceApiName: 'LastName', transcriptFields: ["Last_Name__c"]  },
+        'EMAIL': { jsonName: 'email', label: 'Email', displayToAgent: true, salesforceApiName: 'Email', transcriptFields: ["Email__c"]  },
+        'PHONE': { jsonName: 'phone', label: 'Phone', displayToAgent: true, salesforceApiName: 'Phone', transcriptFields: ["Phone__c"]  },
+        'MAILING_POSTAL_CODE': { jsonName: 'mailingPostalCode', label: 'Postal Code', displayToAgent: true, salesforceApiName: '', transcriptFields: ['Postal_Code__c'] },
+        'LANGUAGE': { jsonName: 'language', label: 'Language', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Language__c"]  },
+        'INTENT': { jsonName: 'intent', label: 'Intent', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Issue__c"] },       
+        'DESCRIPTION': { jsonName: 'reason', label: 'Description', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Description__c"] },
+        'RECEIPT_NUMBER': { jsonName: 'receiptNumber', label: 'Receipt Number', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Receipt_Number__c"] },
+        'IS_MILITARY': { jsonName: 'isMilitary', label: 'Is Military', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Military__c"]  },
+        'OPTED_IN': { jsonName: 'smsOptIn', label: 'Opted into Text', displayToAgent: true, salesforceApiName: '', transcriptFields: ["Opted_into_Text__c"]  },
+        'G_28': { jsonName: 'g28', label: 'G-28', displayToAgent: true, salesforceApiName: '', transcriptFields: ["G_28__c"]  },
+    },
+    'acceptedLanguages': ['en', 'es'],
+    'agentAvailable': false,
+    'handlersAdded': false,
+    'chatRequested': false,
+    'emptyEmbeddedService': null,
+    'windowDestroyedManually': false,
+    'offlineFormSubmitted': false
+}
+ 
+document.addEventListener(chatWrapper.EVENT_INVOKE_AGENT, (evt) => chatWrapper.invokeAgent(evt));
+window.addEventListener("load", loadCustomStyles);
+let retryInitializeIfESWHasNotLoaded = true;
+
+function initializeChatWrapper(evt){
+    if (!window.embedded_svc) {
+        if(retryInitializeIfESWHasNotLoaded){
+            setTimeout(()=> {
+                initializeChatWrapper(evt);
+            }, 500);
+            retryInitializeIfESWHasNotLoaded = false;
+        }else{
+            var s = document.createElement('script');
+            s.setAttribute('src', chatWrapper.srcUrl);
+            s.onload = function () {
+                initESW(null);
+            };
+            document.body.appendChild(s);
+        }
+    } else {
+        if(!chatWrapperConstants.emptyEmbeddedService){
+            chatWrapperConstants.emptyEmbeddedService = JSON.stringify(window.embedded_svc);
+        }
+        let payloadData = evt.detail ? evt.detail : evt;
+        initESW('https://service.force.com', payloadData);
+    }
+}
+
+fetch(chatWrapper.environmentSiteUrl + '/resource/' + Math.floor(Date.now()) + '/OAISChatOfflineSupportHours').then((response) => response.json()).then((json) => {
+    chatWrapper.offlineHours = json;
+    initializeChatWrapper({'language': 'English'});
+}).catch(error=>{
+    initializeChatWrapper({'language': 'English'});
+});
+
+chatWrapper.invokeChatbot = function (evt, args) {
+    chatWrapperConstants.windowDestroyedManually = true;
+    this.toggleAgentOff();
+    this.toggleChatbotOn(evt);
+};
+ 
+chatWrapper.invokeAgent = function (evt, args) {
+    this.toggleAgentOn(evt, args);
+    this.toggleChatbotOff();
+    chatWrapperConstants.offlineFormSubmitted = false;
+};
+ 
+chatWrapper.toggleChatbotOn = function (payload) {
+    this.chatbotVisible = true;
+    const chatbotEvent = new CustomEvent(chatWrapper.EVENT_INVOKE_CHATBOT, { detail: payload });
+    document.dispatchEvent(chatbotEvent);
+};
+ 
+chatWrapper.toggleChatbotOff = function () {
+    this.chatbotVisible = false;
+    const chatbotEvent = new CustomEvent(chatWrapper.EVENT_CLOSE_CHATBOT);
+    document.dispatchEvent(chatbotEvent);
+ 
+};
+
+chatWrapper.notifiyAgentAvailable = function (isAgentAvailable) {
+    chatWrapperConstants.agentAvailable = isAgentAvailable;
+    const agentAvailableEvent = new CustomEvent(chatWrapper.EVENT_AGENT_AVAILABLE, {detail: {isAgentAvailable: isAgentAvailable } } );
+    document.dispatchEvent(agentAvailableEvent);
+};
+
+chatWrapper.checkAvailability = function(){
+    return new Promise((resolve, reject) => {
+        resolve({agentAvailable: chatWrapperConstants.agentAvailable})
+    });
+}
+ 
+chatWrapper.toggleAgentOn = function (evt, args) {
+    this.agentVisible = true;
+    chatWrapperConstants.chatRequested = true;
+
+    resetEmbeddedServiceForNewChatSession();
+    initializeChatWrapper(evt);
+    displayLoadingWindow();
+};
+ 
+chatWrapper.toggleAgentOff = function () {
+    this.agentVisible = false;
+    // ISO-36272 - Set 2 minute timer
+    setTimeout(()=> {
+        embedded_svc.liveAgentAPI.endChat();
+    }, 120000);
+};
+ 
+function initESW(gslbBaseURL, prechatData) {
+ 
+    if (chatWrapperConstants.acceptedLanguages.includes(convertLanguageStringToCode(prechatData[chatWrapperConstants.mapping.LANGUAGE.jsonName]))) {
+        chatWrapper.language = convertLanguageStringToCode(prechatData[chatWrapperConstants.mapping.LANGUAGE.jsonName]);
+    }
+ 
+    //Since we're reusing the same embedded service for successive chat sessions, we don't want to add our event handlers multiple times
+    //But other settings and prechat data will change
+    if(!chatWrapperConstants.handlersAdded){
+        applyEmbeddedServiceHandlers();
+        chatWrapperConstants.handlersAdded = true;
+    }
+ 
+    applyEmbeddedServiceSettings();
+ 
+    applyPrechatFields(prechatData);
+    
+    embedded_svc.init(
+        chatWrapper.environmentUrl,
+        chatWrapper.environmentSiteUrl,
+        gslbBaseURL,
+        chatWrapper.orgId,
+        chatWrapper.buttonName,
+        {
+            baseLiveAgentContentURL: chatWrapper.baseLiveAgentContentURL,
+            deploymentId: chatWrapper.deploymentId,
+            buttonId: chatWrapper[chatWrapper.language].chatButtonInstance,
+            baseLiveAgentURL: chatWrapper.baseLiveAgentURL,
+            eswLiveAgentDevName: chatWrapper.eswLiveAgentDevName,
+            isOfflineSupportEnabled: getOfflineSupported()
+        }
+    );
+};
+ 
+ 
+/* Custom Scripts Start*/
+function applyEmbeddedServiceHandlers() {
+ 
+    embedded_svc.addEventHandler("afterMaximize", (data) => {
+        if(!chatWrapperConstants.offlineFormSubmitted){
+            prepopulateOfflineForm();
+        }
+
+        renderSendButton();
+        renderEndChatButton();
+        addObserver();
+        hideLoadingWindow();
+    });
+
+    embedded_svc.addEventHandler("onSettingsCallCompleted", (data) => {
+        console.log('settings call completed');
+
+        //Only bootstrap the chat client if an actual chat has been requested
+        //The first time onSettingsCallCompleted is called will be just to check for available agents, so bootstrapping isn't necessary
+        if(chatWrapperConstants.chatRequested){
+            embedded_svc.bootstrapEmbeddedService().then((response) => {
+                setTimeout(() => {
+                    hideLoadingWindow();
+                }, 1000)
+            }).catch(error => {
+                console.log(error);
+                hideLoadingWindow();
+            });
+            chatWrapperConstants.chatRequested = false;
+        }
+
+        chatWrapper.notifiyAgentAvailable(data.isAgentAvailable);
+    });
+
+    embedded_svc.addEventHandler("onAvailability", (data) => {
+        chatWrapper.notifiyAgentAvailable(data.isAgentAvailable);
+    });
+
+    embedded_svc.addEventHandler("onChatEndedByChasitor", function (data) {
+        chatWrapper.invokeChatbot({
+            "chatSuccessful": true,
+            "message": "",
+            "routeToContactUs": false
+        });
+    });
+
+    embedded_svc.addEventHandler("onChatEndedByAgent", function (data) {
+        chatWrapper.invokeChatbot({
+            "chatSuccessful": true,
+            "message": "",
+            "routeToContactUs": false
+        });
+    });
+
+    embedded_svc.addEventHandler("onConnectionError", function (data) {
+        chatWrapper.invokeChatbot({
+            "chatSuccessful": false,
+            "message": "A connection error with the chat client has occurred",
+            "routeToContactUs": true
+        });
+    });
+
+    embedded_svc.addEventHandler("onIdleTimeoutOccurred", function (data) {
+        chatWrapper.invokeChatbot({
+            "chatSuccessful": false,
+            "message": "User has timed out due to being idle",
+            "routeToContactUs": true
+        });
+    });
+
+    //Added this for when a chat session hasn't started yet, but the close button is clicked
+    embedded_svc.addEventHandler("afterDestroy", function(data) {
+        if(!chatWrapperConstants.windowDestroyedManually){
+            chatWrapper.invokeChatbot({
+                "chatSuccessful": true,
+                "message": "",
+                "routeToContactUs": false
+            });
+        }
+        chatWrapperConstants.windowDestroyedManually = false;
+    })
+}
+ 
+function applyEmbeddedServiceSettings() {
+ 
+ 
+    embedded_svc.settings.displayHelpButton = chatWrapper.displayHelpButton;
+    embedded_svc.settings.language = chatWrapper.language; //For example, enter 'en' or 'en-US'
+    embedded_svc.settings.buttonId = chatWrapper[chatWrapper.language].chatButtonInstance;
+ 
+    //embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
+    //embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
+ 
+    //embedded_svc.settings.loadingText = ''; //(Defaults to Loading)
+    //embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
+ 
+    // Settings for Chat
+    //embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+    // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
+    // Returns a valid button ID.
+    //};
+    //embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
+    //embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
+    //embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
+ 
+    embedded_svc.settings.enabledFeatures = [chatWrapper.enabledFeatures];
+    embedded_svc.settings.entryFeature = chatWrapper.entryFeature;
+}
+ 
+function applyPrechatFields(prechatData) {
+    // added by CB -- delete code below if no special routing needed when testing
+ 
+    if(prechatData && prechatData.intent){
+        if(prechatData.intent.includes('GREEN_CARD')){
+            prechatData.intent = 'Green Card';
+        }else if(prechatData.intent.includes('TECH_SUPPORT')){
+            prechatData.intent = 'THD';
+        }else if(prechatData.intent.includes('INFOPASS')){
+            prechatData.intent = 'InfoPass';
+        }
+    }
+    
+    //PreChat
+    var extraPreChatDetails = [];
+    for (field in chatWrapperConstants.mapping) {
+        let fieldValue = chatWrapperConstants.mapping[field];
+        extraPreChatDetails.push({
+            "label": fieldValue.label,
+            "value": prechatData[fieldValue.jsonName],
+            "displayToAgent": fieldValue.displayToAgent,
+            "transcriptFields": fieldValue.transcriptFields
+        });
+    }
+    embedded_svc.settings.extraPrechatFormDetails = extraPreChatDetails;
+ 
+ 
+    //PreChat to SF Mapping
+    embedded_svc.settings.extraPrechatInfo = [{
+        "entityName": "Contact",
+        // "showOnCreate": true,
+        // "linkToEntityName": "Case",
+        // "linkToEntityField": "ContactId",
+        "saveToTranscript": "ContactId",
+        "entityFieldMaps": [
+        //     {
+        //     "isExactMatch": true,
+        //     "fieldName": chatWrapperConstants.mapping.FIRST_NAME.salesforceApiName,
+        //     "doCreate": false,
+        //     "doFind": true,
+        //     "label": chatWrapperConstants.mapping.FIRST_NAME.label
+        // }, {
+        //     "isExactMatch": true,
+        //     "fieldName": chatWrapperConstants.mapping.LAST_NAME.salesforceApiName,
+        //     "doCreate": false,
+        //     "doFind": true,
+        //     "label": chatWrapperConstants.mapping.LAST_NAME.label
+        // },
+        {
+            "isExactMatch": true,
+            "fieldName": chatWrapperConstants.mapping.EMAIL.salesforceApiName,
+            "doCreate": false,
+            "doFind": true,
+            "label": chatWrapperConstants.mapping.EMAIL.label
+        }, {
+            "isExactMatch": true,
+            "fieldName": chatWrapperConstants.mapping.PHONE.salesforceApiName,
+            "doCreate": false,
+            "doFind": true,
+            "label": chatWrapperConstants.mapping.PHONE.label
+        }]
+    }];
+}
+ 
+function convertLanguageStringToCode(languageString){
+    if(languageString?.toLowerCase()?.trim() === 'spanish'){
+        return 'es';
+    }
+    return 'en';
+}
+
+function resetEmbeddedServiceForNewChatSession(){
+    //Reset the embedded_svc variable so that it can take on new properties for prechat data
+    let storedJSON = JSON.parse(chatWrapperConstants.emptyEmbeddedService);
+    Object.keys(embedded_svc).forEach(key => {
+        if(storedJSON[key] !== undefined){
+            embedded_svc[key] = storedJSON[key];
+        }
+    })
+    //Need to add this because targetElement is getting stripped when converted to JSON
+    embedded_svc.settings.targetElement = document.querySelector('body');
+}
+ 
+function addObserver() {
+    const dockableContainer = document.querySelector('.dockableContainer');
+    if (dockableContainer) {
+        const observer = new MutationObserver((mutationList) => {
+            renderSendButton();
+            renderEndChatButton();
+        });
+ 
+        observer.observe(dockableContainer, {
+            childList: true,
+            subtree: true
+        })
+    }
+}
+ 
+function renderSendButton() {
+    let existingSendButton = document.querySelector('#sendBtn');
+ 
+    if (!existingSendButton) {
+        console.log('sendButton does not exist!');
+ 
+        let chasitorControls = document.querySelector('.chasitorControls');
+ 
+        if (chasitorControls) {
+            let submitBtn = document.createElement("button");
+            submitBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="#09A761"/>
+                </svg>
+            `;
+            submitBtn.id = 'sendBtn';
+            submitBtn.addEventListener('click', buttonPressHandler);
+            chasitorControls.appendChild(submitBtn);
+        }
+    } else{
+        const fileUploadSendButton = document.querySelector('.fileUploadControls .chatActionButton:last-child');
+ 
+        if(fileUploadSendButton){
+            if (!existingSendButton.classList.contains('hidden')) {
+                document.querySelector("#sendBtn").classList.add('hidden');
+            }
+        } else {
+            document.querySelector("#sendBtn").classList.remove('hidden');
+        }
+    }
+}
+ 
+function renderEndChatButton() {
+    let existingEndChatButton = document.querySelector('.endChatBtn');
+ 
+    if (!existingEndChatButton) {
+        let messageArea = document.querySelector('.messageArea');
+ 
+        if (messageArea) {
+            let endChatBtn = document.createElement("button");
+            endChatBtn.innerHTML = `
+                <Span>End Chat</Span>
+            `;
+            endChatBtn.classList.add('endChatBtn');
+            endChatBtn.addEventListener("click", () => {
+                let header = document.querySelector('.dockableContainer ');
+                let closeButton = header.querySelector('.closeButton');
+                              
+                closeButton.click();
+            })
+            messageArea.insertAdjacentElement("beforebegin", endChatBtn);
+ 
+            let header = document.querySelector('.dockableContainer ');
+            let headerAnnouncement = header.querySelector('.headerAnnouncement');
+            let closeButton = document.querySelector('.endChatBtn')
+ 
+            headerAnnouncement.insertAdjacentElement("beforebegin", closeButton);
+        }
+    }
+}
+ 
+function buttonPressHandler() {
+    // create a new keyboard event and set the key to "Enter"
+    const event = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        code: 'Enter',
+        which: 13,
+        keyCode: 13,
+    });
+ 
+    // dispatch the event on some DOM element
+    var chasitorText = document.querySelector('.chasitorText');
+    chasitorText.dispatchEvent(event);
+}
+ 
+function displayLoadingWindow() {
+ 
+    if (!document.querySelector("#loadingWindow")) {
+        const body = document.querySelector('body');
+        let loadingWindow = document.createElement('div');
+        loadingWindow.id = "loadingWindow";
+        loadingWindow.className = 'loading-window';
+ 
+        let loadingHeader = document.createElement('div');
+        loadingHeader.className = 'loading-window-header';
+ 
+        let h2header = document.createElement('h2');
+        h2header.textContent = 'Opening Chat...';
+        loadingHeader.appendChild(h2header);
+ 
+        loadingWindow.appendChild(loadingHeader);
+        body.appendChild(loadingWindow);
+         
+        let loadingDotsMarkup = '<span role="presentation" tabindex="-1" aria-hidden="true" class="loadingBallContainer animated embeddedServiceLoadingBalls" data-aura-rendered-by="19:0" data-aura-class="embeddedServiceLoadingBalls"><span role="presentation" aria-hidden="true" class="loadingBall first" data-aura-rendered-by="20:0"></span><span role="presentation" aria-hidden="true" class="loadingBall second" data-aura-rendered-by="21:0"></span><span role="presentation" aria-hidden="true" class="loadingBall third" data-aura-rendered-by="22:0"></span></span>';
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(loadingDotsMarkup, "text/html");
+        doc.body.className = 'loading-indicator-container';
+        loadingWindow.appendChild(doc.body);
+    } else {
+        document.querySelector("#loadingWindow").classList.remove('hidden');
+    }
+}
+
+function prepopulateOfflineForm(){
+    let offlineSupportUI = document.querySelector('.offlineSupportUI');
+
+    let iframe = document.createElement('iframe');
+    iframe.id = 'offlineSupportFrame';
+    iframe.onload = onLoadHandler;
+    iframe.classList.add('hidden');
+
+    let renderedForm = `
+        <form id="offlineSupportForm" method="POST" action="${chatWrapper.environmentUrl}/servlet/servlet.WebToCase?encoding=UTF-8&orgId=${chatWrapper.orgId}">
+            <input type=hidden name="orgid" value="${chatWrapper.orgId}">
+            <input type=hidden name="recordType" id="recordType" value="${chatWrapper.offlineFormRecordTypeId}">
+
+            <label for="Additional_Customer_Email__c">Email</label>
+            <input id="Additional_Customer_Email__c" maxlength="80" name="Additional_Customer_Email__c" size="20" type="text" value="${getFormValue('Email')}"/><br>
+            
+            <label for="Additional_Customer_Phone__c">Phone</label>
+            <input id="Additional_Customer_Phone__c" maxlength="40" name="Additional_Customer_Phone__c" size="20" type="text" value="${getFormValue('Phone')}"/><br>
+            
+            Primary Language:
+            <input id="Primary_Language__c" name="Primary_Language__c" value="${getFormValue('Language')}"><br>
+
+            <label for="subject">Subject</label>
+            <input id="subject" maxlength="80" name="subject" size="20" type="text" value="${getFormValue('Intent')}" /><br>
+            
+            <label for="description">Description</label>
+            <textarea name="description">${getFormValue('Description')}</textarea><br>
+            
+            Applicant Receipt Number:
+            <input id="Applicant_Reciept_Number__c" maxlength="32" name="Applicant_Reciept_Number__c" size="20" type="text" value="${getFormValue('Receipt Number')}" /><br>
+
+            Opted Into Text Messaging:
+            <input type=hidden id="Opted_Into_Text_Messaging__c" name="Opted_Into_Text_Messaging__c" type="checkbox" value=${getFormValue('Opted into Text')} /><br>
+            
+            <input type="submit" name="submit" id="offlineSubmitBtn">
+        </form>
+    `;
+
+    iframe.srcdoc = renderedForm;
+
+    if (offlineSupportUI) {
+        offlineSupportUI.replaceChildren(iframe);
+
+        let confirmationMessage = document.createElement('div');
+        confirmationMessage.classList.add('offlineFormConfirmation');
+        confirmationMessage.innerHTML = `
+            <h2>No Chat Agents Available</h2>
+            <p>
+                Thank you for contacting USCIS. Currently there are no chat agents available. Please try us again later.
+            </p>
+            <h2>No hay Agentes de Chat Disponibles</h2>
+            <p>
+               Gracias por comunicarse con USCIS. Actualmente no hay agentes de chat disponibles. Por favor, inténtelo de nuevo más tarde.
+            </p>
+        `;
+        offlineSupportUI.appendChild(confirmationMessage);
+    }
+}
+
+function getFormValue(fieldName){
+    let formDetails = embedded_svc.settings.extraPrechatFormDetails;
+    let res = formDetails.find(formDet => formDet.label === fieldName).value;
+
+    // console.log('fieldName: ' + fieldName);
+    // console.log('res: ' + res);
+
+    return res;
+}
+
+function onLoadHandler(){
+    let offlineSupportUI = document.querySelector('.offlineSupportUI');
+    // console.log(offlineSupportUI);
+    
+    let offlineSupportFrame = offlineSupportUI.querySelector('#offlineSupportFrame');
+    // console.log(offlineSupportFrame);
+
+    let offlineSupportForm = offlineSupportFrame.contentWindow.document.querySelector('#offlineSupportForm');
+    // console.log(offlineSupportForm);
+
+    let offlineSupportFormSubmitBtn = offlineSupportForm.querySelector('#offlineSubmitBtn');
+    // console.log(offlineSupportFormSubmitBtn);
+
+    if(offlineSupportFormSubmitBtn){
+        //ISO-36319 - do not submit form.
+        // offlineSupportFormSubmitBtn.click();
+
+        chatWrapperConstants.offlineFormSubmitted = true;
+    }
+}
+
+function hideLoadingWindow() {
+    const loadingWindow = document.querySelector("#loadingWindow")
+    const chatWindow = document.querySelector(".dockableContainer")
+    if (loadingWindow && chatWindow && !loadingWindow.classList.contains('hidden')) {
+        document.querySelector("#loadingWindow").classList.add('hidden');
+    }
+}
+ 
+function loadCustomStyles() {
+    console.log('Custom Styles to be Added!');
+    var link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', chatWrapper.environmentSiteUrl + '/resource/' + Math.floor(Date.now()) + '/chatclient?');
+    document.head.appendChild(link);
+    console.log('Custom Styles Added!');
+}
+ 
+
+function getOfflineSupported(){
+    const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+    //IF offline hours aren't set, return isOfflineSupportEnabled as default
+    if(!chatWrapper.offlineHours){
+        return chatWrapper.isOfflineSupportEnabled;
+    }
+    const d = new Date();
+    let day = weekday[d.getDay()];
+    if(chatWrapper.offlineHours[day]?.fullday === true){
+        return true;
+    }
+
+    let startTime = chatWrapper.offlineHours[day]?.start;
+    let endTime = chatWrapper.offlineHours[day]?.end;
+    if(!startTime || !endTime){
+        return true;
+    }
+
+    //Use this for the users current timezone
+    // let timezoneOffsetInMinutes = d.getTimezoneOffset();
+    //Use this for the specifically EST timezone
+    let timezoneOffsetInMinutes = 240;
+    
+    let startDateTime = Date.parse(new Date(new Date(d.toISOString().split('T')[0] + 'T' + startTime).getTime() + timezoneOffsetInMinutes * 60 * 1000).toLocaleString("en-US", {timeZone: 'America/New_York'}));;
+    
+    let endDateTime = Date.parse(new Date(new Date(d.toISOString().split('T')[0] + 'T' + endTime).getTime() + timezoneOffsetInMinutes * 60 * 1000).toLocaleString("en-US", {timeZone: 'America/New_York'}));;
+    
+    if(startDateTime < d && endDateTime > d){
+        return true;
+    }
+    return false;
+}
+/* Custom Scripts End*/

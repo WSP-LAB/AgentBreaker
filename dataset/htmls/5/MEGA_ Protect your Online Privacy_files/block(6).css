@@ -1,0 +1,38 @@
+/**
+ * Styling for the competitor matrix module core block.
+ */
+
+.competitor-matrix {
+    max-width: unset;
+    padding: 0 0 var(--spacing-12);
+}
+.competitor-matrix.surface-bg {
+    background-color: var(--color-bg-surface-1);
+}
+
+.competitor-matrix .contents {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--default-padding);
+    box-sizing: border-box;
+}
+
+.competitor-matrix .matrix-heading {
+    text-align: center;
+    padding: var(--spacing-11) 0;
+}
+
+.competitor-matrix .matrix-cards {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-8);
+}
+
+/* Breakpoint S */
+@media screen and (min-width: 0) and (max-width: 768px) {
+    .competitor-matrix .matrix-cards {
+        flex-direction: column;
+    }
+}

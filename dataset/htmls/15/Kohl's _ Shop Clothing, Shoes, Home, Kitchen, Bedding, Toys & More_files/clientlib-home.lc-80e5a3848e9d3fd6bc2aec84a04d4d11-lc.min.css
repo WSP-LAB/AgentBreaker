@@ -1,0 +1,7 @@
+@media only screen and (max-width:728px){html body #header.top-global-header{border-bottom:1px solid $gray-10;position:-webkit-sticky;position:sticky;top:0;width:100%;z-index:999}
+#oo_tab.oo_tab_right{display:none !important}
+#ThreeAmigos,#TwoAmigos{width:100% !important;display:inherit !important;overflow:hidden !important}
+#monetizationElements{width:fit-content !important;margin:auto !important}
+#ThreeAmigos .AmigosParent,#TwoAmigos .AmigosParent{display:flex !important;width:100% !important;margin-left:10px !important;justify-content:center !important;align-items:center !important}
+}
+.top-global-header .middle-menu-bar #store .setmystorenavlink.choose-store{width:100% !important}

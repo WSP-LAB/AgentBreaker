@@ -1,0 +1,14 @@
+services:
+  agentbreaker:
+    build: .
+    image: agentbreaker:latest
+    container_name: agentbreaker
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/app
+    ports:
+      - "3001:3001"
+    command: ["bash"]
+    stdin_open: true
+    tty: true

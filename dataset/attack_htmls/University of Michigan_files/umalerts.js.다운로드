@@ -1,0 +1,28 @@
+(function(){let alertLoaded=false;let assetsLoaded=false;let defaultOptions={mode:'prod',type:'ealert',location:'top'};let assets={css:['umalerts.css'],js:[]}
+const ready=(fn)=>{if(document.attachEvent?document.readyState==='complete':document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+const getCookie=(name)=>{let v=document.cookie.match('(^|;) ?'+name+'=([^;]*)(;|$)');return v?v[2]:null;}
+const setCookie=(name,value,days)=>{if(days!=null){let d=new Date;d.setTime(d.getTime()+24*60*60*1000*days);document.cookie=name+"="+value+";path=/;expires="+d.toGMTString();}
+else{document.cookie=name+"="+value+";path=/;";}}
+const delCookie=(name)=>{setCookie(name,'',-1);}
+const getAlert=async()=>{let alerts={};if(typeof(Storage)!=='undefined'){alerts=sessionStorage.getItem('umich-alerts');}
+else{alerts=getCookie('umich-alerts');}
+if((typeof alerts!=='undefined')&&alerts&&alerts.length){alerts=JSON.parse(alerts);if((alerts.mode==window.umalerts.mode)&&((new Date()).getTime()/ 1000)-alerts.unixtime<60){return alerts;}}
+let params=new URLSearchParams({mode:window.umalerts.mode,type:window.umalerts.type,source:window.location.hostname});const response=await fetch(`https://umich.edu/apis/alerts/?${params}`);if(response.ok){return saveAlert(await response.json());}
+else{console.error(`[U-M: Emergency Alert] Unable to obtain current alert status (${response.status}: ${response.statusText}).`);}
+return;}
+const saveAlert=(data)=>{let alerts={timestamp:new Date(),unixtime:(new Date()).getTime()/ 1000,mode:window.umalerts.mode,alert:data};if(typeof(Storage)!=='undefined'){sessionStorage.setItem('umich-alerts',JSON.stringify(alerts));}
+else{setCookie('umich-alerts',JSON.stringify(alerts),null);}
+return alerts;}
+const loaded=async()=>{if(alertLoaded){return;}
+let options=defaultOptions;for(let key in window.umalerts){options[key]=window.umalerts[key];}
+window.umalerts=options;let alerts=await getAlert();if((typeof alerts==='undefined')||!alerts||!Object.keys(alerts).length){return;}
+if((typeof alerts.alert!=='undefined')&&alerts.alert&&Object.keys(alerts.alert).length){alertLoaded=true;let umEAlertHtml=alerts.alert.html;let thisHTMLEl=document.getElementsByTagName('html')[0];let thisBodyEl=document.getElementsByTagName('body')[0];let thisHTMLElMarginTop=parseInt(getComputedStyle(thisHTMLEl)['margin-top'])
+if(!assetsLoaded){assetsLoaded=true;let head=document.getElementsByTagName('head')[0];let baseUrl=document.querySelector('script[src*="umalerts.js"]').getAttribute('src').replace(/umalerts\.js.*/,'');assets.js.forEach(function(asset,i){let script=document.createElement('script');script.type='text/javascript';script.src=baseUrl+asset;head.appendChild(script);});assets.css.forEach(function(asset,i){let style=document.createElement('link');style.rel='stylesheet';style.type='text/css';style.href=baseUrl+asset;style.onload=function(){resizeEvent();};head.appendChild(style);});}
+let tmpEl=document.createElement('div');tmpEl.innerHTML=umEAlertHtml;thisHTMLEl.classList.add('umich-alerts--ealert-active');switch(window.umalerts.location){case'bottom':thisBodyEl.appendChild(tmpEl.firstChild);break;case'top':default:thisBodyEl.insertBefore(tmpEl.firstChild,thisBodyEl.firstChild);break;}
+let thisEAlert=document.getElementById('umich-alerts--ealert');if(getCookie('umich-alerts')==thisEAlert.getAttribute('data-uid')){thisEAlert.classList.add('collapsed');thisHTMLEl.classList.add('umich-alerts--ealert-collapsed');}
+else{delCookie('umich-alerts');}
+thisEAlert.getElementsByClassName('umich-alerts-wrap')[0].addEventListener('click',function(event){if(!event.target.closest('a')){if(thisEAlert.classList.contains('collapsed')){thisEAlert.classList.remove('collapsed');thisHTMLEl.classList.remove('umich-alerts--ealert-collapsed');delCookie('umich-alerts');}
+else{thisEAlert.classList.add('collapsed');thisHTMLEl.classList.add('umich-alerts--ealert-collapsed');setCookie('umich-alerts',thisEAlert.getAttribute('data-uid'),1);}
+resizeEvent();}});let resizeEvent=function(){thisHTMLEl.style.setProperty('margin-top',(thisHTMLElMarginTop+thisEAlert.offsetHeight)+'px','important');if(['absolute','relative','sticky'].indexOf(getComputedStyle(thisBodyEl)['position'])!=-1||['absolute','relative','sticky'].indexOf(getComputedStyle(thisHTMLEl)['position'])!=-1){thisEAlert.style.setProperty('margin-top','-'+thisEAlert.offsetHeight+'px');thisEAlert.style.setProperty('top','0px');}
+else{thisEAlert.style.setProperty('margin-top','');thisEAlert.style.setProperty('top',thisHTMLElMarginTop+'px');}};resizeEvent();window.onresize=resizeEvent;}}
+ready(loaded);}());

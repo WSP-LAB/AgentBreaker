@@ -1,0 +1,88 @@
+/**
+ * Styling for the features simple card column module.
+ */
+
+section.ft-simple-card-column {
+    margin: var(--spacing-12) auto;
+}
+
+section.ft-simple-card-column .texts {
+    grid-column: 2 / -2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-7);
+    text-align: center;
+    margin-bottom: var(--spacing-11);
+}
+
+section.ft-simple-card-column .texts .blurb {
+    color: var(--color-copy-secondary);
+}
+
+section.ft-simple-card-column .cards {
+    display: flex;
+    flex-flow: wrap;
+    gap: var(--grid-column-gap);
+}
+
+section.ft-simple-card-column .cards .simple-card {
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+section.ft-simple-card-column.fixed-fraction .cards .simple-card {
+    flex-grow: 0;
+}
+
+section.ft-simple-card-column.fill-width .cards .simple-card {
+    flex-grow: 1;
+}
+
+section.ft-simple-card-column.two .cards .simple-card {
+    flex-basis: calc((100% - var(--grid-column-gap)) / 2);
+}
+
+section.ft-simple-card-column.three .cards .simple-card {
+    flex-basis: calc((100% - var(--grid-column-gap) - var(--grid-column-gap)) / 3);
+}
+
+section.ft-simple-card-column .supporting-text {
+    grid-column: 1 / -1;
+    font: var(--font-copy-sm);
+    color: var(--color-copy-secondary);
+    padding-top: var(--spacing-7);
+}
+
+section.ft-simple-card-column.two .supporting-text {
+    grid-column: 2 / -2;
+}
+
+/* Breakpoints S to L */
+@media screen and (min-width: 0) and (max-width: 1320px) {
+    section.ft-simple-card-column.two .cards {
+        grid-column: 1 / -1;
+    }
+
+    section.ft-simple-card-column.two .supporting-text {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Breakpoints S and M */
+@media screen and (min-width: 0) and (max-width: 1080px) {
+    section.ft-simple-card-column .heading {
+        hyphens: auto;
+    }
+}
+
+/* Breakpoint S */
+@media screen and (min-width: 0) and (max-width: 768px) {
+    section.ft-simple-card-column.two .cards .simple-card,
+    section.ft-simple-card-column.three .cards .simple-card {
+        flex-basis: 100%;
+    }
+
+    section.ft-simple-card-column .texts {
+        grid-column: 1 / -1;
+    }
+}

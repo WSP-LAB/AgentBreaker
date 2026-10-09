@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>doj-icon-most-wanted</title>
+    <g id="justice.gov" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="doj-icon-example" transform="translate(-693.000000, -565.000000)">
+            <g id="action-center---white-bg" transform="translate(27.125226, 47.000000)">
+                <g id="column-3" transform="translate(665.874774, 82.000000)">
+                    <g id="doj-icon-most-wanted" transform="translate(0.000000, 436.000000)">
+                        <circle id="Oval" fill="#162E51" cx="20" cy="20" r="20"></circle>
+                        <g id="components/icons/local_police" transform="translate(10.000000, 10.000000)" fill="#FFBE2E">
+                            <path d="M10,0.833333333 L2.5,4.16666667 L2.5,9.16666667 C2.5,13.7916667 5.7,18.1166667 10,19.1666667 C14.3,18.1166667 17.5,13.7916667 17.5,9.16666667 L17.5,4.16666667 L10,0.833333333 Z M12.0833333,10.4916667 L12.8333333,13.725 L10,12.0166667 L7.16666667,13.725 L7.91666667,10.5 L5.41666667,8.34166667 L8.71666667,8.05833333 L10,5.01666667 L11.2833333,8.05 L14.5833333,8.33333333 L12.0833333,10.4916667 Z" id="Fill"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

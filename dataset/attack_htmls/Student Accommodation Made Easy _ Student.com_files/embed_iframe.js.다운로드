@@ -1,0 +1,123 @@
+(function () {
+  // Get data from client's script tag.
+  const tcw =
+    document.querySelector('script[data-companyid][data-id="travischatwidget"]') ||
+    document.querySelector('script[data-company-id][data-id="travischatwidget"]');
+  const comid = tcw.getAttribute('data-companyid') || tcw.getAttribute('data-company-id');
+  const loc = tcw.getAttribute('data-location');
+  const apiEnv = tcw.getAttribute('data-env');
+
+  const scriptSrc = tcw.getAttribute('src');
+  const env = (scriptSrc && new URL(scriptSrc).origin) || 'https://chat.sleekflow.io';
+  // Get custom size from client.
+
+  const wOpenWidth = '380px';
+  const wOpenHeight = '100vh';
+  const wCloseWidth = '300px';
+  const wCloseHeight = '300px';
+  const bgColor = tcw.getAttribute('data-bg-color') || 'rgba(23,104,255,1)';
+  const fontColor = tcw.getAttribute('data-color') || 'rgba(255,255,255,1)';
+  // Delay widget load
+  const wLoadDelay = parseInt(tcw.getAttribute('data-load-delay')) || 2000;
+  setTimeout(() => {
+    /* style tag hack for Forex to elevate widget */
+    const styleTag = document.createElement('style');
+    styleTag.id = 'travischatwidget-styles';
+    const styleTagInnerText =
+      comid === 'e338d254-5751-4f99-a908-39d83a42dbfb'
+        ? '@media only screen and (max-width: 768px){ #travischatwidget { bottom: 130px !important; } #travischatwidget-styles { bottom: 130px !important } }; '
+        : '';
+    styleTag.innerText = styleTagInnerText;
+    // Signalr script
+    var widgetFrame = document.createElement('iframe');
+    widgetFrame.id = 'travischatwidget';
+    widgetFrame.name = 'Travis Chat Widget';
+    widgetFrame.src = `${env}/index.html?companyid=${comid}&bgColor=${bgColor}&fontColor=${fontColor}&env=${apiEnv}&loc=${loc}`;
+    widgetFrame.style = `position: fixed; bottom: 0; right: 0; border: 0px; padding: 0px; margin: 0px; width: 100px; height: 100px; max-height: 100%; z-index: 2147483646; overscroll-behavior: contain; `;
+    widgetFrame.sandbox =
+      'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation';
+    // widgetFrame.sandbox ='allow-scripts allow-same-origin';
+
+    var widgetDiv = document.createElement('div');
+    widgetDiv.style =
+      'position: fixed; bottom: 0; right: 0; border: 0px; padding: 0px; margin: 0px; z-index: 2147483646; overscroll-behavior: contain;';
+    if (!document.getElementById('travischatwidget')) {
+      widgetDiv.appendChild(styleTag);
+      widgetDiv.appendChild(widgetFrame);
+    } else {
+      return;
+    }
+    var pageTitle = document.title;
+    setInterval(
+      () => widgetFrame.contentWindow.postMessage(['currentUrl', window.location.href], '*'),
+      2000
+    );
+
+    const changeIFrame = (e) => {
+      if (e.origin === env) {
+        if (e.data[0] === 'hasPopup') {
+          document.getElementById('travischatwidget').style.width = '300px';
+          document.getElementById('travischatwidget').style.height = '300px';
+        }
+        if (e.data[0] === 'noPopup') {
+          document.getElementById('travischatwidget-styles').innerText = styleTagInnerText;
+          document.getElementById('travischatwidget').style.width = '100px';
+          document.getElementById('travischatwidget').style.height = '100px';
+        }
+        if (e.data[0] === 'maxHeight') {
+          document.getElementById('travischatwidget').style.maxHeight = e.data[1] || '670px';
+        }
+        if (e.data[0] === 'travischatwidgetopen') {
+          if (window.innerWidth < 480) {
+            document.getElementById('travischatwidget-styles').innerText = '';
+            document.getElementById('travischatwidget').style.width = window.innerWidth + 'px';
+            document.getElementById('travischatwidget').style.height = window.innerHeight + 'px';
+          } else {
+            document.getElementById('travischatwidget-styles').innerText = styleTagInnerText;
+            document.getElementById('travischatwidget').style.bottom = '0px !important';
+            document.getElementById('travischatwidget').style.width = wOpenWidth;
+            document.getElementById('travischatwidget').style.height = wOpenHeight;
+          }
+        } else if (e.data[0] === 'travischatwidgetclose') {
+          if (window.innerWidth < 480) {
+            document.getElementById('travischatwidget-styles').innerText = styleTagInnerText;
+            document.getElementById('travischatwidget').style.width = '108px';
+            document.getElementById('travischatwidget').style.height = '145px';
+          } else {
+            document.getElementById('travischatwidget-styles').innerText = styleTagInnerText;
+            document.getElementById('travischatwidget').style.width = wCloseWidth;
+            document.getElementById('travischatwidget').style.height = wCloseHeight;
+          }
+        } else if (e.data[0] === 'travischatwidgetWelcomeMsg') {
+          document.getElementById('travischatwidget').style.width = '348px';
+          document.getElementById('travischatwidget').style.height = '225px';
+        } else if (e.data[0] === 'travischatwidgetunreadcount') {
+          if (e.data[1]) {
+            document.title = `(${e.data[1]}) ${pageTitle}`;
+          } else {
+            document.title = pageTitle;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('message', changeIFrame);
+
+    widgetFrame.addEventListener('load', () => {
+      // DEVS-10651: notify ChatWidget the bottom position of the iframe
+      try {
+        const { bottom } = window.getComputedStyle(widgetFrame);
+        widgetFrame.contentWindow.postMessage(['travischatwidgetBottom', bottom], '*');
+      } catch (e) {}
+    });
+
+    try {
+      widgetFrame.appendChild(document.createTextNode(''));
+      document.body.appendChild(widgetDiv);
+    } catch (e) {
+      widgetFrame.text = '';
+      widgetDiv.text = '';
+      document.body.appendChild(widgetDiv);
+    }
+  }, wLoadDelay);
+})();

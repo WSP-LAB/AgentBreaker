@@ -1,0 +1,5 @@
+import*as Consent from"./user/consent.js";import*as Debug from"./debug.js";import*as ErrorHandler from"./error-handler.js";
+import*as Load from"./load.js";Debug.timer("DDC.Main.init"),ErrorHandler.init(),Consent.status().then(r=>{
+r?.all&&!navigator.globalPrivacyControl&&Load.loadUserDeferredScripts()}),Debug.timer("DDC.Ads.import"),import(
+"./ads/display.js").then(r=>r?.init()),import("./ads/injection.js").then(r=>r?.init()),import("./ads/sidebar.js").then(
+r=>r?.init()),import("./ads/fixable.js").then(r=>r?.init());

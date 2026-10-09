@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)https://phet.colorado.edu/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:esi="http://java.sun.com/JSP/Page" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+  <!-- @formatter:off -->
+  <!-- Google Tag Manager -->
+
+  <script type="text/javascript" async="" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/js"></script><script async="" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/gtm.js.다운로드"></script><script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    gtag( 'consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'granted',
+    } );
+
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WLNGBXD');
+
+  </script>
+  <!-- End Google Tag Manager -->
+  <!-- @formatter:on -->
+
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  
+  <title>PhET: Free online physics, chemistry, biology, earth science and math simulations</title>
+  
+    <meta name="description" content="Free science and math simulations for teaching STEM topics, including physics, chemistry, biology, and math, from University of Colorado Boulder">
+  
+  
+  <link rel="stylesheet" href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/font-awesome.min-4.7.css">
+  <link rel="stylesheet" type="text/css" href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-v103-min.css">
+
+  <!-- class edu.colorado.phet.website.content.IndexPage -->
+  <!-- host phet.colorado.edu -->
+  
+
+  <script src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/platform.js.다운로드" async="" defer="" gapi_processed="true"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/css2" rel="stylesheet">
+
+  <script type="text/javascript">
+    function initBreakpoint() {
+      var body = document.querySelector( 'body' );
+      var menuParents = document.querySelectorAll( '#page-nav-menu ul[role=menubar] .nav-menu-parent-text' );
+
+      if ( body && menuParents ) {
+        clearInterval( isLargeViewInterval );
+        window.phet = window.phet || {};
+        window.phet.cssBreakpoint = 40 + // page header container padding
+                                    220 + // phet and cu logos
+                                    75 + // search and user menus
+                                    ( body.className.indexOf( 'rtl' ) >= 0 ? 30 : 0 ) + // RTL languages need to break 30 pixels earlier somehow
+                                    Array.prototype.slice.call( menuParents )
+                                        .map( function( item ) {
+                                          return item.offsetWidth
+                                                 - parseInt( window.getComputedStyle( item ).paddingRight )
+                                                 - parseInt( window.getComputedStyle( item ).paddingLeft )
+                                                 + 22; // 22 is horizontal padding + horizontal margin on nav-menu-parent-text in wide view
+                                        } )
+                                        .reduce( function( accumulator, currentItem ) { return accumulator + currentItem; }, 0 ); // dropdown menu width, flexible due to translations
+        const mediaString = '(min-width: ' + window.phet.cssBreakpoint + 'px)';
+        window.phet.isLargeView = function() {
+          return window.matchMedia( mediaString ).matches;
+        };
+
+        document.body.className = document.body.className.replace( 'pre-load', window.phet.isLargeView() ? 'wide' : 'narrow' );
+        document.getElementById( 'page-header-container-wrapper' ).className = window.phet.isLargeView() ? 'expanded' : 'collapsed';
+      }
+    }
+
+    var isLargeViewInterval = setInterval( initBreakpoint, 50 );
+  </script>
+
+    <style type="text/css" id="edu-colorado-phet-website-content-MeteorLoadingBlockerPanel-0">
+      /**
+      *  SpinKit used under the MIT License
+      *  Source: https://github.com/tobiasahlin/SpinKit
+      **/
+
+      .spinner {
+        margin-inline: auto;
+        padding-block: 40vh;
+        width: 70px;
+        text-align: center;
+      }
+
+      .spinner > div {
+        width: 18px;
+        height: 18px;
+        background-color: #6acef5;
+
+        border-radius: 100%;
+        display: inline-block;
+        -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      }
+
+      .spinner .bounce1 {
+        -webkit-animation-delay: -0.32s;
+        animation-delay: -0.32s;
+      }
+
+      .spinner .bounce2 {
+        -webkit-animation-delay: -0.16s;
+        animation-delay: -0.16s;
+      }
+
+      @-webkit-keyframes sk-bouncedelay {
+        0%, 80%, 100% {
+          -webkit-transform: scale(0)
+        }
+        40% {
+          -webkit-transform: scale(1.0)
+        }
+      }
+
+      @keyframes sk-bouncedelay {
+        0%, 80%, 100% {
+          -webkit-transform: scale(0);
+          transform: scale(0);
+        }
+        40% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+        }
+      }
+    </style>
+  
+    <script type="text/javascript">window.phet = window.phet || {};window.phet.phetLocale = "en";var phetSimulationString = "{0} (simulation)";</script>
+  
+        <meta property="og:site_name" content="PhET"><meta property="twitter:site" content="@PhETsims"><meta property="og:title" content="PhET Interactive Simulations"><meta property="twitter:title" content="PhET Interactive Simulations"><meta property="og:url" content="https://phet.colorado.edu/"><meta property="twitter:card" content="summary"><meta property="og:image" content="https://phet.colorado.edu/images/phet-social-media-logo.png"><meta property="twitter:image" content="https://phet.colorado.edu/images/phet-social-media-logo.png"><meta property="og:description" content="Founded in 2002 by Nobel Laureate Carl Wieman, the PhET Interactive Simulations project at the University of Colorado Boulder creates free interactive math and science simulations. PhET sims are based on extensive education &lt;a {{0}}&gt;research&lt;/a&gt; and engage students through an intuitive, game-like environment where students learn through exploration and discovery."><meta property="twitter:description" content="Founded in 2002 by Nobel Laureate Carl Wieman, the PhET Interactive Simulations project at the University of Colorado Boulder creates free interactive math and science simulations. PhET sims are based on extensive education &lt;a {{0}}&gt;research&lt;/a&gt; and engage students through an intuitive, game-like environment where students learn through exploration and discovery.">
+    <style></style><link rel="shortcut icon" href="https://phet.colorado.edu/favicon.ico" data-rh="true"><link rel="stylesheet" type="text/css" href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-app68.css" data-rh="true"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" data-rh="true"></head>
+<body dir="ltr" class="ltr wide">
+<!-- @formatter:off -->
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WLNGBXD"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<!-- @formatter:on -->
+
+<div id="skipNav">
+  <a href="https://phet.colorado.edu/#page-content" accesskey="0" id="skipper" tabindex="1">
+    Skip to Main Content
+  </a>
+</div>
+
+
+
+<div id="page-header" class="ltr">
+
+  
+
+  <div id="page-header-container-wrapper" class="expanded">
+    <header id="page-header-container" role="banner">
+      <div id="page-header-left">
+        <a href="https://phet.colorado.edu/" class="phet-logo-link">
+          <div class="phet-logo expanded">
+            <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-logo-trademarked.png" alt="PhET Home Page" title="Go to the PhET home page">
+          </div>
+        </a>
+        <div class="cu-logo expanded">
+          <a href="http://www.colorado.edu/" target="_blank">
+            <div class="cu-logo-image-clip">
+              <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/cu_logo.png" alt="University of Colorado">
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <a id="collapsible-menu-toggle" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Toggle Primary Menu" tabindex="-1">
+        <div id="toggle-container">
+          <span id="nw-rotate" class="rotate">
+            <span id="nw-translate" class="line"></span>
+          </span>
+          <span id="ne-rotate" class="rotate">
+            <span id="ne-translate" class="line"></span>
+          </span>
+          <span id="sw-rotate" class="rotate">
+            <span id="sw-translate" class="line"></span>
+          </span>
+          <span id="se-rotate" class="rotate">
+            <span id="se-translate" class="line"></span>
+          </span>
+          <span id="east-center-line" class="line center-line"></span>
+          <span id="west-center-line" class="line center-line"></span>
+        </div>
+      </a>
+
+      <div id="page-header-menus" class="ltr">
+        <div id="collapsible-menu">
+          <div id="search-container-mobile" role="search" aria-hidden="true"></div>
+          <nav id="page-nav-menu" role="navigation">
+  <span class="screenReaderOnlyInvoked">
+    Website Navigation
+  </span>
+  <ul role="menubar">
+    <li class="nav-menu-item">
+      <a class="nav-menu-parent has-menu nav0" role="menuitem" id="nav.simulations" aria-haspopup="menu" aria-expanded="false" tabindex="0">
+        <span class="nav-menu-parent-text">Simulations</span>
+      <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/plus-icon.png" class="plus-icon"></a>
+      <div class="nav-menu-children" aria-hidden="true">
+        <ul role="menu" aria-labelledby="nav.simulations">
+          <li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-allSimulations" href="https://phet.colorado.edu/en/simulations/filter?type=html">
+            <span class="nav-menu-child-text">All Sims</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-physics" href="https://phet.colorado.edu/en/simulations/filter?subjects=physics&amp;type=html">
+            <span class="nav-menu-child-text">Physics</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-math-and-statistics" href="https://phet.colorado.edu/en/simulations/filter?subjects=math-and-statistics&amp;type=html">
+            <span class="nav-menu-child-text">Math &amp; Statistics</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-chemistry" href="https://phet.colorado.edu/en/simulations/filter?subjects=chemistry&amp;type=html">
+            <span class="nav-menu-child-text">Chemistry</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-earth-and-space" href="https://phet.colorado.edu/en/simulations/filter?subjects=earth-and-space&amp;type=html">
+            <span class="nav-menu-child-text">Earth &amp; Space</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-biology" href="https://phet.colorado.edu/en/simulations/filter?subjects=biology&amp;type=html">
+            <span class="nav-menu-child-text">Biology</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-simulations-translated" href="https://phet.colorado.edu/en/simulations/translated">
+            <span class="nav-menu-child-text">Translated Sims</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-simulations-studio" href="https://phet.colorado.edu/en/simulations/customize">
+            <span class="nav-menu-child-text">Customizable Sims</span></a></li>
+        </ul>
+      </div>
+    </li><li class="nav-menu-item">
+      <a class="nav-menu-parent has-menu nav0" role="menuitem" id="nav.studio" aria-haspopup="menu" aria-expanded="false" tabindex="0">
+        <span class="nav-menu-parent-text nav-menu-sparkle">Studio</span>
+      <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/plus-icon.png" class="plus-icon"></a>
+      <div class="nav-menu-children" aria-hidden="true">
+        <ul role="menu" aria-labelledby="nav.studio">
+          <li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-studio-overview" href="https://phet.colorado.edu/en/studio/overview">
+            <span class="nav-menu-child-text">About Studio</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-simulations-studio" href="https://phet.colorado.edu/en/simulations/customize">
+            <span class="nav-menu-child-text">Customizable Sims</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-phetStudio-license-startAFreeTrial" href="https://phet.colorado.edu/en/studio/license/new?licenseType=freeTrial">
+            <span class="nav-menu-child-text">Start a Free Trial</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-phetStudio-license-purchaseLicense" href="https://phet.colorado.edu/en/studio/license/new?licenseType=phetPurchase">
+            <span class="nav-menu-child-text">Purchase a License</span></a></li>
+        </ul>
+      </div>
+    </li><li class="nav-menu-item">
+      <a class="nav-menu-parent has-menu nav0" role="menuitem" id="nav.teaching" aria-haspopup="menu" aria-expanded="false" tabindex="0">
+        <span class="nav-menu-parent-text">Teaching</span>
+      <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/plus-icon.png" class="plus-icon"></a>
+      <div class="nav-menu-children" aria-hidden="true">
+        <ul role="menu" aria-labelledby="nav.teaching">
+          <li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-teacherIdeas-browse" href="https://phet.colorado.edu/en/activities">
+            <span class="nav-menu-child-text">Activities</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-teacherIdeas-submit" href="https://phet.colorado.edu/en/activities/contribute">
+            <span class="nav-menu-child-text">Contribute an Activity</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-activities-contributionGuidelines" href="https://phet.colorado.edu/en/activities/contribution-guidelines">
+            <span class="nav-menu-child-text">Activity Contribution Guidelines</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-virtualWorkshops" href="https://phet.colorado.edu/en/teaching-resources/virtual-workshop/">
+            <span class="nav-menu-child-text">Virtual Workshops</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-forTeachers-tipsForUsingPhet" href="https://phet.colorado.edu/en/teaching-resources/tipsForUsingPhet">
+            <span class="nav-menu-child-text">Tips for Using PhET</span></a></li>
+        </ul>
+      </div>
+    </li><li class="nav-menu-item">
+      <a class="nav-menu-parent nav0" role="menuitem" href="https://phet.colorado.edu/en/research" tabindex="0">
+        <span class="nav-menu-parent-text">Research</span>
+      </a>
+      <div class="nav-menu-children empty" aria-hidden="true">
+        
+      </div>
+    </li><li class="nav-menu-item">
+      <a class="nav-menu-parent has-menu nav0" role="menuitem" id="nav.initiatives" aria-haspopup="menu" aria-expanded="false" tabindex="0">
+        <span class="nav-menu-parent-text">Initiatives</span>
+      <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/plus-icon.png" class="plus-icon"></a>
+      <div class="nav-menu-children" aria-hidden="true">
+        <ul role="menu" aria-labelledby="nav.initiatives">
+          <li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-inclusiveDesign" href="https://phet.colorado.edu/en/inclusive-design">
+            <span class="nav-menu-child-text">Inclusive Design</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-phetGlobal" href="https://phet.colorado.edu/en/phet-global">
+            <span class="nav-menu-child-text">PhET Global</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-deibInStemEd" href="https://phet.colorado.edu/en/deib-in-stem-ed">
+            <span class="nav-menu-child-text">DEIB in STEM Ed</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-sceneryStackOse" href="https://phet.colorado.edu/en/scenerystack-ose">
+            <span class="nav-menu-child-text">SceneryStack OSE</span></a></li><li class="nav-menu-children-item">
+            <a class="nav-menu-child" role="menuitem" tabindex="-1" id="nav-location-nav-phetImpact" href="https://phet.colorado.edu/publications/PhET_Impact_Report_2024.pdf">
+            <span class="nav-menu-child-text">Impact Report</span></a></li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+</nav>
+          <div id="search" role="search">
+            <div class="search-toggle-container">
+<button id="search-toggle-button" aria-haspopup="menu" aria-expanded="false" aria-label="Search" tabindex="0">
+  <svg id="search-icon" style="display: block;" viewBox="-1 -1 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle id="search-circle" class="search-shape" cx="30" cy="30" r="29"></circle>
+    <line id="search-line" class="search-shape" x1="75" y1="75" x2="50" y2="50"></line>
+  </svg>
+  <svg id="x-icon" style="display: none;" viewBox="-1 -1 100 100" xmlns="http://www.w3.org/2000/svg">
+    <line class="search-shape" x1="75" y1="75" x2="25" y2="25"></line>
+    <line class="search-shape" x1="75" y1="25" x2="25" y2="75"></line>
+  </svg>
+</button>
+</div>
+            <div id="search-container-desktop" class="search-hidden" aria-hidden="true"><div id="page-nav-search" role="search" class="page-header-search">
+  <form method="get" id="search-form" class="autocompleteOff" action="https://phet.colorado.edu/en/search" autocomplete="off">
+    <div id="search-form-container">
+      <label for="search-text-id" class="hidden">
+        Search the PhET Website
+      </label>
+      <div class="search-box">
+        <input type="text" size="15" name="q" class="always-enabled acInput" id="search-text-id" tabindex="-1" placeholder="Search...">
+        <button type="submit" form="search-form" id="search-submit" class="always-enabled autocompleteOff" tabindex="-1" title="Click here to search the PhET website" autocomplete="off">
+          <img id="magnifying-glass" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/search-icon.png" alt="Search">
+        </button>
+      </div>
+    </div>
+  </form>
+</div></div>
+          </div>
+          <div id="user-menu" class="ltr">
+            <div>
+  <div id="loginout-list-parent">
+    <div id="sign-in-placeholder" style="display: none;">
+
+      <div class="login-toggle">
+        <button role="button" class="login-button loading">
+          <svg class="user-icon loading" version="1.1" id="Layer_1" x="0px" y="0px" width="81px" height="81px" viewBox="0 0 81 81" enable-background="new 0 0 81 81" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="M53.551,66H28.449c-5.418,0-9.057-3.548-9.057-8.827c0-11.339,4.127-17.841,11.325-17.841c0.673,0,1.248,0.382,2.203,1.017
+              c1.672,1.112,4.471,2.971,8.079,2.971s6.407-1.858,8.08-2.971c0.955-0.635,1.529-1.017,2.202-1.017
+              c7.198,0,11.325,6.502,11.325,17.841C62.607,62.452,58.968,66,53.551,66z M30.528,42.112c-7.268,0.157-8.358,9.483-8.358,15.061
+              c0,3.786,2.347,6.05,6.279,6.05h25.102c3.932,0,6.279-2.264,6.279-6.05c0-5.577-1.091-14.903-8.357-15.061
+              c-0.214,0.108-0.497,0.312-0.854,0.548c-1.809,1.201-5.171,3.437-9.618,3.437s-7.81-2.235-9.617-3.437
+              C31.024,42.424,30.741,42.221,30.528,42.112z M41,40.838c-6.847,0-12.417-5.572-12.417-12.419S34.153,16,41,16
+              s12.417,5.572,12.417,12.419S47.847,40.838,41,40.838z M41,18.777c-5.315,0-9.64,4.324-9.64,9.642c0,5.316,4.324,9.64,9.64,9.64
+              s9.64-4.323,9.64-9.64C50.64,23.102,46.315,18.777,41,18.777z"></path>
+          </g>
+        </svg>
+        </button>
+      </div>
+      <li id="signed-out-placeholder" class="login-link nav-menu-item">
+        <button class="nav-menu-parent" tabindex="0">
+          Sign in / Register
+        </button>
+      </li>
+    </div>
+    <div id="sign-in-button" style="">
+
+      <div class="login-toggle">
+        <button id="login-button" class="login-button" role="button" aria-haspopup="dialog" aria-label="Sign In" title="Sign In" tabindex="0">
+          <svg class="user-icon" version="1.1" id="Layer_1" x="0px" y="0px" width="81px" height="81px" viewBox="0 0 81 81" enable-background="new 0 0 81 81" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="M53.551,66H28.449c-5.418,0-9.057-3.548-9.057-8.827c0-11.339,4.127-17.841,11.325-17.841c0.673,0,1.248,0.382,2.203,1.017
+              c1.672,1.112,4.471,2.971,8.079,2.971s6.407-1.858,8.08-2.971c0.955-0.635,1.529-1.017,2.202-1.017
+              c7.198,0,11.325,6.502,11.325,17.841C62.607,62.452,58.968,66,53.551,66z M30.528,42.112c-7.268,0.157-8.358,9.483-8.358,15.061
+              c0,3.786,2.347,6.05,6.279,6.05h25.102c3.932,0,6.279-2.264,6.279-6.05c0-5.577-1.091-14.903-8.357-15.061
+              c-0.214,0.108-0.497,0.312-0.854,0.548c-1.809,1.201-5.171,3.437-9.618,3.437s-7.81-2.235-9.617-3.437
+              C31.024,42.424,30.741,42.221,30.528,42.112z M41,40.838c-6.847,0-12.417-5.572-12.417-12.419S34.153,16,41,16
+              s12.417,5.572,12.417,12.419S47.847,40.838,41,40.838z M41,18.777c-5.315,0-9.64,4.324-9.64,9.642c0,5.316,4.324,9.64,9.64,9.64
+              s9.64-4.323,9.64-9.64C50.64,23.102,46.315,18.777,41,18.777z"></path>
+          </g>
+        </svg>
+        </button>
+      </div>
+      
+    </div>
+
+    <div id="signed-in-menu" style="display: none">
+      <ul id="signed-in-menubar" role="menubar">
+        <li id="signed-in-menu-item" class="nav-menu-item">
+          <button class="nav-menu-parent has-menu" role="menuitem" aria-expanded="false" aria-haspopup="menu" tabindex="0">
+            <span id="user-menu-label" class="account-text nav-menu-parent-text">
+              My Account
+            </span>
+            <svg class="user-icon active" version="1.1" id="Layer_1" x="0px" y="0px" width="81px" height="81px" viewBox="0 0 81 81" enable-background="new 0 0 81 81" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" aria-labelledby="user-menu-label">
+              <title>
+                My Account
+              </title>
+              <g>
+              <path d="M53.551,66H28.449c-5.418,0-9.057-3.548-9.057-8.827c0-11.339,4.127-17.841,11.325-17.841c0.673,0,1.248,0.382,2.203,1.017
+                c1.672,1.112,4.471,2.971,8.079,2.971s6.407-1.858,8.08-2.971c0.955-0.635,1.529-1.017,2.202-1.017
+                c7.198,0,11.325,6.502,11.325,17.841C62.607,62.452,58.968,66,53.551,66z M30.528,42.112c-7.268,0.157-8.358,9.483-8.358,15.061
+                c0,3.786,2.347,6.05,6.279,6.05h25.102c3.932,0,6.279-2.264,6.279-6.05c0-5.577-1.091-14.903-8.357-15.061
+                c-0.214,0.108-0.497,0.312-0.854,0.548c-1.809,1.201-5.171,3.437-9.618,3.437s-7.81-2.235-9.617-3.437
+                C31.024,42.424,30.741,42.221,30.528,42.112z M41,40.838c-6.847,0-12.417-5.572-12.417-12.419S34.153,16,41,16
+                s12.417,5.572,12.417,12.419S47.847,40.838,41,40.838z M41,18.777c-5.315,0-9.64,4.324-9.64,9.642c0,5.316,4.324,9.64,9.64,9.64
+                s9.64-4.323,9.64-9.64C50.64,23.102,46.315,18.777,41,18.777z"></path>
+              </g>
+            </svg>
+          <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/plus-icon.png" class="plus-icon"></button>
+          <div class="nav-menu-children" id="loginout-list" aria-hidden="true">
+            <ul role="menu" aria-labelledby="user-menu-label">
+
+              <li id="my-bookmarks-link" class="nav-menu-children-item" style="display: none">
+                <a role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" href="https://phet.colorado.edu/en/my-phet/my-bookmarks">
+                  <span class="nav-menu-child-text">
+                    My Bookmarks
+                  </span>
+                </a>
+              </li>
+              <li id="my-contributions-link" class="nav-menu-children-item" style="display: none">
+                <a role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" href="https://phet.colorado.edu/en/my-phet/my-contributions">
+                  <span class="nav-menu-child-text">
+                    My Contributions
+                  </span>
+                </a>
+              </li>
+              <li id="my-presets-link" class="nav-menu-children-item" style="display: none">
+                <a role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" href="https://phet.colorado.edu/en/my-phet/my-presets">
+                  <span class="nav-menu-child-text">
+                    My Presets
+                  </span>
+                </a>
+              </li>
+              <li id="my-license-link" class="nav-menu-children-item" style="display: none">
+                <a role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" href="https://phet.colorado.edu/en/studio/my-license">
+                  <span class="nav-menu-child-text">My License</span>
+                </a>
+              </li>
+
+              <div class="nav-menu-separator">
+                  <!-- Empty by design-->
+              </div>
+
+              
+              
+              <li class="nav-menu-children-item">
+                <a role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" id="edit-profile-link" href="https://phet.colorado.edu/en/edit-profile?dest=%2F">
+                <span class="nav-menu-child-text">
+                  Edit profile
+                </span>
+                </a>
+              </li>
+
+              <div class="nav-menu-separator">
+                <!-- Empty by design-->
+              </div>
+
+              <li class="nav-menu-children-item">
+                <button role="menuitem" tabindex="-1" class="nav-menu-child sign-in-links" onclick="window.logout()">
+                  <span class="nav-menu-child-text">Sign out</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+    <div id="profileUpdateAsk" style="display: none;" class="profile-update-ask">
+      <div class="profile-update-img">
+        <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/Update_profile_popup.png" alt="">
+        <div class="profile-update-title">
+          Time to update!
+        </div>
+      </div>
+
+      <div class="profile-update-right">
+        <div class="profile-update-text">
+          We are working to improve the usability of our website. To support this effort, please update your profile!
+        </div>
+
+        <div class="profile-update-buttons">
+          <div id="profile-update-skip" class="phet-button">
+            Skip for now
+          </div>
+
+          <a class="profile-update-link phet-button" href="https://phet.colorado.edu/en/edit-profile?dest=%2F">
+            Update Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    
+  <li id="signed-out-menuitem" class="login-link nav-menu-item">
+        <button class="nav-menu-parent" id="mobile-login-button" tabindex="0">
+          Sign in / Register
+        </button>
+      </li></div>
+</div>
+            <div style="display:none;">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+</div>
+
+<!--This is a temporary placeholder-->
+<div style="display: none;">
+  
+</div>
+
+<div id="page-content" role="main">
+  
+  
+
+
+
+<link rel="stylesheet" href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/font-awesome.min-4(1).7.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/css2" rel="stylesheet">
+<title data-rh="true"></title><meta data-rh="true" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link data-rh="true" rel="shortcut icon" href="https://phet.colorado.edu/favicon.ico"><link data-rh="true" rel="stylesheet" type="text/css" href="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-app68.css">
+
+<script type="text/javascript">
+  history.scrollRestoration = 'manual';
+</script>
+<div id="app" class="react-app"><div></div><div id="front-page"><div class="hero-image sim-image container"><div class="left"></div><div class="title-text-container"><div class="gradient-container"><h1 class="title-text">Interactive Simulations for Science and Math</h1><div class="float-container"></div><div class="float-container"><a class="play-link" href="https://phet.colorado.edu/en/simulations/browse">EXPLORE OUR SIMS</a></div></div></div><div class="right"></div></div><p class="p sims-delivered background-highlight"><span>Over <span class="number">1.8 billion</span> simulations delivered</span></p><div class="subject-links container"><a class="subject-wrapper physics" href="https://phet.colorado.edu/en/simulations/filter?subjects=physics&amp;type=html"><h3 class="h4 text">Physics</h3><img id="physics-icon" class="subject-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/physics-icon.svg" alt=""></a><a class="subject-wrapper math-and-statistics" href="https://phet.colorado.edu/en/simulations/filter?subjects=math-and-statistics&amp;type=html"><h3 class="h4 text">Math &amp; Statistics</h3><img id="math-and-statistics-icon" class="subject-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/math-and-statistics-icon.svg" alt=""></a><a class="subject-wrapper chemistry" href="https://phet.colorado.edu/en/simulations/filter?subjects=chemistry&amp;type=html"><h3 class="h4 text">Chemistry</h3><img id="chemistry-icon" class="subject-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/chemistry-icon.svg" alt=""></a><a class="subject-wrapper earth-and-space" href="https://phet.colorado.edu/en/simulations/filter?subjects=earth-and-space&amp;type=html"><h3 class="h4 text">Earth &amp; Space</h3><img id="earth-and-space-icon" class="subject-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/earth-and-space-icon.svg" alt=""></a><a class="subject-wrapper biology" href="https://phet.colorado.edu/en/simulations/filter?subjects=biology&amp;type=html"><h3 class="h4 text">Biology</h3><img id="biology-icon" class="subject-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/biology-icon.svg" alt=""></a></div><div class="hero-image teachers-image container"><div class="left"></div><div class="title-text-container"><div class="gradient-container"><h2 class="title-text">Teaching Resources, Activities, and Community</h2><div class="float-container"><p class="p sub-text">Teachers have access to simulation-specific tips and video primers, resources for teaching with simulations, and activities shared by our teacher community.</p></div><div class="float-container"><a class="play-link" href="https://phet.colorado.edu/en/register">Register Now</a></div></div></div><div class="right"></div></div><img id="interact-discover-learn" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/interact-discover-learn.png" alt="INTERACT, DISCOVER, LEARN!"><div class="container background-highlight"><div class="statistics"><p class="p statistic"><span class="number">173</span>interactive simulations<img class="interactive-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/interactive-icon.png" alt=""></p><p class="p statistic"><span class="number">131</span>language translations<img class="interactive-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/languages-icon.png" alt=""></p><p class="p statistic"><span class="number">3611</span>teacher-submitted lessons<img class="interactive-icon" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/lessons-icon.png" alt=""></p></div></div><p class="p what-is-phet"><span>Founded in 2002 by Nobel Laureate Carl Wieman, the PhET Interactive Simulations project at the University of Colorado Boulder creates free interactive math and science simulations. PhET sims are based on extensive education <a href="https://phet.colorado.edu/en/research" class="inline-link">research</a> and engage students through an intuitive, game-like environment where students learn through exploration and discovery.</span></p><div class="hero-image a11y-image container"><div class="left"></div><div class="title-text-container"><div class="gradient-container"><h2 class="title-text">Shouldn't All Students Experience STEM?</h2><div class="float-container"><p class="p sub-text">Learn how we are tackling challenges in STEM education, software development, and assistive technology.</p></div><div class="float-container"><a class="play-link" href="https://phet.colorado.edu/en/simulations/filter?a11yFeatures=accessibility&amp;type=html">EXPLORE ACCESSIBLE SIMS</a></div></div></div><div class="right"></div></div><div class="container"><div class="supporter-callout"><h2 class="h3 supported-by">PhET is supported in part by</h2><p class="random-supporter"><a href="https://www.starboard-solution.com/"><img class="greyscale" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/Starboard_transparent bg.png" alt="Starboard Solution"></a></p><p class="other-supporters"><span>and <a href="https://phet.colorado.edu/en/our-supporters" class="inline-link">other supporters</a>, including educators like you.</span></p></div></div><div class="container"><a class="donate-link" href="https://phet.colorado.edu/en/donate">Donate now</a></div></div></div>
+  <script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("%7B%22meteorRelease%22%3A%22METEOR%403.3%22%2C%22gitCommitHash%22%3A%220edd7ec666d74de66c6ee812ebb9a42bb0bfcaf8%22%2C%22meteorEnv%22%3A%7B%22NODE_ENV%22%3A%22production%22%2C%22TEST_METADATA%22%3A%22%7B%7D%22%7D%2C%22PUBLIC_SETTINGS%22%3A%7B%22meteorOrigin%22%3A%22https%3A%2F%2Fphet.colorado.edu%22%2C%22commonInfoCookie%22%3A%22phet-common-info%22%2C%22backendMode%22%3A%22PRIMARY%22%2C%22directOrigin%22%3A%22https%3A%2F%2Fphet-direct.colorado.edu%22%2C%22CLEVER_ID%22%3A%22de6371c62cab4cc1ae29%22%2C%22shouldShowDemoPages%22%3Afalse%2C%22cybersourceEndpoint%22%3A%22https%3A%2F%2Fsecureacceptance.cybersource.com%2Fpay%22%7D%2C%22debug%22%3Afalse%2C%22ROOT_URL%22%3A%22https%3A%2F%2Fphet.colorado.edu%2F_m%22%2C%22ROOT_URL_PATH_PREFIX%22%3A%22%2F_m%22%2C%22reactFastRefreshEnabled%22%3Atrue%2C%22autoupdate%22%3A%7B%22versions%22%3A%7B%22web.browser%22%3A%7B%22version%22%3A%22f579e287a580a3d07deb1725e5705515e524219e%22%2C%22versionRefreshable%22%3A%22dc3cf27f660f9ed4cf288090e956579d8e3a0688%22%2C%22versionNonRefreshable%22%3A%22f579e287a580a3d07deb1725e5705515e524219e%22%2C%22versionReplaceable%22%3A%22dc3cf27f660f9ed4cf288090e956579d8e3a0688%22%7D%7D%2C%22autoupdateVersion%22%3Anull%2C%22autoupdateVersionRefreshable%22%3Anull%2C%22autoupdateVersionCordova%22%3Anull%2C%22appId%22%3A%221g31nnl1vm0td1ez71tp%22%7D%2C%22appId%22%3A%221g31nnl1vm0td1ez71tp%22%2C%22isModern%22%3Atrue%7D"))</script>
+
+  <script type="text/javascript" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/303cb1551b71ad25f7b6473595b81d509386c7f4.js.다운로드"></script>
+
+
+<script defer="" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;57ed97624d4c401fb934c2dd728ace72&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+  <div>
+
+  
+</div>
+
+  <script type="text/javascript">
+    var placeholderInterval = setInterval( function() {
+      if ( typeof $ !== 'undefined' ) {
+        // Listen for existence of a meteor panel
+        var reactPanel = $( '#app' )[ 0 ];
+
+        // If the meteor panel exists, hide the loading spinner/blocker
+        if ( reactPanel && reactPanel.clientHeight > 200 ) {
+          clearInterval( placeholderInterval );
+          $( '.meteor-blocker' ).remove();
+        }
+      }
+    }, 100 );
+  </script>
+
+  
+  <script type="text/javascript">
+    var cleverInterval = setInterval( function() {
+      if ( typeof $ !== 'undefined' ) {
+        clearInterval( cleverInterval );
+        $( document ).ready( function() {
+          if ( window.location.pathname.includes( "clever" ) ) {
+            window.history.pushState( null, null, "/" );
+          }
+        } );
+      }
+    }, 100 );
+  </script>
+
+
+</div>
+
+<div id="page-footer" class="ltr">
+  <footer>
+    <div class="main-footer">
+      <div class="social-footer">
+  
+    <hr>
+    <div id="social-footer" dir="ltr">
+      <span>
+        <a class="footer-link" href="https://www.facebook.com/pages/PhET-Interactive-Simulations/161503243888932?v=wall" rel="external nofollow" title="Like us on Facebook" aria-label="Like us on Facebook" dir="ltr">
+          <i class="fa fa-facebook"></i>
+        </a>
+      </span><span>
+        <a class="footer-link" href="https://twitter.com/PhETSims" rel="external nofollow" title="Follow us on Twitter" aria-label="Follow us on Twitter" dir="ltr">
+          <i class="fa fa-twitter"></i>
+        </a>
+      </span><span>
+        <a class="footer-link" href="https://www.linkedin.com/company/phet-interactive-simulations" rel="external nofollow" title="LinkedIn" aria-label="LinkedIn" dir="ltr">
+          <i class="fa fa-linkedin"></i>
+        </a>
+      </span><span>
+        <a class="footer-link" href="https://www.instagram.com/phetsims/" rel="external nofollow" title="Follow us on Instagram" aria-label="Follow us on Instagram" dir="ltr">
+          <i class="fa fa-instagram"></i>
+        </a>
+      </span><span>
+        <a class="footer-link" href="https://www.youtube.com/channel/UCMRZ0-ci4ifGBF1bJvrcDRQ" rel="external nofollow" title="Watch us on Youtube" aria-label="Watch us on Youtube" dir="ltr">
+          <i class="fa fa-youtube-play"></i>
+        </a>
+      </span>
+    </div>
+    <hr>
+  
+</div>
+      <div id="footer-nav-links">
+        <div>
+          <a class="floating-link" href="https://phet.colorado.edu/en/about"><span>About PhET</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/about/team"><span>Our Team</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/our-supporters"><span>Our Supporters</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/partnerships"><span>Partnerships</span></a>
+        </div>
+        <div>
+          <a class="floating-link" href="https://phet.colorado.edu/en/simulations/filter?type=html&amp;a11yFeatures=accessibility"><span>Accessibility</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/offline-access"><span>Offline Access</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/help-center/getting-started"><span>Help Center</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/privacy-policy"><span>Privacy Policy</span></a>
+        </div>
+        <div>
+          <a class="floating-link" href="https://phet.colorado.edu/en/about/source-code"><span>Source Code</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/licensing"><span>Licensing</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/for-translators"><span>For Translators</span></a>
+          <a class="floating-link" href="https://phet.colorado.edu/en/about/contact"><span>Contact</span></a>
+        </div>
+      </div>
+      <div class="other-languages">
+        <div class="translation-links">
+  
+    <span class="globe"><i class="fa fa-globe"></i></span>
+
+    <select id="translation-links" name="body:footer:translation-links:translation-links" aria-label="Choose Language">
+<option selected="selected" value="en">English</option>
+<option value="ar_SA">العربية</option>
+<option value="az">Azərbaycanca</option>
+<option value="eu">Euskara</option>
+<option value="be">Беларуская</option>
+<option value="bs">Bosanski</option>
+<option value="zh_CN">简体中文</option>
+<option value="zh_TW">正體中文</option>
+<option value="hr">Hrvatski</option>
+<option value="cs">Česky</option>
+<option value="da">Dansk</option>
+<option value="nl">Nederlands</option>
+<option value="et">Eesti</option>
+<option value="fi">Suomi</option>
+<option value="fr">Français</option>
+<option value="gl">Galego</option>
+<option value="ka">ქართული</option>
+<option value="de">Deutsch</option>
+<option value="el">Ελληνικά</option>
+<option value="gu">અંગ્રેજી</option>
+<option value="hu">Magyar</option>
+<option value="in">Bahasa Indonesia</option>
+<option value="it">Italiano</option>
+<option value="ja">日本語</option>
+<option value="ko">한국어</option>
+<option value="ku">كوردي</option>
+<option value="ku_TR">Kurdî</option>
+<option value="lt">Lietuvių</option>
+<option value="mk">Македонски</option>
+<option value="mr">मराठी</option>
+<option value="mn">Монгол</option>
+<option value="nb">Norsk bokmål</option>
+<option value="nn">Norsk nynorsk</option>
+<option value="fa">فارسی</option>
+<option value="pl">polski</option>
+<option value="pt">Português</option>
+<option value="pt_BR">Português do Brasil</option>
+<option value="ro">Română</option>
+<option value="sr">Српски</option>
+<option value="si">සිංහල</option>
+<option value="sk">Slovensky</option>
+<option value="es">Español</option>
+<option value="es_PE">Español Latinoamérica</option>
+<option value="th">ไทย</option>
+<option value="tr">Türkçe</option>
+<option value="uk">Українська</option>
+<option value="uz">Oʻzbekcha</option>
+<option value="vi">Tiếng Việt</option>
+</select>
+  
+
+  <span style="display: none;">
+      <a href="https://phet.colorado.edu/en/"><span class="current-locale">English</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ar_SA/"><span>العربية</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/az/"><span>Azərbaycanca</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/eu/"><span>Euskara</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/be/"><span>Беларуская</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/bs/"><span>Bosanski</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/zh_CN/"><span>简体中文</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/zh_TW/"><span>正體中文</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/hr/"><span>Hrvatski</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/cs/"><span>Česky</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/da/"><span>Dansk</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/nl/"><span>Nederlands</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/et/"><span>Eesti</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/fi/"><span>Suomi</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/fr/"><span>Français</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/gl/"><span>Galego</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ka/"><span>ქართული</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/de/"><span>Deutsch</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/el/"><span>Ελληνικά</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/gu/"><span>અંગ્રેજી</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/hu/"><span>Magyar</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/in/"><span>Bahasa Indonesia</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/it/"><span>Italiano</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ja/"><span>日本語</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ko/"><span>한국어</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ku/"><span>كوردي</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ku_TR/"><span>Kurdî</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/lt/"><span>Lietuvių</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/mk/"><span>Македонски</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/mr/"><span>मराठी</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/mn/"><span>Монгол</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/nb/"><span>Norsk bokmål</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/nn/"><span>Norsk nynorsk</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/fa/"><span>فارسی</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/pl/"><span>polski</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/pt/"><span>Português</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/pt_BR/"><span>Português do Brasil</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/ro/"><span>Română</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/sr/"><span>Српски</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/si/"><span>සිංහල</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/sk/"><span>Slovensky</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/es/"><span>Español</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/es_PE/"><span>Español Latinoamérica</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/th/"><span>ไทย</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/tr/"><span>Türkçe</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/uk/"><span>Українська</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/uz/"><span>Oʻzbekcha</span></a>
+  </span><span style="display: none;">
+      <a href="https://phet.colorado.edu/vi/"><span>Tiếng Việt</span></a>
+  </span>
+
+  <div style="display: none" id="locale" locale="en"></div>
+
+
+</div>
+        
+      </div>
+
+      <div id="app-badges">
+      <span>
+  <a href="https://apps.apple.com/us/app/phet-simulations/id1134126831" style="text-decoration: none; display: inline-block;">
+    <img style="width: 120px;" alt="Download on the App Store" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/badge.svg">
+  </a>
+</span>
+        <span>
+        <a style="text-decoration: none; display: inline-block;" href="https://play.google.com/store/apps/details?id=edu.colorado.phet.androidApp" aria-label="Get it on Google Play">
+          <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/play_store_badge.png" style="width: 120px;" alt="Google Play Badge"></a>
+      </span>
+      </div>
+
+      <div class="apps-for-schools">
+        <a class="link-button" href="https://phet.colorado.edu/en/apps-for-schools">
+          <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/devices.svg" alt="">
+          <p>Get Apps for Schools</p>
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-highlight-background">
+      <div class="footer-bottom">
+        <div class="left">
+          <table>
+            <tbody><tr>
+              <td class="sponsor">
+                <a href="http://www.moore.org/" rel="external" dir="ltr">
+                  <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/Moore_Foundation_logo_footer-01.png" alt="Moore Foundation" width="100">
+                </a>
+              </td>
+              <td class="sponsor">
+                <a href="http://www.nsf.gov/" rel="external" dir="ltr">
+                  <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/NSF_logo_footer-01.png" alt="National Science Foundation" width="56">
+                </a>
+              </td>
+              <td class="sponsor">
+                <a href="http://www.hewlett.org/" rel="external" dir="ltr">
+                  <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/hewlett-greyscale.svg" alt="Hewlett Foundation" width="100">
+                </a>
+              </td>
+              <td class="sponsor">
+                <a href="https://yidanprize.org/" rel="external" dir="ltr">
+                  <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/yidan-footer.png" alt="Yidan Prize" width="54">
+                </a>
+              </td>
+              <td class="sponsor">
+                <a href="https://mastercardfdn.org/" rel="external" dir="ltr">
+                  <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/mastercard-footer.svg" alt="Mastercard Foundation" width="54">
+                </a>
+              </td>
+            </tr>
+          </tbody></table>
+        </div>
+        <div class="right">
+          <div id="PhET-logo">
+            <a href="https://phet.colorado.edu/">
+              <img src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-logo-trademarked-black.png" alt="PhET Home Page" title="Go to the PhET home page" style="border: none;" width="90" id="phet-logo-main-image">
+            </a>
+          </div>
+          <div class="copyright">
+            <a href="https://phet.colorado.edu/en/licensing">
+              <span>©<span>2025 University of Colorado. </span></span>
+              <br>
+              Some rights reserved.
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!--This section only shows up on IE and tells the user to switch to a real browser-->
+<div id="ie11Blocker">
+  <div class="modal">
+    <p>
+      The PhET website does not support your browser. We recommend using the latest version of Chrome, Firefox, Safari, or Edge.
+    </p>
+    <button id="ie11Blocker-close">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <script>
+    document.getElementById( 'ie11Blocker' ).addEventListener( 'click', function() {
+      document.getElementById( 'ie11Blocker' ).style.display = 'none';
+    } );
+  </script>
+</div>
+
+<script type="text/javascript" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/jquery-3.3.1.min.js.다운로드"></script>
+<script type="text/javascript" src="./PhET_ Free online physics, chemistry, biology, earth science and math simulations_files/phet-v63-min.js.다운로드" async="true"></script>
+
+
+
+<dialog aria-label="Sign In" class="phet-modal-dialog"></dialog><veepn-intro-offer><template shadowrootmode="open"><style>html{box-sizing:border-box;text-size-adjust:100%;word-break:normal;-moz-tab-size:4;tab-size:4}*,:before,:after{background-repeat:no-repeat;box-sizing:border-box}:before,:after{text-decoration:inherit;vertical-align:inherit}*{padding:0;margin:0}hr{overflow:visible;height:0;color:inherit;border:0;border-top:1px solid}details,main{display:block}summary{display:list-item}small{font-size:80%}[hidden]{display:none!important}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}a{background-color:transparent}a:active,a:hover{outline-width:0}code,kbd,pre,samp{font-family:monospace}pre{font-size:1em}b,strong{font-weight:bolder}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-color:inherit;text-indent:0}iframe{border-style:none}input{border-radius:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;-moz-appearance:textfield;appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none;-moz-appearance:none;appearance:none}textarea{overflow:auto;resize:vertical}button,input,optgroup,select,textarea{font:inherit;color:inherit}optgroup{font-weight:700}button{overflow:visible}button,select{text-transform:none}button,[type=button],[type=reset],[type=submit],[role=button]{cursor:pointer}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button;-moz-appearance:button;appearance:button}button,input,select,textarea{background-color:transparent;border-style:none}button:-moz-focusring,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{outline:1px dotted ButtonText}select{-webkit-appearance:none;-moz-appearance:none;appearance:none}a:focus,button:focus,input:focus,select:focus,textarea:focus{outline-width:0}select::-ms-expand{display:none}select::-ms-value{color:currentcolor}legend{border:0;color:inherit;display:table;white-space:normal;max-width:100%}::-webkit-file-upload-button{-webkit-appearance:button;-moz-appearance:button;appearance:button;color:inherit;font:inherit}[disabled]{cursor:default}img{border-style:none}progress{vertical-align:baseline}[aria-busy=true]{cursor:progress}[aria-controls]{cursor:pointer}[aria-disabled=true]{cursor:default}ul,ol{list-style-type:none}figure{margin:0}@keyframes slide-in{0%{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}.offer-popup{font-family:FigtreeVF,sans-serif;position:fixed;right:16px;bottom:16px;z-index:2147483638;width:327px;border-radius:12px;overflow:hidden;background-color:#fff;box-shadow:0 0 16px #293a5333;animation:slide-in .3s ease-in-out forwards}.offer-popup__close{position:absolute;top:8px;right:8px;z-index:1;width:24px;height:24px;cursor:pointer;opacity:.5}.offer-popup__header{background:radial-gradient(50.52% 128.47% at 50.15% 128.47%,#23abff,#3066ff);padding:24px 24px 12px}.offer-popup__title{font-weight:700;font-size:20px;line-height:28px;text-align:center;color:#fff;margin:0}.offer-popup__main{padding:24px 20px 32px}.offer-popup__subtitle{color:#293a53;font-size:22px;line-height:32px;text-align:center;margin:0 0 24px}.offer-popup__subtitle span{color:#f70}.offer-popup__list{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.offer-popup__item{display:flex;flex-direction:column;align-items:center;row-gap:6px;text-align:center;color:#293a53;font-size:16px;line-height:24px}.offer-popup__icon{margin:0;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:12px;background-color:#ebefff}.offer-popup__footer{padding:0 20px 20px;display:flex;flex-direction:column;row-gap:16px}.offer-popup__submit{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;height:40px;border-radius:12px;padding-inline:16px;background-color:#f70;color:#fff;cursor:pointer}.offer-popup__cancel{display:flex;align-items:center;justify-content:center;font-weight:400;font-size:14px;color:#82829c;cursor:pointer}</style></template><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-intro-offer><div class="acResults" style="display: none; position: absolute;"></div></body></html>

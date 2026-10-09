@@ -1,0 +1,1118 @@
+/*! environment-debug.js bundle */
+(function() {
+	var _global = this||(1,eval)('this');
+	$env = _global.$env||{};		/* Define global $env if not already defined */
+	$env.builds = $env.builds||{};
+	if (!$env.builds['environment']) {			/* Multiple-load protection */
+		$env.builds['environment'] = 1758731615956;
+		$env.built = 1758731620458;
+		$env.toString = function() { return 'Kjs core, built: ' + new Date(this.built); };
+	}
+	if ($env.resource) $env.resource('environment-debug.js', {intact: false, loaded: (+new Date())});
+}).call((function() {return this;})());
+
+/*! boot.fw.js */
+/*
+ *	Framework static configuration - installation-specific settings
+ *  Used both server-side and client-side
+ *  This configuration should never change per installation.
+ */
+ /*
+	Framework and host configuration properties are specified here.
+	This is intended to be the very first script loaded in either server-side
+	or client-side code that uses KJS.
+	This establishes the working environment for KJS, providing a global
+	environment block ($env) and initialization queue mechanism.
+	Any killswitch module should be loaded immediately after this - or define
+	queue killswitches in here (in $env.qSwitch) to prevent queues from
+	firing. Note that this only works with $env queues and will not affect
+	third-party queues such as google ads or google DFP.
+	To suspend a queue, provide its name with the value false:
+
+		$env.qSwitch = {
+			'Kjs': false,
+			'bv': false
+		}
+
+*/
+// ===== CANNOT CONTAIN NODEJS CODE (like require())! =====
+/* global $env:true */
+(function() {
+	var _global = this||(1,eval)('this');				// Reference the global object
+	$env = _global.$env||{};							// Define global $env if not already defined
+	$env.multiple = ($env.$ns) ? !!$env.$ns : false;	// Detect if environment is already loaded
+	if ($env.multiple) return;							// Abort if multiple load
+
+	$env.$global = _global;				// Reference to global object
+	$env.$config = true;				// Mark this $env definition as the framework config
+	// Framework static configuration - namespace
+	$env.namespace = 'Kjs';				// Top-level namespace name
+	$env.core = 'Kohls';				// Core framework identifier
+	$env.useGlobals = true;				// Define global namespace, $env and convenient globals
+	// Framework static configuration - utility
+	$env.idPrefix = 'K';				// Default ID prefix
+	$env.zBase = 100000;				// Baseine z-order index
+	// $env.noTerminal = true;				// TVR config to prevent converting string representation of values like booleans, numbers, null & undefined
+	$env.bodyClass = 'kjs';				// Class name to apply to body tag
+
+	// Client side
+	$env.topLoad = ($env.topLoad !== false);	// Everything is top-loaded by default
+
+	// Registries
+	$env.s = {};						// Attachment point for strings
+	$env.qSwitch = $env.qSwitch||{};	// $env queue disable switches
+	$env.module = {};					// Namespace to hang module public namespaces on
+	$env.tpl = {};						// Namespace to hang template properties on
+	$env.packages = $env.packages||{};	// Dependency manager map
+	$env.messages = {};					// Static messages
+/*
+	//[*] Experimental - Dependency Manager - TODO - REMOVE
+	$env.addMap = function(bundleMap) {
+		$env.packages.extend(true, bundleMap);
+	};
+*/
+
+	// Special start-up custom callbacks...
+
+	// Boot initializtion - called by boot.env.js
+	/* global googletag: false */
+	/* Removed to accommodate [SBB-2150]
+	$env.$boot = function($env) {
+		if (!$env.serverSide) { // Browser environment init
+			//[MOT-175] + others - refresh pubads if late loaded
+			//[WPE-676] Revised to defer polling loop until after $ready, plus additional check
+			// Polling loop does not begin until after $ready.
+			//googletag.cmd.push(function() {
+				$env('Kjs', function() {
+					if (!Kjs.isNode) {
+						$ready(function _$ready_google_refresh($) {
+							// Poll every ~50ms for up to ~1 minute
+							Kjs._(1200, function() {
+								var isReady = !!googletag.pubadsReady, done;
+								if (isReady && $('#kohls-ad-wallpaper').length == 0 && $('#dfp_top_ad div').length == 0) {
+									googletag.pubads().refresh();
+									done = true;
+								}
+								return !!done;
+							}, 50);
+						}, {isAfterReady: true});
+					}
+				});
+			//});
+		} // Else NodeJS environment init
+	};
+	*/
+
+	// Callback in case framework is loaded twice
+	$env.$multipleLoad = function($env) {
+		$env('Kjs', function() {
+			Kjs.log.warn({msg: 'msgMultipleEnv', count: $env.$loadCount});
+		});
+	};
+}).call((function() {return this;})());
+
+// ----- End of boot.fw.js -----
+
+/*! boot.env.js */
+/*
+ * Genesis script for ground-floor bootstrap script
+ * Used both server-side and client-side
+ * Author: Bill Hubbard
+ */
+/*
+	UPDATE:
+	This script is to be loaded immediately following host configuration.
+
+	This script is intended to be loaded before ANYTHING ELSE defines $env. If $env gets defined
+	prior to this script loading, the original definition of $env will be found in $env.$conflict
+	after this script loads. If the original $env is an object, all of its own properties will be
+	applied to the new $env.
+
+	This script is used in both NodeJS server-side and client-side code.
+ */
+/*
+	UPDATE:
+	Host configuration can be loaded prior to fw.boot.js.
+	Host or a computed configuration can specify $env.qSwitch[queueName] = false to
+	prevent a queue from running, if it has not yet run already. If the queue has
+	already run, it will prevent any further execution.
+	If a queue is disabled, and later enabled, it will need to be run manually after
+	enabling it.
+		$env.qSwitch[queueName] = true;
+		$env(queueName);
+*/
+/*
+	[SBM-325] - https://sites.google.com/a/kohls.com/framework-analysis/framework/genesis-script
+
+	The following "genesis" script establishes some fundamental definitions prior to
+	loading any framework, third-party or other scripts. Mostly, these consist of
+	queueing mechanisms, implemented either by third-party APIs, or KJS, to support
+	asynchronous script loading in the startup & initialization process.
+	More detailed information can be found on the Framework Analysis site pages,
+	under (https://sites.google.com/a/kohls.com/framework-analysis/third-party-scripts)
+	particularly under the "Late Loading" and "Bazaarvoice" topics.
+
+	The JavaScript definitions provided here will exist on the page whether the page
+	uses the corresponding features or not. They typically consist of very minimal code
+	(usually a couple of variables), with the exception of the $env definition, which is
+	a generic queueing mechanism that can be used by *any* scripts.
+
+	Typically, there will be no checks in here for what page is loading, unless there is
+	some specific reason to hide any features on a page. The idea behind this code is to
+	guarantee the presence of certain (usually third-party) constructs that can be used
+	by any script to queue up operations that will take place when the corresponding
+	API is loaded. By having this on the page, guaranteed, any scripts using the queues
+	will never throw an exception when making the call, and if the corresponding API
+	never loads (whether it is disabled, or due to some other problem), the queued operations
+	will simply never fire. Thus, coding requirements are simplified, developers face less
+	of a burden, and the overall code (theoretically) becomes more manageable.
+
+	Client-side:
+	KEEP IN MIND THIS CODE MUST BE NATIVE JAVASCRIPT ONLY, AS NO FRAMEWORK OR OTHER
+	SCRIPTS HAVE LOADED PRIOR TO THIS POINT! So, no jQuery or KJS calls.
+
+	Server-side:
+	Require this before anything else in KJS Node module.
+
+	$env has a single invocation block without any additional methods, as $env
+	properties should not be functions, as per recommendation.
+*/
+/* eslint no-console:0 */
+/* global ttMETA:true */
+(function() {
+	var
+		// Reference the global object
+		_global = this||(1,eval)('this'),
+
+		//----- The following is for KJS $env global environment block -----
+
+		// Refer to any existing $env object
+		_env = _global.$env
+	;
+
+	// Protect against potential repeated load
+	_env.$loadCount = (_env.$loadCount||0) + 1;
+	if (_env.$loadCount > 1) {
+		// This is a multiple load
+		_env.multiple = true;
+		if (typeof _env.$multipleLoad == 'function') {
+			_env.$multipleLoad(_env);
+		}
+		return;	// Go no further
+	}
+
+	var
+		// Asynchronously run all the functions in the specified queue.
+		// Once run, the queue is tagged so that any future call to add
+		// a function to the queue triggers another run, immediately.
+		_run = function(q, immediate) {
+			var
+				ns = (_env||_$env||{}).$ns||{},
+				errModule = ns.errors||{},
+				err = errModule.exec,
+//				log = ns.log,
+				run = function() {
+//					if (log) log.info('A $env queue began with '+q.length+' entries.');
+					var entry, ftn, opt;
+					q.$t = 0;			// Indicate timer is no longer running
+					while (q.length) {
+						entry = q.shift();
+						ftn = entry.ftn;
+						if (err) {
+							opt = entry.opt||{};
+							opt.info = (opt.info||'Genesis queue') + ' ($env.q:' + q.$name + ')';
+							// Leverage KJS error wrapper if KJS is present
+							if (err) err(function _$err_environment() {
+								ftn.call(q);
+							}, opt);
+						} else {
+							// Else use a basic try-catch
+							try {
+								ftn.call(q);
+							} catch(e) {
+								if (_global.console) console.error(e);
+							}
+						}
+					}
+					// Queue reset may be requested before it is run, so check
+					// reset flag after run to clear done flag if requested.
+					q.$done = !q.$reset;	// Mark queue as run if not reset
+					q.$reset = false;		// Clear reset request
+//					if (log) log.info('A $env queue ended');
+				}
+			;
+			// Trigger a run if the timer is not already running
+			if (immediate) {
+				run();
+			} else if (!q.$t) {
+				q.$t = setTimeout(run, 10);
+			}
+		},
+
+		// Adds a callback function to the specified queue
+		// Silently fails if opt is undefined, not an object, or opt.ftn is not a function
+		_add = function(q, opt) {
+			var entry;
+			if (opt && typeof opt == 'object' && typeof opt.ftn == 'function') {
+				entry = {ftn: opt.ftn, opt: opt.exec};
+				if (opt.isLIFO) {
+					q.splice(0,0,entry); // LIFO stack
+				} else {
+					q.push(entry);	// FIFO queue
+				}
+				q.$n = (q.$n||0) + 1;	// Total number of entries made to queue
+				q.$nq = (q.$nq||0) + (q.$done ? 0 : 1);	// Number of entries queued before run
+			}
+		},
+
+		// Define the primary function
+		// _$env(qname, ftn); 		- Adds ftn to the named queue
+		// _$env(qname, ftn, opt);	- Queues ftn along with $err.exec options
+		// _$env(qname, {ftn, isLIFO, exec}) - Queues or stacks ftn (depending on isLIFO) along with $err.exec options
+		// _$env(qname);	  		- Executes all the functions in the named queue, asynchronously
+		// _$env(qname, true);		- Executes all the functions in the named queue, synchronously
+		// _$env();		      		- Returns a list of all the named queues that have been defined.
+		_$env = function(qname, ftn, opt) {
+			var
+//				ns = (_env||_$env||{}).$ns||{},
+//				log = ns.log,
+				q
+			;
+			if (qname) {
+				q = _$env.q[qname] = _$env.q[qname]||[];
+				q.$name = qname;	// Redundant if queue already exists
+				// Normalize parameters
+				if (typeof ftn == 'function') {
+					opt = {
+						ftn: ftn,
+						exec: opt
+					};
+				}
+				if (opt && opt.ftn) {
+					_add(q, opt);	// Add function to queue
+				}
+				// Reset may have been requested after queue was run, so check
+				// the reset flag to clear done flag, if set, before proceeding.
+				if (q.$reset) {
+					q.$done = false;
+					q.$reset = false;
+				}
+				// If ftn is undefined or queue has already been run, run it now
+				if (!(_$env.qSwitch[qname] === false) && (!ftn || q.$done || typeof ftn == 'boolean')) {
+//					if (log) log.info('$env queue "'+qname+'" began');
+					_run(q, (ftn === true)); // Pass true only if ftn is boolean true
+				}
+				return {
+					// Provide a method to reset the queue to pending (pre-run) state
+					reset: function() {
+						q.$reset = true;
+					}
+				};
+			} else {
+				q = [];
+				for (var p in _$env.q) q.push(p);
+				return q;
+			}
+		}
+	;
+
+	//----- $env global environment block init -----
+
+	// Check if configuration is present
+	if (!_env || (typeof _env == 'object' && !_env.$config)) {
+		if (_global.console) console.error('BOOT: No framework configuration was provided!');
+	}
+
+	// Define the queue namespace
+	_$env.q = {};
+
+	// Copy any properties from any pre-existing $env object definition.
+	// No properties are copied if existing $env is a function.
+	if (typeof _env == 'object') {
+		for (var p in (_env||{})) if (_env.hasOwnProperty(p)) {
+			_$env[p] = _env[p];
+		}
+		// Remove original block if it is framework configuration
+		if (_env.$config) {
+			_env = undefined;
+		}
+	}
+
+	// Define resource registry registrar
+	// props.key = registry key, only if url is undefined or empty
+	// props.type = resource type, only if url is undefined or empty - 'js' by default if props.key is specified
+	_$env.resource = function(url, props) {
+		var
+			fileName, type, key, resource
+		;
+		if (url) {
+			fileName = url.split('/').pop().split('?')[0];
+			type = fileName.substring(fileName.lastIndexOf('.')+1);
+			if (type == 'js') {
+				key = fileName.replace(/-debug\.js$/,'.js');
+			} else if (type == 'css') {
+				key = fileName.replace(/-debug\.css$/,'.css');
+			}
+		} else {
+			key = props.key;
+			type = props.type||((key) ? 'js' : 'unknown');
+		}
+		resource = _$env.resource.list[key]||{
+			type: type,
+			url: url||key,
+			t: (+new Date())
+		};
+		_$env.resource.list[key] = Kjs.extend(resource, props);
+		return resource;
+	};
+
+	_$env.resource.list = {};
+
+	_$env.$conflict = _env;	// Capture any pre-existing non-config $env
+
+//		_$env.qSwitch = _$env.qSwitch||{};
+
+	// (re-)define global $env as the primary function
+	_global.$env = _$env;
+
+	//----- Third-party constructs -----
+	// The constructs here will not function server-side as there is
+	// no third-party script load, but it won't hurt anything, and will
+	// prevent errors if other legacy third-party calls make their way
+	// into server-side scripts.
+
+	// Some vars to assist with code minification
+	var
+		googletag = 'googletag',
+		_googCsa = '_googCsa'
+	;
+
+	//----- Google APIs -----
+	// DFP support
+	googletag = _global[googletag] = _global[googletag] || {};
+	googletag.cmd = googletag.cmd || [];
+
+	// AdSense support
+	_global[_googCsa] = _global[_googCsa] || function _$env_googcsa() {
+		(_global[_googCsa].q = _global[_googCsa].q || []).push(arguments);
+	};
+	_global[_googCsa].t = 1 * new Date;
+
+/* Proposed. Problem is, some polling loops merely check for the presence of ttMETA
+	//----- Adobe Target mbox listener -----
+	ttMETA = [];
+	ttMETA.push = function(x) {
+		Array.prototype.push.call(ttMETA, x);
+		if (_global.$msg && x.mbox) $msg.mustSend(x.mbox, x);
+	};
+*/
+
+	// KJS boot
+
+	// Call $boot function if defined
+	if (typeof _$env.$boot == 'function') {
+		_$env.$boot(_$env);
+		delete _$env.$boot;
+	}
+
+	// Check for BlueTriangle synthetic environment
+	if (_global.document) {
+		(function() {
+			try {
+				var cookies = _global.document.cookie.split('; '), i, vals;
+				for (i = 0; (vals = cookies[i] && cookies[i].split('=')); i++) {
+					if (vals.shift() == 'kjsBTDebug') {
+						_$env.kjsBTDebug = vals.shift();
+						if (+_$env.kjsBTDebug) {
+							$env(_$env.namespace, function() {
+								var d1 = document.createElement('div');
+								d1.setAttribute('id', 'kjsBTDebug');
+								d1.setAttribute('class', 'KJS-BT-Debug');
+								d1.setAttribute('style', 'position:fixed;top:0;right:0;border:1px solid #cccccc;padding:2px 5px;z-index:100000;background-color:#ffffff;');
+								var d2 = document.createElement('div');
+								var txt = document.createTextNode('ENVIRONMENT LOADED');
+								d2.appendChild(txt);
+								d1.appendChild(d2);
+								document.body.append(d1);
+							});
+						}
+					}
+				}
+			} catch(e) {
+				_$env($env.namespace, function() {
+					Kjs.log.warn('boot.env.js: Failed to create container for displaying data in UI in BlueTriangle synthetic environment');
+				});
+			}
+		})();
+	}
+
+}).call((function() {return this;})());
+
+// ----- End of boot.env.js -----
+
+/*! boot.guts.js v2.2.1 + revisions */
+/* Here until we get unit tests to ensure fw.guts.js works
+ * Main module for simple-guts package.
+ * Innermost primary atomic structures to form the basis for a larger
+ * utility library. This can be implemented either client-side or server-side.
+ * Precursor to the ScriptEase framework.
+ *
+ * Author: Bill Hubbard
+ */
+
+// NOTE: Some changes have been made here that are not part of v2.2.1.
+// Some changes are reflected in fw.guts.js.
+
+// NOTE: This file is included with a legacy browser script bundle, so do not
+// add any require calls or other Node-specific code in here.
+
+/*
+ * Methods & properties provided:
+ *	  - guts.global
+ *	  - guts.emptyFn
+ *	  - guts.extend
+ *	  - guts.descend
+ *	  - guts.drain
+ *	  - guts.object
+ *	  - guts.bind
+ *	  - guts.bindEx
+ *	  - guts.bindEvent
+ *	  - guts.bindF
+ *	  - guts._
+ *	  - guts.now
+ */
+
+/*
+	Configuration properties are defined on $env global object:
+		namespace - Name of the namespace that this library will create.
+					If useGlobals is true, a global namespace will be created
+					(the namespace is returned from this module)
+		core - Arbitrary string value to identify the library where this is
+				used (default = "NS")
+		useGlobals - Specify true to create global namespace and convenient
+					globals, including $env. Otherwise, no globals are defined.
+		retainTimers - Specify true to preserve expired timers in timer registry
+		jQuery - (reserved) Gets defined if jQuery is present
+
+	Module now returns a function that must be called to create the utility API.
+	Configuration options can be provided as a parameter to this function, rather
+	than via global $env environment block.
+	See demo.js in demo/ directory.
+*/
+
+// Create the top namespace if it doesn't already exist
+(function _guts() { // The closing brace is at the end of this file
+'use strict';
+	var
+		_global = this||(1,eval)('this'),	// Reference the global object
+		_$env = _global.$env||{},			// Refer to existing global $env or new object if undefined
+		NS = _$env.$ns						// Reference to top-level namespace, if multiple load
+	;
+
+	// Multiple load protection
+	// Server-side, this module will not execute twice, so only need to check if NS is
+	// already defined, here, for client-side execution.
+	if (NS) return;
+
+	var
+		_noDOM = !_global.document,
+
+		// Determine if this is a node environment
+		_isNode = Object.prototype.toString.call(_global.process) == '[object process]',
+
+		// Convenient references - helps with minification
+		_slice = Array.prototype.slice,
+		_setTimeout = _global.setTimeout,
+		_typObject = 'object',
+		_typNumber = 'number',
+		_typBoolean = 'boolean',
+		_typFunction = 'function',
+
+		// NOP function
+		_emptyFn = function _$emptyfn() {},
+
+		// Detect if using IE browser
+		// Will return false if called from server-side code (a la NodeJS)
+		// Detects if using a certain version of IE or below, up to and including Windows 10.
+		// If _msie('le 10') == false, then the browser is standards-compliant, or is not IE, or is IE11 or above.
+		// If _msie('ge 11') == true, then the browser is IE11 or above (currently, there is no 'le 11' test)
+		// Call _msie() with no parameters to test if the current browser is IE (any version, including 11).
+		// Edge is considered a non-IE browser, so is not checked.
+		// Browser sniffing is used to determine browser, while feature detection is used to determine version, up to IE10,
+		// so this code is dependent on the userAgent string for IE detection.
+		_msie = (function() {
+			var
+				rmsie = /(msie) ([\w.]+)/,
+				msie = (_noDOM) ? '' : rmsie.exec(navigator.userAgent.toLowerCase())||[],
+				// Check if IE11 or above
+				rie11up = /(rv\:[\w.]+)/,
+				isIE11 = (_noDOM) ? false : !!_global.MSInputMethodContext && !!document.documentMode,
+				ie11up = (_noDOM) ? false : !!rie11up.exec(navigator.userAgent)
+			;
+			msie = !!msie[1];
+			if (msie) {
+				msie = {};
+				msie['le 5'] = !!(document.all && !document.compatMode);
+				msie['le 6'] = !!(document.all && !window.XMLHttpRequest);
+				msie['le 7'] = !!(document.all && !document.querySelector);
+				msie['le 8'] = !!(document.all && !document.addEventListener);
+				msie['le 9'] = !!(document.all && !window.atob);
+				msie['le 10'] = !!(document.all);
+				msie['eq 11'] = isIE11;
+				msie['ge 11'] = isIE11 || ie11up;
+			}
+			return function(ver) {
+				return (ver) ? (msie && msie[ver]) : (!!msie || ie11up || isIE11);
+			};
+		})(),
+
+		// Extend an object by copying properties from other object(s)
+		// _extend([deep,] targ, obj1, ..., objN)
+		// Deep extend only goes one level deep. This avoids infinite
+		// recursion with circular or self references. Self references
+		// are further avoided, explicitly, in case a source object has a
+		// property that refers to the target object (an unlikely scenario) or itself.
+		// By default, any property having a value other than undefined is considered
+		// to be defined. The $env.extendFalsey flag modifies the expectation of how
+		// properties are applied.
+		// By default, $env.extendFalsey is false, which means a property is applied
+		// to the target if its value is anything other than undefined. This prevents
+		// target properties from getting overwritten in a series of objects that
+		// share property names, and one further down the list is undefined.
+		// If $env.extendFalsey is true, a property is applied only if its value is
+		// NOT falsey. In other words, if the source property is 0, false, null,
+		// undefined, '' or NaN, it is considered undefined. If the target value is
+		// already falsey, it will receive the source property regardless of its value
+		// (hence, "extendFalsey"). This has potential ramifications if 0 or false
+		// are valid values.
+		_extend = function _$extend(targ) {
+			/*jsl:declare _$extend*/
+			var
+				args = _slice.call(arguments, 1),
+				src, prop, deep, sftn,
+				$env = _global.$env||{},
+				isUndefined = function(val1, val2) {
+					return ($env.extendFalsey) ? (!val1 || val2) : (val1 === undefined || val2 !== undefined);
+				}
+			;
+			if (typeof targ == _typBoolean) {
+				deep = targ;
+				targ = args.shift();
+			}
+			targ = targ||{};
+			while (args.length) {
+				src = args.shift();
+				sftn = (typeof src == _typFunction);
+				for (prop in src) if (prop != 'prototype' && ((sftn && src.hasOwnProperty(prop)) || !sftn) && isUndefined(targ[prop], src[prop])) {
+					// For deep extension: Extend target property if applying an object to an object,
+					// otherwise always just do a straight assignment
+					if (deep && typeof src[prop] == _typObject && targ[prop] !== null && src[prop] != targ && src[prop] != src && targ[prop] != src[prop] && targ[prop] != _global) {
+						if (typeof targ[prop] != _typObject) {
+							targ[prop] = (Array.isArray(src[prop])) ? [] : {};
+						}
+						_$extend(targ[prop], src[prop]);	//[*] Only one level deep? YES Pass deep to _$extend? NO
+					} else {
+						targ[prop] = src[prop];
+					}
+				}
+			}
+			return targ;
+		},
+
+		// Like extend, but creates a new object, combining properties from other object(s)
+		// var obj = _descend([deep,] obj1, obj2, ..., objN);
+		_descend = function _$descend(targ) {
+			var
+				deep = (typeof targ == _typBoolean),
+				args0 = deep ? [targ, {}] : [{}],
+				args1 = _slice.call(arguments, deep ? 1 : 0)
+			;
+			return _extend.apply(this, args0.concat(args1));
+		},
+
+		// Strips an object of undefined properties
+		_clean = function _$clean(targ, strings) {
+			if (targ) {
+				Object.keys(targ).forEach(function(key) {
+					if (targ[key] === undefined || (strings && targ[key] === '')) {
+						delete targ[key];
+					}
+				});
+			}
+			return targ;
+		},
+
+		// Remove all properties of an object to preserve any external reference to the object
+		// (to prevent dangling/stale reference).
+		// Note this only removes properties that are native to an object. Properties
+		// inherited through the prototype chain are ignored. This is mainly useful for
+		// pure data objects.
+		_drain = function _$drain(obj) {
+			obj=obj||{};
+			for (var prop in obj) if (obj.hasOwnProperty(prop)) {
+				delete obj[prop];
+			}
+			return obj;
+		},
+
+		// Formally extends an object, through prototype chain, to produce
+		// a new object, with additional properties, if supplied. The properties
+		// of any objects optionally passed in are simply copied (shallow copy) to
+		// the new object. In other words, a prototype chain is not created between
+		// all the objects to finally result in a final object with properties
+		// inherited from the preceding objects. It simply instantiates a new
+		// object using the first object as its prototype, then applies properties from
+		// all other provided objects onto this new object. Applied properties are drawn
+		// from only the native properties of the given objects (no inherited properties are copied).
+		// This is most useful in creating data objects to apply static properties or getter
+		// functions to a prototype data object without disturbing the prototype object.
+		// Note that if you use this on a function, a new OBJECT is created, with
+		// the function as its prototype. The result of calling this cannot be a function.
+		// var obj = _object(base);	// Extends base object
+		// var obj = _object(base[, obj1, obj2, ..., objN]);	// Extends base object and applies native properties of other objects
+		// var obj = _object(deep, base[, obj...]) // Deep extends base object (see _extend)
+		// var obj = _object();
+		_object = function _$object(base) {
+			var args = _slice.call(arguments, 1), deep;
+			if (typeof base == 'boolean') {
+				deep = base;
+				base = args.shift();
+			}
+			function Obj() {}
+			Obj.prototype = base||{};
+			if (deep) {
+				return _extend.apply(this, [true, new Obj()].concat(args));
+			} else {
+				return _extend.apply(this, [new Obj()].concat(args));
+			}
+		},
+
+		// ----- Event management (bindings) -----
+		//[*] May be replaced by super binding
+
+		// Binds a function to the context of an object
+		// Calling signature: guts.bind( context, ftn[, arguments] );
+		_bind = function _bind(context, fn) {
+			var args = _slice.call(arguments, 2);
+			return function _$bind() {
+				// return fn.apply(context, _slice.call(arguments).concat(args));
+				return fn.apply(context, args.concat(_slice.call(arguments)));
+			};
+		},
+
+		// Binds a function to the context of an object, passing in the context
+		// of the invocation as the first parameter to the target function
+		_bindEx = function _bindex(context, fn) {
+			var args = _slice.call(arguments, 2);
+			return function _$bindEx() {
+				return fn.apply(context, [this].concat(args, _slice.call(arguments)));
+			};
+		},
+
+		// Binds a function to an object as an event handler
+		// The only difference between this and bind is that the event object is passed as the first parameter to method
+		// Calling signature: guts.bindEvent( obj, ftn[, arguments] );
+		// Receiving function signature: function ftn(event[, bindArgs][, callArgs]) and this==obj
+		_bindEvent = function _bindevent(context, fn) {
+			var args = _slice.call(arguments, 2);
+			return function _$bindEvent(event) {
+				if (_msie() && (!event||!event.currentTarget)) {
+					return fn.apply(context, [_global.event].concat(args, _slice.call(arguments)));
+				} else {
+					return fn.apply(context, [event].concat(args, _slice.call(arguments, 1)));
+				}
+			};
+		},
+
+		// Essentially bindEventEx, in a sense (combining bindEvent with bindEx)
+		// except the context of the handler is the same as the context of the
+		// invocation, and a different context object is passed in as the first
+		// parameter, which has an event property that refers to the event object.
+		//[*] Example please
+		_bindProxy = function _bindproxy(context, fn) {
+			var args = _slice.call(arguments, 2);
+			return function _$bindProxy(event) {
+				if (_msie() && (!event||!event.currentTarget)) {
+					_global.event.stopPropagation();
+					return fn.apply(this, [_object(context, {event: _global.event})].concat(args, _slice.call(arguments)));
+				} else {
+					if (event.stopPropagation) event.stopPropagation();  //[*] Maybe make this configurable
+					return fn.apply(this, [_object(context, {event: event})].concat(args, _slice.call(arguments, 1)));
+				}
+			};
+		},
+
+		// Binds a function to another function.
+		// Sometimes, you have a callback and you want to do something before that callback
+		// gets invoked, at the time the callback gets invoked. Or, you might want to conditionally
+		// prevent the callback from getting invoked.
+		// That's where _bindF comes in. It allows you to bind a callback to a function so the
+		// callback will get called before the function, when an attempt is made to call the function.
+		// Think of it as an interceptor. Return false from your callback to prevent the original
+		// function from getting called.
+		// var ftn = _bindF(ftn, callback[, args...])
+		// The callback recieves the original function as the first parameter.
+		// Any additional static arguments are passed to the callback, next, followed by any arguments
+		// received in the invocation. The original function gets invoked none the wiser.
+		// If the callback returns an object, it can specify additional arguments to pass along to the bound function.
+		_bindF = function _bindF(ftn, callback) {
+			var bindArgs = _slice.call(arguments, 2);
+			return function _$bindF() {
+				var
+					args = _slice.call(arguments),
+					rtn = callback.apply(this, [ftn].concat(bindArgs, args))
+				;
+				if (ftn && rtn !== false) {
+					if (typeof rtn == 'object') {
+						ftn.apply(rtn.context||this, args.concat(rtn.args||[]));
+					} else {
+						ftn.apply(this, args);
+					}
+				}
+			};
+		},
+
+		// Timer manager
+		// The timer manager API exposes the following:
+		//   nTim = The number of one-shot timers that have been defined since the framework was loaded
+		//   nInt = The number of interval timers that have been defined
+		//   reg = Registry of all timers defined, keyed by JavaScript timer id
+		//   set(opt) = Sets a one-shot or interval timer, depending on opt properties
+		//   clear(t) = Clears a one-shot or interval timer, or all active timers if no timer specified
+		// $env.retainTimers will enable preserving all timers in the timer registry. Otherwise, all
+		// timers will be discarded when complete, as there's no point accumulating these calls in memory.
+		_timers = (function() {
+			var
+				// Data portion of timer manager API
+				_$timers = {
+					nTim: 0,	// Number of timers (one-shot)
+					nInt: 0,	// Number of interval timers
+					reg: {}
+				},
+				// Clears a single timer
+				// Expects a timer manager timer object
+				//   done = for one-shot timer - true indicates _tProxy has been called by the timer, so it will self-clear
+				_clearTimer = function(timer, done) {
+					var wasRunning = !!(timer && !timer.done);
+					if (timer && !timer.done) {
+						if (timer.isInterval) {
+							clearInterval(timer.timer);
+						} else if (!done) {
+							clearTimeout(timer.timer);
+						}
+						timer.done = true;
+						if (!$env.retainTimers) {
+							delete _$timers.reg[timer.timer];
+						}
+					}
+					return wasRunning;
+				},
+				// Clears a specified timer, based on JS timer id, or all timers
+				// if -1 is specified.
+				// Returns true/false if selected timer was running or not
+				// Returns undefined if no specific timer was specified
+				_clear = function(t) {
+					var wasRunning;
+					if (t) {
+						wasRunning = _clearTimer(_$timers.reg[t]);
+					} else if (t == -1) {
+						for (t in _$timers.reg) {
+							_clearTimer(_$timers.reg[t]);
+						}
+					}
+					return wasRunning;
+				},
+				// Timeout handler proxy. Invocation is bound to timer object.
+				_tProxy = function() {
+					var timer = this;
+					if (timer.isInterval) {
+						timer.invocations++;
+						if (timer.ftn(timer.iterations, timer.t) || (timer.iterations && !(--timer.iterations))) {
+							_clearTimer(timer);
+						}
+					} else {
+						timer.ftn();
+						timer.iterations--; // Drop it to zero
+						_clearTimer(timer, true);
+					}
+				},
+				// Sets a timer (one-shot or interval).
+				// opt becomes the timer object and is returned as the function result.
+				// opt may specify:
+				//   t = Timeout value (default = 1 for one-shot, 250 for interval)
+				//   ftn = The function to call on timer tick/timeout
+				//   iterations = 1 for one-shot, 0 for forever interval, n for interval termination count
+				// The resulting timer object may receive the following additional properties upon return or later:
+				//   isInterval = true if iterations is not 1, undefined (falsey) otherwise
+				//   timer = reference to the JavaScript timer (one-shot or interval)
+				//   done = true after one-shot fires, or interval timer is terminated
+				// An interval timer may be terminated if ftn returns a Boolean true value.
+				// An interval timer ftn will receive the remaining iteractions count and the timeout value
+				// in its parameter list. A one-shot timer ftn receives no parameters.
+				_set = function(opt) {
+					var timer = _descend(opt, {done: false});
+					var tProxy = _bind(timer, _tProxy);
+					// Set timer
+					if (timer.iterations == 1) {
+						timer.t = timer.t||1;
+						timer.timer = _setTimeout(tProxy, timer.t);
+						_$timers.nTim++;
+					} else {
+						timer.isInterval = true;
+						timer.t = timer.t||250;
+						timer.invocations = 0;
+						timer.timer = setInterval(tProxy, timer.t);
+						_$timers.nInt++;
+					}
+//					timer.name = timer.ftn.name||('unnamed' + timer.timer);
+					_$timers.reg[timer.timer] = timer;
+					return timer;
+				},
+
+				// One-shot timers are resettable - [*] Make this configurable? opt.resettable = false?
+				// but only if the timer is running (as it may not exist after it is done).
+				// It is actually pseudo-resettable, as the original timer is stopped, and a new timer
+				// is started, so it's not like the same timer keeps running. Now, the other way to
+				// achieve this would be to keep track of the original timeout value, and add that to
+				// the remaining time. So, there would need to be a way to compute elapsed time, which
+				// would require capturing the time when the timer originally started, and update the
+				// start time with every reset. So, you see, the simpler solution is below...
+				_reset = function(t) {
+					var timer = _$timers.reg[t];
+					if (timer && !timer.isInterval) {
+						if (_clearTimer(timer)) {
+							_$timers.nTim--;	// Not really starting a new timer, so uncount it
+							timer = _set(timer);		// before it gets counted again
+						}
+					}
+					return timer;
+				}
+			;
+
+			// Return the timer manager API
+			return _extend(_$timers, {
+				clear: _clear,
+				set: _set,
+				reset: _reset
+			});
+		})(),
+
+
+		// Defered function caller (typically for event handler use).
+		// Calling signature:
+		// guts._([interval,] ftn[, t]);	// Invokes ftn once or every t ms (default t=1 for timeout, t=250 for interval)
+		// Use guts.bind method to pass in a function with parameters.
+		// interval specifies whether the function gets called from an
+		// interval timer instead of a one-time timeout. If ftn() returns
+		// true (a non-falsey value), then interval will stop.
+		// interval is optional.
+		// ftn is a reference to the function to call.
+		// t is an optional delay time (in ms) - default is 1 (simply
+		// ensures ftn will not be invoked until after current event
+		// handler exits) if interval is not specified, or 250 if
+		// interval is true.
+		//   guts._(ftn);	// Invokes ftn after 1ms
+		//   guts._(ftn, 200);	// Invokes ftn after 200ms
+		//   guts._(0, ftn); // Invokes ftn every 250ms (default) until ftn() returns true (if ever)
+		//   guts._(10, ftn); // Invokes ftn every 250ms (default) for 10 invocations or until ftn() returns true
+		//   guts._(0, ftn, 1000); // Invokes ftn every 1s until ftn() returns true (if ever)
+		//   guts._(30, ftn, 1000); // Invokes ftn every 1s for 30 invocations or until ftn() returns true
+		//   guts._(1, ftn); // Same as calling guts._(ftn) - uses setTimeout
+		//   guts._(1, ftn, 200); // Same as calling guts._(ftn, 200) - uses setTimeout
+		// BACKWARD SUPPORT DEPRECATED:
+		//   guts._(true, ftn);	// Invokes ftn every 250ms until ftn() returns true (if ever) (same as guts._(0, ftn))
+		//   guts._(true, ftn, 1000);	// Invokes ftn every 1s until ftn() returns true (same as guts._(0, ftn, 1000))
+		_ = function _$_(iterations, ftn, t) {
+			// Normalize parameters
+			if (iterations === true) iterations = 0;	// Backward support
+			if (typeof iterations != _typNumber) {
+				// Calling signature for timeout _(ftn, t)
+				t = ftn;
+				ftn = iterations;
+				iterations = 1;
+			}
+			var timer = _timers.set({
+				ftn: ftn,
+				iterations: iterations,
+				t: t
+			});
+			// Legacy code expects the JS timer return, so that's what everybody gets.
+			// This can be easily translated to a timer manager timer, by using the
+			// JS timer as the key to _ns.timers.reg[key].
+			// Timer can also be cleared by calling _ns.timers.clear(key).
+			return timer.timer;
+		},
+
+		// Retrieves a timestamp using either performance.now(), if supported,
+		// or (+new Date()).
+		_now = (function() {
+			if (_global.performance && performance.timeOrigin && performance.now) {
+				return function() {
+					var now = performance.now(), orig = new Date(performance.timeOrigin);
+					orig.setMilliseconds(orig.getMilliseconds() + now);
+					return (+orig);
+				};
+			} else {
+				return function() {
+					return (+new Date());
+				};
+			}
+		})(),
+
+		_init = function _$gutsinit(opt) {
+			return (_global.$env||{}).$ns||(function() {
+				var
+					// Reference to global environment block - define block if undefined
+					_$env = _extend(_global.$env, opt),
+
+					// Get name of top-level namespace
+					_nsn = _$env.namespace||'NS',
+
+					// Key property to establish that top-level namespace is official
+					_core = _$env.core||'NS',
+
+					// Get a reference to the top-level namespace, if it exists
+					_ns = _global[_nsn]
+				;
+
+				// Ensure config block has namespace and core defined
+				_$env.namespace = _nsn;
+				_$env.core = _core;
+
+				// Capture any definition of jQuery, if it exists, as
+				// first stage in multiple jQuery instance detection.
+				_$env.jQuery1 = _global.jQuery||_global.$;
+				try { if (!_$env.jQuery1().jquery) delete _$env.jQuery1; } catch(e) { delete _$env.jQuery1; }
+				// Define public API
+				// Extend partial pre-existing guts namespace, if it exists, else create anew.
+				// Note that for new guts namespace, a call to _extend could be avoided by defining the API
+				// object, separately, and return that from an if statement, but there's only a
+				// handful of properties, and it's a one-time operation, and this way saves code,
+				// plus it is consistent with the module pattern, so here it stands. The multiple-load
+				// check was done early, so this won't re-apply anything if a multiple load occurs.
+				_ns = _extend(_ns, {
+					$env: _$env,						// Expose environment configuration block on namespace
+					core: _core,						// Identifies the guts have been defined
+					global: _global,					// Reference to global object
+					noDOM: _noDOM,						// Indicates if no DOM object is defined (i.e. server-side)
+					isNode: _isNode,					// Indicates if in Node.js environment
+					emptyFn: _emptyFn,					// NOP function
+					msie: _msie,						// Indicates if using IE browser & if so, what version
+					extend: _extend,					// Extend objects
+					descend: _descend,					// Descend objects
+					clean: _clean,						// Strips undefined properties from an object
+					drain: _drain,						// Drain objects
+					object: _object,					// Object instantiator
+					timers: _timers,					// Timer registry
+					_: _,								// Defer function call
+					bind: _bind,						// Callback binding
+					bindEx: _bindEx,					// Callback binding with context capture
+					bindEvent: _bindEvent,				// Event binding
+					bindProxy: _bindProxy,				// Binding combining bindEx and bindEvent, essentially
+					bindF: _bindF,						// Function binding
+					now: _now,							// Retrieves timestamp
+					toString: function() { return '[object '+_nsn+']'; }
+				});
+
+				// Define global namespace - becomes global whether on server or client
+				_global[_nsn] = _ns;
+
+				// Generic reference to the top-level namespace
+				_$env.$ns = _ns;
+
+				// Create or reassign $env back to itself
+				_global.$env = _$env;
+
+				// Clean up closure
+				_$env = undefined;
+				_ns = undefined;
+
+				// Return a reference to the namespace
+				return _global.$env.$ns;
+			})();
+		}
+	;
+
+	// Define module for module loader such as NodeJS
+	// if module is an object, is not null, and module.exports is an object... must be NodeJS
+	if (typeof module == _typObject && module && typeof module.exports == _typObject) {
+		module.exports = _init;
+	} else {
+		if (typeof _$env.$api == _typObject) {
+			$env.$api.guts = $env.$api.guts||_init;
+		} else {
+			_init();
+		}
+	}
+
+}).call((function() {return this;})());
+
+// ---- End of boot.guts.js ----
+
+/*! boot.config.js */
+/*
+ *  Installation configuration
+ *  Used both server-side and client-side
+ */
+// ===== CANNOT CONTAIN NODEJS CODE (like require())! =====
+// simple-guts is loaded prior to here, so framework guts can be used (extend, descend, etc.)
+/* global $env:true */
+/* global Kjs, googletag */
+(function() {
+	// Protection against multiple load
+	if ($env.multiple) return;
+
+	// Applies values to properties that are not already defined.
+	// Like setting defaults after the fact.
+	var define = function(env) {
+		Object.keys(env).forEach(function(key) {
+			$env[key] = $env[key]||env[key];
+		});
+	};
+	// Define any properties from early bundle (like plugin)
+	if ($env.$env) {
+		while ($env.$env.length) {
+			define($env.$env.shift());
+		}
+		delete $env.$env;
+	}
+	define({
+		devEnv: true,						// Development environment by default [*] For now
+		// Resource configuration
+		resourceRoot: '/',					// [*] TODO
+		serviceRoot: '/snb/',				// By default
+		jsSubdomainURL: '',					// e.g. 'http://js.kohls.com'		TODO
+		cssSubdomainURL: '',				// e.g. 'http://css.kohls.com'		TODO
+		imageSubdomainURL: '',				// e.g. 'http://images.kohls.com'	TODO
+		htmlSubdomainURL: '', 				// e.g. 'http://js.kohls.com'		TODO
+		jsScriptPath: 'javascript/',		//
+		jsModulePath: 'javascript/deploy/',	//
+		jsLoosePath: 'javascript/',			//[*] TODO
+		htmlFilePath: 'javascript/',		//
+		cssFilePath: 'css/',				//
+		imgFilePath: 'css/images/',			//
+
+		// System-level resources (CSS & templates to load with framework)
+//		fwCss: 'system.css',								// System-level CSS file to be loaded with framework
+//		fwTpl: '${$env.jsModulePath}tpl/tpl.system.js',		// System-level templates to be loaded with framework
+
+		// Client-side concerns
+		reportErrors: false,								// Report captured errors to server [*] TODO
+		modalCSS: 'fancybox/jquery.fancybox-1.3.4.css',		// CSS file used for modal panels
+		modalJS: 'deploy/overlay.js',						// Script used for modal panels
+		expiredSessionUrl: '/common/session_timeout.jsp',	// Default URL for redirecting when session has timed out [*] TODO
+		errorLogApiUrl: '${Kjs.global.location.origin}/uierrorLogging.jsp',	// Default URL for error reporting API [*] TODO
+		googleMapsApiKey: 'AIzaSyBSu56XY0uIviQMa40WAy8MSxsTPSYeJMA', //Default google API key for google maps
+	});
+})();
+
+// ----- End of boot.config.js -----
+
+(function() {
+	var resource = $env.resource('environment-debug.js');
+	var now = (+new Date());
+	resource.loaded = resource.loaded||now;
+	resource.parsed = now;
+	resource.intact = true;
+})();
+// ----- End of environment-debug.js bundle -----

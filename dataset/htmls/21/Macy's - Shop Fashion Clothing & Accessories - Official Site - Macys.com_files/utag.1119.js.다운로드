@@ -1,0 +1,228 @@
+//tealium universal tag - utag.1119 ut4.0.202509241320, Copyright 2025 Tealium.com Inc. All Rights Reserved.
+try{(function(id,loader){var u={"id":id};utag.o[loader].sender[id]=u;if(utag.ut===undefined){utag.ut={};}
+if(utag.ut.loader===undefined){u.loader=function(o){var b,c,l,a=document;if(o.type==="iframe"){b=a.createElement("iframe");o.attrs=o.attrs||{"height":"1","width":"1","style":"display:none"};for(l in utag.loader.GV(o.attrs)){b.setAttribute(l,o.attrs[l]);}b.setAttribute("src",o.src);}else if(o.type=="img"){utag.DB("Attach img: "+o.src);b=new Image();b.src=o.src;return;}else{b=a.createElement("script");b.language="javascript";b.type="text/javascript";b.async=1;b.charset="utf-8";for(l in utag.loader.GV(o.attrs)){b[l]=o.attrs[l];}b.src=o.src;}if(o.id){b.id=o.id};if(typeof o.cb=="function"){if(b.addEventListener){b.addEventListener("load",function(){o.cb()},false);}else{b.onreadystatechange=function(){if(this.readyState=='complete'||this.readyState=='loaded'){this.onreadystatechange=null;o.cb()}};}}l=o.loc||"head";c=a.getElementsByTagName(l)[0];if(c){utag.DB("Attach to "+l+": "+o.src);if(l=="script"){c.parentNode.insertBefore(b,c);}else{c.appendChild(b)}}}}else{u.loader=utag.ut.loader;}
+u.encode=function(a,b){b="";try{b=encodeURIComponent(a)}catch(e){utag.DB(e);}if(b==""){b=escape(a);}return b}
+u.ev={"view":1};u.scriptrequested=false;u.rp=function(a,b){if(typeof a!=="undefined"&&a.indexOf("@@")>0){a=a.replace(/@@([^@]+)@@/g,function(m,d){if(b[d]){return u.encode(b[d]);}else{return"";}});}
+return a;};u.map={};u.extend=[function(a,b){try{if(b['ut.event']=='view'){var d=window.location.host;var doms=['www.macys.com','m.macys.com','auth.macys.com','emails.macys.com','assets.macys.com','www.customerservice-macys.com','l.macys.com','www.macysbackstage.com','stores.macysbackstage.com','www.themarketatmacys.com','customerservice-macys.com'];if(!(doms.includes(d))){if(b['ut.event']=='view'){function waitECID(){if(typeof alloy!=="undefined"){alloy("getIdentity").then(function(result){b.false_page_view="garrett's Test";b.adobe_visitor_id=utag.data.adobe_visitor_id=result.identity.ECID;utag.view(b,null,[1119]);});}else{b.false_page_view="garrett's Test";utag.view(b,null,[1119]);}}
+if(typeof b.adobe_visitor_id=='undefined'){if(typeof alloy!=="object"){setTimeout(waitECID,350);}else{alloy("getIdentity").then(function(result){b.false_page_view="garrett's Test";b.adobe_visitor_id=utag.data.adobe_visitor_id=result.identity.ECID;utag.view(b,null,[1119]);});}
+return false;}}}}}catch(e){utag.DB(e)}},function(a,b){try{if((typeof b['page_type']!='undefined'&&b['page_type']=='order confirmation'&&b['dom.url'].toString().indexOf('checkout/orderconfirmation')<0&&b['device'].toString().toLowerCase()=='PC'.toLowerCase())){window.setTimeout(function(){var style=document.createElement('style');if(window.callForAds===undefined){window.callForAds=true;window.AdsCount=0;}
+style.type='text/css';style.innerHTML='#bv-orderconfirmation-banner-ad { \
+                margin-top: 0.5em; \
+                text-align: center; \
+            } \
+            #div-gpt-ad-macys-orderconfirm-1,#div-gpt-ad-macys-orderconfirm-2{ \
+                background-color: white; \
+                border-bottom: 1px solid #ccc; \
+                margin: 0 auto; \
+                padding: 0.5em 0.5em 1.5em 0.5em; \
+            } \
+            #bv_order_conf_da_2 { \
+              margin-top:25px; \
+            } \
+            div.bv-ad-occontainer { \
+                padding-left: 1em; \
+            } \
+            .headText { \
+                position: relative; \
+                top: -8px; \
+                margin: auto; \
+                font-family: "Macys Sans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif; \
+                font-size: 12px; \
+                line-height: normal; \
+                text-align: center; \
+                color: #959499; \
+            }\
+            #rokt-launcher:not(:empty) {\
+                padding-top:42px; \
+            }';document.getElementsByTagName('head')[0].appendChild(style);window.googletag=window.googletag||{};window.googletag.cmd=window.googletag.cmd||[];var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+(function(){var gads=document.createElement("script");gads.async=true;gads.type="text/javascript";var useSSL="https:"==document.location.protocol;gads.src=(useSSL?"https:":"http:")+"//securepubads.g.doubleclick.net/tag/js/gpt.js";var node=document.getElementsByTagName("script")[0];node.parentNode.insertBefore(gads,node);})();window.BVDISPLAYADS=window.BVDISPLAYADS||{};window.BVDISPLAYADS=(function(){var occontainer=document.querySelector('#rokt-launcher'),containers=[],adFragment,callForAd=(parseInt(window.innerWidth)>1024);if(callForAd&&(window.callForAds)){function createAdContainer(innerNode,id){var elem=document.createElement("div");elem.innerHTML=innerNode;elem.id=id;return elem;}
+containers=[createAdContainer("<div class='bv-ad-occontainer'><div id ='div-gpt-ad-macys-orderconfirm-1'></div><div id='div-gpt-ad-macys-orderconfirm-2'></div></div>","bv-orderconfirmation-banner-ad")];adFragment=document.createDocumentFragment();adFragment.appendChild(containers[0]);document.body.appendChild(adFragment);var bvcontainer=document.querySelector('#bv-orderconfirmation-banner-ad');var siteName=utag.data["tealium_account"]==='macys'?'mcom':'';window.googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/order_confirm/slot1/desktop',[300,250],'div-gpt-ad-macys-orderconfirm-1')
+.addService(googletag.pubads());googletag.pubads().setTargeting('cc',b.order_payment_types).setTargeting('zip',[]).setTargeting('oval',b.order_total)
+.setTargeting('loggedin',utag.data["cp.SignedIn"]).setTargeting('oid',b.order_id).setTargeting('mcmid',adobeVistorId)
+.setTargeting('paytype',b.order_payment_types).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('product_brand_name',b.product_brand_name).setTargeting('product_brand_id',b.product_brand_id).setTargeting('site',siteName);googletag.defineSlot('/22026345640/mcom/order_confirm/slot2/desktop',[300,250],'div-gpt-ad-macys-orderconfirm-2')
+.addService(googletag.pubads());googletag.pubads().setTargeting('cc',b.order_payment_types).setTargeting('zip',[]).setTargeting('oval',b.order_total)
+.setTargeting('loggedin',utag.data["cp.SignedIn"]).setTargeting('oid',b.order_id).setTargeting('mcmid',adobeVistorId)
+.setTargeting('paytype',b.order_payment_types).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('product_brand_name',b.product_brand_name).setTargeting('product_brand_id',b.product_brand_id).setTargeting('site',siteName);googletag.pubads().addEventListener('slotOnload',function(event){addSponsoredLabel(event.slot.getSlotElementId());});googletag.pubads().enableSingleRequest();googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});window.googletag.cmd.push(function(){window.googletag.display('div-gpt-ad-macys-orderconfirm-1');window.googletag.display('div-gpt-ad-macys-orderconfirm-2');});window.googletag.cmd.push(function(){window.googletag.pubads().addEventListener('slotRenderEnded',function(event){window.AdsCount++;if(window.AdsCount===2){try{$(document).trigger('bvOrderConfAd:loaded');}catch(error){document.dispatchEvent(new Event('bvOrderConfAd:loaded'));}
+window.AdsCount=0;}});});if(bvcontainer&&occontainer){occontainer.after(bvcontainer);}
+function addSponsoredLabel(divName){var sponsoredLabel=document.createElement('div');var content=document.createElement('span');content.innerHTML='Ads From Our Sponsors';sponsoredLabel.className='headText';sponsoredLabel.appendChild(content);const googleIframe=document.querySelector('#div-gpt-ad-macys-orderconfirm-1 div[id^="google_ads_iframe_"]');if(divName==='div-gpt-ad-macys-orderconfirm-1'&&googleIframe&&googleIframe.innerHTML!==""){googleIframe.prepend(sponsoredLabel);}}}
+window.callForAds=false;}());},0);}}catch(e){utag.DB(e)}},function(a,b){try{if((typeof b['page_type']!='undefined'&&b['device'].toString().toLowerCase().indexOf('phone'.toLowerCase())>-1&&b['page_type']=='order confirmation'&&b['dom.url'].toString().indexOf('checkout/orderconfirmation')<0)){window.setTimeout(function(){var style=document.createElement('style');if(window.callForAds===undefined){window.callForAds=true;window.AdsCount=0;}
+style.type='text/css';style.innerHTML='#bv-orderconfirmation-banner-ad { \
+                margin: 0.5em auto; \
+                text-align: center; \
+            } \
+            #div-gpt-ad-macys-orderconfirm-1,{ \
+                background-color: white; \
+                border-bottom: 1px solid #ccc; \
+                margin: 0 auto; \
+                padding: 0.5em 0.5em 1.5em 0.5em; \
+            } \
+            #bv_order_conf_da_2 { \
+              margin-top:25px; \
+            } \
+            div.bv-ad-occontainer { \
+                padding-left: 1em; \
+            } \
+            .headText { \
+                position: relative; \
+                top: -8px; \
+                margin: auto; \
+                font-family: "Macys Sans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif; \
+                font-size: 12px; \
+                line-height: normal; \
+                text-align: center; \
+                color: #959499; \
+            }\
+            #rokt-ad-container{\
+                padding-top:20px;\
+            }\
+            #rokt-launcher:not(:empty) {\
+                border-top:solid;\
+                border-color:#C0C0C0\
+            }';document.getElementsByTagName('head')[0].appendChild(style);window.googletag=window.googletag||{};window.googletag.cmd=window.googletag.cmd||[];var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';var decodeString=utag.data["cp.AMCV_8D0867C25245AE650A490D4C%40AdobeOrg"];var siteName=utag.data["tealium_account"]==='macys'?'mcom':'';var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+(function(){var gads=document.createElement("script");gads.async=true;gads.type="text/javascript";var useSSL="https:"==document.location.protocol;gads.src=(useSSL?"https:":"http:")+"//securepubads.g.doubleclick.net/tag/js/gpt.js";var node=document.getElementsByTagName("script")[0];node.parentNode.insertBefore(gads,node);})();window.BVDISPLAYADS=window.BVDISPLAYADS||{};window.BVDISPLAYADS=(function(){var occontainer=document.querySelector('#hl_ord_conf_page_spons_items'),containers=[],adFragment,callForAd=(parseInt(window.innerWidth)<600);if(callForAd&&(window.callForAds)){function createAdContainer(innerNode,id){var elem=document.createElement("div");elem.innerHTML=innerNode;elem.id=id;return elem;}
+containers=[createAdContainer("<div class='bv-ad-occontainer'><div id ='div-gpt-ad-macys-orderconfirm-1'></div></div>","bv-orderconfirmation-banner-ad")];adFragment=document.createDocumentFragment();adFragment.appendChild(containers[0]);document.body.appendChild(adFragment);var bvcontainer=document.querySelector('#bv-orderconfirmation-banner-ad');window.googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/order_confirm/slot1/mweb',[300,250],'div-gpt-ad-macys-orderconfirm-1')
+.addService(googletag.pubads());googletag.pubads().setTargeting('cc',b.order_payment_types).setTargeting('zip',[]).setTargeting('oval',b.order_total)
+.setTargeting('loggedin',utag.data["cp.SignedIn"]).setTargeting('oid',b.order_id).setTargeting('mcmid',adobeVistorId)
+.setTargeting('paytype',b.order_payment_types).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('product_brand_name',b.product_brand_name).setTargeting('product_brand_id',b.product_brand_id).setTargeting('site',siteName);googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().addEventListener('slotOnload',function(event){addSponsoredLabel(event.slot.getSlotElementId());});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});window.googletag.cmd.push(function(){window.googletag.display('div-gpt-ad-macys-orderconfirm-1');});window.googletag.cmd.push(function(){window.googletag.pubads().addEventListener('slotRenderEnded',function(event){window.AdsCount++;if(window.AdsCount===2){try{$(document).trigger('bvOrderConfAd:loaded');}catch(error){document.dispatchEvent(new Event('bvOrderConfAd:loaded'));}
+window.AdsCount=0;}});});if(bvcontainer&&occontainer){occontainer.classList?.remove('large-16');occontainer.classList?.add('large-10');bvcontainer.classList?.add('small-16','columns','large-10');occontainer.before(bvcontainer);}
+function addSponsoredLabel(divName){var sponsoredLabel=document.createElement('div');var content=document.createElement('span');content.innerHTML='Ads From Our Sponsors';sponsoredLabel.className='headText';sponsoredLabel.appendChild(content);const googleIframe=document.querySelector('#'+divName+' div[id^="google_ads_iframe_"]');if(googleIframe&&googleIframe.innerHTML!==""){googleIframe.prepend(sponsoredLabel);}}}
+window.callForAds=false;}());},0);}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='valentines-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='desktop'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='valentines-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='Tablet'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='valentines-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='web'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/valentinesdaygiftguide/midpage/desktop',['fluid',[2480,310],[1240,155]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/valentinesdaygiftguide/bottom/desktop',['fluid',[2480,310],[1240,155]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:100,renderMarginPercent:25,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='valentines-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='phone'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='valentines-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='mew'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/valentinesdaygiftguide/midpage/mweb',['fluid',[710,200]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/valentinesdaygiftguide/bottom/mweb',['fluid',[710,200]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['dom.url'].toString().indexOf('checkout/orderconfirmation')<0&&b['page_type']=='order confirmation'&&b['device'].toString().toLowerCase()=='PC'.toLowerCase())){window.setTimeout(function(){var style=document.createElement('style');if(window.callForAds===undefined){window.callForAds=true;window.AdsCount=0;}
+style.type='text/css';style.innerHTML='#bv-orderconfirmation-banner-ad { \
+                margin-top: 0.5em; \
+                text-align: center; \
+            } \
+            #div-gpt-ad-macys-orderconfirm-1,#div-gpt-ad-macys-orderconfirm-2{ \
+                background-color: white; \
+                border-bottom: 1px solid #ccc; \
+                margin: 0 auto; \
+                padding: 0.5em 0.5em 1.5em 0.5em; \
+            } \
+            #bv_order_conf_da_2 { \
+              margin-top:25px; \
+            } \
+            div.bv-ad-occontainer { \
+                padding-left: 1em; \
+            } \
+            .headText { \
+                position: relative; \
+                top: -8px; \
+                margin: auto; \
+                font-family: "Macys Sans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif; \
+                font-size: 12px; \
+                line-height: normal; \
+                text-align: center; \
+                color: #959499; \
+            }';document.getElementsByTagName('head')[0].appendChild(style);window.googletag=window.googletag||{};window.googletag.cmd=window.googletag.cmd||[];var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+(function(){var gads=document.createElement("script");gads.async=true;gads.type="text/javascript";var useSSL="https:"==document.location.protocol;gads.src=(useSSL?"https:":"http:")+"//securepubads.g.doubleclick.net/tag/js/gpt.js";var node=document.getElementsByTagName("script")[0];node.parentNode.insertBefore(gads,node);})();window.BVDISPLAYADS=window.BVDISPLAYADS||{};window.BVDISPLAYADS=(function(){var occontainer=$('#rc-order-confirmation'),containers=[],adFragment,callForAd=(parseInt(window.innerWidth)>1024);if(typeof($)!='function'){return;}
+if(callForAd&&(window.callForAds)){function createAdContainer(innerNode,id){var elem=document.createElement("div");elem.innerHTML=innerNode;elem.id=id;return elem;}
+containers=[createAdContainer("<div class='bv-ad-occontainer'><div id ='div-gpt-ad-macys-orderconfirm-1'></div><div id='div-gpt-ad-macys-orderconfirm-2'></div></div>","bv-orderconfirmation-banner-ad")];adFragment=document.createDocumentFragment();adFragment.appendChild(containers[0]);document.body.appendChild(adFragment);var bvcontainer=$('#bv-orderconfirmation-banner-ad');var siteName=utag.data["tealium_account"]==='macys'?'mcom':'';window.googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/order_confirm/slot1/desktop',[300,250],'div-gpt-ad-macys-orderconfirm-1')
+.addService(googletag.pubads());googletag.pubads().setTargeting('cc',b.order_payment_types).setTargeting('zip',[]).setTargeting('oval',b.order_total)
+.setTargeting('loggedin',utag.data["cp.SignedIn"]).setTargeting('oid',b.order_id).setTargeting('mcmid',adobeVistorId)
+.setTargeting('paytype',b.order_payment_types).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('product_brand_name',b.product_brand_name).setTargeting('product_brand_id',b.product_brand_id).setTargeting('site',siteName);googletag.defineSlot('/22026345640/mcom/order_confirm/slot2/desktop',[300,250],'div-gpt-ad-macys-orderconfirm-2')
+.addService(googletag.pubads());googletag.pubads().setTargeting('cc',b.order_payment_types).setTargeting('zip',[]).setTargeting('oval',b.order_total)
+.setTargeting('loggedin',utag.data["cp.SignedIn"]).setTargeting('oid',b.order_id).setTargeting('mcmid',adobeVistorId)
+.setTargeting('paytype',b.order_payment_types).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('product_brand_name',b.product_brand_name).setTargeting('product_brand_id',b.product_brand_id).setTargeting('site',siteName);googletag.pubads().addEventListener('slotOnload',function(event){addSponsoredLabel(event.slot.getSlotElementId());});googletag.pubads().enableSingleRequest();googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});window.googletag.cmd.push(function(){window.googletag.display('div-gpt-ad-macys-orderconfirm-1');window.googletag.display('div-gpt-ad-macys-orderconfirm-2');});window.googletag.cmd.push(function(){window.googletag.pubads().addEventListener('slotRenderEnded',function(event){window.AdsCount++;if(window.AdsCount===2){$(document).trigger('bvOrderConfAd:loaded');window.AdsCount=0;}});});if(bvcontainer&&occontainer){if(location.pathname==='/my-checkout'){bvcontainer.addClass('cell large-4 show-for-large');}else{occontainer.removeClass('large-16').addClass('large-10');bvcontainer.addClass('show-for-large-up large-6 columns');}
+occontainer.after(bvcontainer);}
+function addSponsoredLabel(divName){var sponsoredLabel=document.createElement('div');var content=document.createElement('span');content.innerHTML='Ads From Our Sponsors';sponsoredLabel.className='headText';sponsoredLabel.appendChild(content);const googleIframe=document.querySelector('#div-gpt-ad-macys-orderconfirm-1 div[id^="google_ads_iframe_"]');if(divName==='div-gpt-ad-macys-orderconfirm-1'&&googleIframe&&googleIframe.innerHTML!==""){googleIframe.prepend(sponsoredLabel);}}}
+window.callForAds=false;}());},0);}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='desktop'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='Tablet'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='web'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/everydaygiftguide/midpage/desktop',['fluid',[1240,155],[2480,310]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/everydaygiftguide/bottom/desktop',['fluid',[1240,155],[2480,310]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:100,renderMarginPercent:25,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='phone'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='mew'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/everydaygiftguide/midpage/mweb',['fluid',[710,200]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/everydaygiftguide/bottom/mweb',['fluid',[710,200]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='mothers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='phone'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='mothers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='mew'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/mothersdaygiftguide/midpage/mweb',['fluid',[710,200]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/mothersdaygiftguide/bottom/mweb',['fluid',[710,200]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='mothers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='desktop'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='mothers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='tablet'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='mothers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='web'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/mothersdaygiftguide/midpage/desktop',['fluid',[1240,240]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/mothersdaygiftguide/bottom/desktop',['fluid',[1240,240]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:100,renderMarginPercent:25,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='fathers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='phone'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='fathers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='mew'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/fathersdaygiftguide/midpage/mweb',['fluid',[710,200]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/fathersdaygiftguide/bottom/mweb',['fluid',[710,200]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='fathers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='desktop'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='fathers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='tablet'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='fathers-day-gift-guide'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='web'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/fathersdaygiftguide/midpage/desktop',['fluid',[1240,240]],'hgg2020-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/fathersdaygiftguide/bottom/desktop',['fluid',[1240,240]],'hgg2020-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:100,renderMarginPercent:25,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("hgg2020-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit1');});}
+var bottomParentNode=document.getElementById("hgg2020-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('hgg2020-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='back-to-school'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='desktop'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='back-to-school'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='tablet'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='back-to-school'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='web'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/backtoschoolgiftguide/midpage/desktop',['fluid',[1240,240]],'bts2021-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/backtoschoolgiftguide/bottom/desktop',['fluid',[1240,240]],'bts2021-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:100,renderMarginPercent:25,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("bts2021-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('bts2021-GAM-unit1');});}
+var bottomParentNode=document.getElementById("bts2021-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('bts2021-GAM-unit2');});}}());}}catch(e){utag.DB(e)}},function(a,b){try{if((b['page_name'].toString().toLowerCase()=='back-to-school'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='phone'.toLowerCase())||(b['page_name'].toString().toLowerCase()=='back-to-school'.toLowerCase()&&b['page_type'].toString().toLowerCase()=='sitelet'.toLowerCase()&&b['site_type'].toString().toLowerCase()=='mew'.toLowerCase())){(function(){var adobeVistorId='';if(typeof b.adobe_visitor_id!=='undefined')
+{adobeVistorId=b.adobe_visitor_id;}
+var customerId=utag.data["cp.macys_online_guid"]?utag.data["cp.macys_online_guid"]:'';function initilizeGoogleAd(){window.googletag=window.googletag||{cmd:[]};googletag.cmd.push(function(){googletag.defineSlot('/22026345640/mcom/sitelet/backtoschoolgiftguide/midpage/mweb',['fluid',[710,200]],'bts2021-GAM-unit1')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.defineSlot('/22026345640/mcom/sitelet/backtoschoolgiftguide/bottom/mweb',['fluid',[710,200]],'bts2021-GAM-unit2')
+.setTargeting('mcmid',adobeVistorId).setTargeting('cid',customerId).setTargeting('env',utag.data["ut.env"]).setTargeting('site',utag.data["site_name"])
+.addService(googletag.pubads());googletag.pubads().enableLazyLoad({fetchMarginPercent:150,renderMarginPercent:37,});googletag.pubads().collapseEmptyDivs();googletag.pubads().setPublisherProvidedId(adobeVistorId);googletag.enableServices();});}
+function loadScript(){var body=document.getElementsByTagName('body')[0];var script=document.createElement('script');script.type='text/javascript';script.src='https://securepubads.g.doubleclick.net/tag/js/gpt.js';script.async=true;body.appendChild(script);}
+loadScript();initilizeGoogleAd();var parentNode=document.getElementById("bts2021-GAM-unit1");if(parentNode){googletag.cmd.push(function(){googletag.display('bts2021-GAM-unit1');});}
+var bottomParentNode=document.getElementById("bts2021-GAM-unit2");if(bottomParentNode){googletag.cmd.push(function(){googletag.display('bts2021-GAM-unit2');});}}());}}catch(e){utag.DB(e)}}];u.send=function(a,b){if(u.ev[a]||u.ev.all!==undefined){var c,d,e,f;u.data={"qsp_delim":"&"||"&","kvp_delim":"="||"=","qs_delim":"?"||"?","tag_type":"script","base_url":"","secure_base_url":"","static_params":"","cachebust":"disabled","cachevar":""||"_rnd","requestscriptonce":"disabled"};for(c=0;c<u.extend.length;c++){try{d=u.extend[c](a,b);if(d==false)return}catch(e){}};utag.DB("send:1119:EXTENSIONS");utag.DB(b);c=[];for(d in utag.loader.GV(u.map)){if(typeof b[d]!=="undefined"&&b[d]!==""){e=u.map[d].split(",");for(f=0;f<e.length;f++){if(!u.data.hasOwnProperty(e[f])){c.push(e[f]+"##kvp_delim##"+u.encode(b[d]));}
+u.data[e[f]]=b[d];}}}
+if(!u.data.base_url){if(!u.data.secure_base_url){utag.DB("Error: No Base URL or Secure HTTPS Override Provided.");return;}else{u.data.base_url=u.data.secure_base_url;utag.DB("No Base URL provided, using Secure HTTPS Override.");}}
+u.data.secure_base_url=u.data.secure_base_url||u.data.base_url;u.data.url=(location.protocol==="https:"?u.data.secure_base_url:u.data.base_url);if(u.data.url.indexOf("http")!==0&&u.data.url.indexOf("/")!==0){u.data.url=location.protocol+"//"+u.data.url;}
+if(u.data.static_params){c.push(u.data.static_params);}
+var cb_check=new RegExp("(\\"+u.data.qs_delim+"|"+u.data.qsp_delim+")"+u.data.cachevar+"=");if(u.data.cachebust==="enabled"&&!cb_check.test(u.data.url)){c.push([u.data.cachevar,Math.random()].join(u.data.kvp_delim));}
+if(c.length>0){if(u.data.url.indexOf(u.data.qs_delim)<0){u.data.url+=u.data.qs_delim;}else if(u.data.url.indexOf(u.data.qs_delim)!==(u.data.url.length-1)){u.data.url+=u.data.qsp_delim;}}
+u.data.url=u.rp(u.data.url,b)+u.rp(c.join(u.data.qsp_delim),b);u.data.url=u.data.url.replace(/##kvp_delim##/g,u.data.kvp_delim);u.callback=u.callback||function(){};if(u.data.requestscriptonce==="enabled"&&u.data.tag_type==="script"){if(!u.scriptrequested){u.scriptrequested=true;u.loader({"type":u.data.tag_type,"src":u.data.url,"loc":"script","id":"utag_1119","cb":u.callback});}else{u.callback();}}else{u.loader({"type":u.data.tag_type,"src":u.data.url,"loc":"script","id":"utag_1119","cb":u.callback});}
+utag.DB("send:1119:COMPLETE");}};utag.o[loader].loader.LOAD(id);}("1119","macys.main"));}catch(error){utag.DB(error);}

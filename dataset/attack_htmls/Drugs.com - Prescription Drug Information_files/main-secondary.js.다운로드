@@ -1,0 +1,4 @@
+import*as Analytics from"./data/analytics.js";import*as Config from"./config.js";import*as Consent from"./user/consent.js";
+import*as Drug from"./content/drug.js";import*as Load from"./load.js";import*as Log from"./data/log.js";
+import*as Menu from"./content/menu.js";import*as Page from"./content/page.js";import*as User from"./user/user.js";
+Analytics.init(),Config.init(),Consent.init(),Drug.init(),Load.init(),Log.init(),Menu.init(),Page.init(),User.init();

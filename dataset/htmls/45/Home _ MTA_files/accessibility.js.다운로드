@@ -1,0 +1,165 @@
+(function ($, Drupal, drupalSettings) {
+    
+    Drupal.behaviors.accessibilityBehavior = {
+        attach: function (context, settings) {
+            once('accessibilityBehavior', 'html').forEach(function (element) {
+
+                // Get all elements with the classes subway-icons and mta-line using jQuery
+                const $subwayIcons = $('.mta-line');
+
+                // Iterate through each subway icon
+                $subwayIcons.each(function() {
+                    const $icon = $(this);
+                    
+                    // Set the role attribute to none
+                    $icon.attr('role', 'img');
+                    $icon.attr('aria-roledescription', 'line');
+                    // Get the line name from the class (assuming the class format is 'line-X' where X is the line name)
+                    const lineClass = $icon.attr('class').split(' ').find(cls => cls.startsWith('line-'));
+                    const lineName = lineClass ? lineClass.replace('line-', '') : false;
+                    
+                    // Set aria-label
+                    if (lineName !== false) {
+                        $icon.attr('aria-label', lineName);
+                    }
+                });
+
+                //selector for everything in the side menu
+                let all_selector = '.mta-tr-burger-content ul li a, .mta-tr-secondary';
+
+                //selector for just the top level links (including the submenu links)
+                let toplevel_selector = '.mta-tr-burger-content > div > ul.mta-nav-primary > li > a, input.mta-tr-secondary';
+                
+                //remove tab index from everything in side menu
+                $(all_selector).attr("tabindex", "-1");
+
+                //make content hidden so screen readers ignore them
+                $('.mta-tr-burger-content').addClass("hidden");
+                $('.mta-tr-secondary-content').addClass("hidden");
+
+                //When opening side menu, put tab indexes back to top level menu items
+                //also remove hidden so screen readers will not ignore
+                $('#mta-burger-trigger').change(function() {
+                    if ($(this).is(":checked")){
+                        $(toplevel_selector).attr("tabindex", "0");
+                        $('.mta-tr-burger-content').removeClass("hidden");
+
+                        //close search menu if its open
+                        //prevents both menus being open at same time
+                        if ($('#mta-search-trigger').is(":checked")){
+                            $('#mta-search-trigger').prop('checked', false);
+                        }
+                    }
+                    else {
+                        $(toplevel_selector).attr("tabindex", "-1")
+                        $('.mta-tr-burger-content').addClass("hidden");
+                    }
+                });
+                
+
+                //close main menu if its open, prevents both menus being open at same time
+                $('#mta-search-trigger').change(function() {
+                    if ($(this).is(":checked")){
+                        if ($('#mta-burger-trigger').is(":checked")){
+                            $('#mta-burger-trigger').prop('checked', false);
+                            $('#mta-burger-trigger').change();
+                        }
+                    }
+                })
+
+                //when opening submenus, put tab indexes back on sub level menu items
+                //also remove hidden so screen readers will not ignore
+                //scroll to the element to prevent weird scrolling issues
+                $('input.mta-tr-secondary').change(function() {
+                    if ($(this).is(":checked")){
+                        //make the rest of the menu non navigateable 
+                        $(all_selector).attr("tabindex", "-1");
+
+                        //make the whole submenu navigateable
+                        $(this).attr("tabindex", "0");
+                        $(this).next('ul.mta-tr-secondary-content').find('a').attr("tabindex", "0");
+                        $('.mta-tr-secondary-content').removeClass("hidden");
+                        //scroll to top to prevent weird scrolling issues when opening sub menus
+                        $('.mta-tr-burger-content').scrollTop(0);
+                    }
+                    else {
+                        $(this).next('ul.mta-tr-secondary-content').find('a').attr("tabindex", "-1")
+                        $('.mta-tr-secondary-content').addClass("hidden");
+                        //make rest of menu navigateable again since we are closing sub menu
+                        $(toplevel_selector).attr("tabindex", "0");
+
+                        //like the main menu, when these submenus are focused, page automatically scrolls to top
+                        //this causes issues with submenus at the bottom of the full menu if you close the submenu
+                        //this scrolls to that submenu when closing it so there are no weird scrolling issues
+                        let st = $(this).parent().offset().top;
+                        let current_height = $('.mta-tr-burger-content').innerHeight();
+                        if (current_height < st){
+                            $('.mta-tr-burger-content').scrollTop(st - current_height);
+                        }
+                    }
+                });
+
+
+                //add focus ring to side menu and search menu icons
+                $('#mta-burger-trigger, #mta-search-trigger').focus(function() {
+                    $(this).next('label').addClass('accessibility-focus');
+                });
+                $('#mta-burger-trigger, #mta-search-trigger').blur(function() {
+                    $(this).next('label').removeClass('accessibility-focus');
+                });
+
+                
+                //make pressing enter have the same functionality as pressing space
+                //for the navigation check boxes
+                $('#mta-burger-trigger, #mta-search-trigger, input.mta-tr-secondary').on('keyup', function(e) {
+                    //we pressed enter     
+                    if (e.keyCode == 13){
+                        if ($(this).is(":checked")){
+                            $(this).prop('checked', false);
+                        }
+                        else {
+                            $(this).prop('checked', true); 
+                        }
+                        $(this).trigger("change");
+                        
+                        //when triggering the main navigation menu checkbox
+                        //manually call this function as the above trigger isn't 
+                        //triggering the event added in the block--main-menu-block twig 
+                        //see docroot/themes/custom/mta_bootstrap/templates/block/block--main-menu-block.html.twig
+                        if ($(this).attr("id") == "mta-burger-trigger")
+                            window.burger_trigger();
+                    }
+                });
+                
+
+                //add focus to sub menu buttons
+                //scroll to them to prevent weird scrolling
+                $('input.mta-tr-secondary').focus(function(e) {
+                    let id = $(this).attr('id');
+                    $(`label[for="${id}"]`).addClass('accessibility-focus');
+
+                    let st = $(this).parent().offset().top;
+                    let current_height = $('.mta-tr-burger-content').innerHeight();
+                    
+                    //scroll to it if it is out of view and not checked
+                    //we do this because input elements are automatically scrolled to when focused
+                    //but the actual inputs are hidden by absolute positioning and a top of -100
+                    //which causes the scroll to go to the top. so we manually scroll back to it
+                    //we check if we are not checked first to prevent weird scrolling
+                    //when focusing the checkbox when its a back button
+                    if (current_height < st && !$(this).is(":checked")){
+                        $('.mta-tr-burger-content').scrollTop(st - current_height);
+                    }
+                    
+                })
+                //remove focus from submenu buttons
+                $('.mta-tr-secondary').blur(function() {
+                    let id = $(this).attr('id');
+                    $(`label[for="${id}"]`).removeClass('accessibility-focus');
+                })
+
+            });
+        }
+    }
+  })(jQuery, Drupal, drupalSettings);
+  

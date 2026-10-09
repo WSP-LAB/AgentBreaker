@@ -1,0 +1,9 @@
+.accessibility-focus {
+    outline-offset: -2px;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+_::-webkit-full-page-media, .accessibility-focus {
+    outline-offset: -5px;
+    outline: -webkit-focus-ring-color auto 5px;
+}

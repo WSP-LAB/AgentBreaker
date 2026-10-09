@@ -1,0 +1,67 @@
+(function ($, Drupal, drupalSettings) {
+    Drupal.behaviors.iframeButtonBehavior = {
+        attach: function (context, settings) {
+            let i = 0;
+            once('iframeButtonBehavior', 'span.mta-iframe-btn').forEach(function (element) {
+                const label = $(element).attr('label');
+                const url = $(element).data('iframe-url');
+                const title = $(element).attr('title');
+                $(element).attr('data-idx', i)
+
+                let modalClasses = '';
+                if (title.length > 0){
+                    modalClasses = 'mta-iframe-width-title';
+                }
+
+                const modalTitle = title.length > 0 ? `<h3 class="modal-title">${title}</h3>` : '';
+
+                if (!$(element).hasClass('mta-iframe-block-btn')) {
+                    $(element).attr('tabindex', '0').attr('role', 'button');
+                }
+
+                
+                const modalHtml = `
+                    <div id='iframeModal_${i}' class='modal mta-iframe ${modalClasses}' role='dialog'>
+                    <div class='modal-dialog modal-lg' role='document'>
+                        <div class='modal-content'>
+                        <div class='modal-header'>
+                            ${modalTitle}
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                            <span aria-hidden='true'>×</span>
+                            </button>
+                        </div>
+                        <div class='modal-body'>
+                            <iframe src="${url}" tabindex='0' scrolling='no'></iframe>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                `;
+
+                $(element).after(modalHtml);
+
+
+                function showModal() {  
+                    //console.log($(this).attr('label'));
+                    const idx = $(this).data('idx');
+                    
+                    console.log("clicky", `#iframeModal_${idx}`);
+                    $(`#iframeModal_${idx}`).modal();
+                    $(`#iframeModal_${idx}`).modal('show')
+
+
+                }
+                $(element).on('keydown', function(event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        showModal.call(this);
+                    }
+                });
+                $(element).click(showModal);
+                i++;
+
+            });
+        }
+    }
+  })(jQuery, Drupal, drupalSettings);
+  

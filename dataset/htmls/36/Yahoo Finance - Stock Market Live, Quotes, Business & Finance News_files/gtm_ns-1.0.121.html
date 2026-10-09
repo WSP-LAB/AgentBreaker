@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<!-- saved from url=(0108)https://s.yimg.com/jk/gtm/gtm_ns-1.0.121.html?enablePostMessaging=true&id=GTM-MZHBZ632&cat=HPLPVIEW&type=FIN -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <title>gtm_ns</title>
+        <meta http-equiv="Content-Security-Policy" content="default-src &#39;self&#39;;script-src &#39;sha256-cT/+CbCROWqGLpL402W2FOXnOiBONKRE34+gn7/12mo=&#39; www.googletagmanager.com http://www.google.com https://www.googleadservices.com;img-src https://*.rokt.com https://*.ads.linkedin.com www.googletagmanager.com https://events.xg4ken.com https://beacon.krxd.net https://pubads.g.doubleclick.net https://sp.analytics.yahoo.com https://5237.xg4ken.com https://s.amazon-adsystem.com www.google-analytics.com https://*.rfihub.com https://live.rezync.com https://secure.adnxs.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://www.google.com https://trc.taboola.com https://www.facebook.com https://analytics.twitter.com https://t.co/i/adsct https://ad.doubleclick.net https://ext-inv-cdn.presage.io https://adservice.google.com/ https://alb.reddit.com https://beacon.lynx.cognitivlabs.com https://geo.yahoo.com/p https://www.emjcd.com https://pix.pub https://ade.googlesyndication.com https://apps.rokt.com https://analytics.tiktok.com https://tr.snapchat.com https://apps.rokt.com/api/conv https://picture-api.com; frame-src *.fls.doubleclick.net https://www.googletagmanager.com https://td.doubleclick.net https://s.yimg.com https://apps.rokt.com; connect-src https://www.google.com https://googleads.g.doubleclick.net;">
+        <meta http-equiv="Strict-Transport-Security" content="max-age=31536000">
+        <script>(function () {
+    // First, check if "gtm_ns_v2.html" is being requested (instead of "gtm_ns.html")
+    var iframePathname = window.document.location.pathname;
+    var gtmNsV2Pathname = '/jk/gtm/gtm_ns_v2.html';
+    var isGtmNsV2 = iframePathname === gtmNsV2Pathname;
+
+    // Show "gtm_ns_v2.html" deprecated warning if needed
+    if (isGtmNsV2) {
+        console.error('[gtm-wrapper] "gtm_ns_v2.html" is no longer supported');
+        console.error('[gtm-wrapper] please migrate to "gtm_ns.html" as soon as possible');
+        console.error('[gtm-wrapper] skipping execution and exiting immediately');
+        return;
+    }
+
+    // First, check if the post-messaging feature flag is enabled before proceeding
+    // For context, this script is always loaded within the corresponding gtm_ns.html iframe
+    // When the gtm_ns.html iframe is loaded, dynamic state is passed in via query params
+    // Here's an example url: https://s.yimg.com/jk/gtm/gtm_ns.html?id=GTM-NXBPF3Q&cat=bouncelp&u1=...
+    // Those query params can also include feature flags
+    // Here's an example url with post messaging enabled: https://s.yimg.com/jk/gtm/gtm_ns.html?enablePostMessaging=true&...
+    var FEATURE_FLAG_ENABLE_POST_MESSAGING = 'enablePostMessaging';
+    var iframeSearchParams = new URLSearchParams(window.document.location.search);
+    var enablePostMessaging = iframeSearchParams.get(FEATURE_FLAG_ENABLE_POST_MESSAGING) === 'true';
+
+    // If the post messaging feature flag is disabled, we cannot communicate with cmp/privacy and in turn we cannot perform the consent checks
+    // Since we cannot perform the consent checks, log an error and exit immediately here
+    if (!enablePostMessaging) {
+        console.error('[gtm-wrapper] post messaging disabled, exiting immediately');
+        return;
+    }
+
+    /*** The code below will only execute when post-messaging is enabled ***/
+
+    // Validate the gtm id param before proceeding
+    var gtmId = iframeSearchParams.get('id');
+
+    // Exit immediately if a valid gtm id param is not provided
+    if (!gtmId) {
+        console.error('[gtm-wrapper] gtm id param is required, exiting immediately');
+        return;
+    }
+
+    // GTM / Data Layer
+    // Initialize the data layer immediately once the feature flag and gtm id checks pass above
+    // gtm.js will (1) flush the contents of "window.dataLayer" on load and (2) then automatically handle all future changes to "window.dataLayer"
+    // Always push() new data to "window.dataLayer" and never override it via assignment
+    // More info here: https://developers.google.com/tag-platform/tag-manager/datalayer
+    window.dataLayer = window.dataLayer || [];
+
+    // Immediately push the data layer's original location
+    window.dataLayer.push({
+        originalLocation: document.referrer || document.location.origin
+    });
+
+    /*** Constants ***/
+    var POST_MESSAGE_EVENT_TYPE = 'message';
+    var REGION_US = 'US';
+
+    // Consent Info
+    var CONSENT_INFO_EVENT_NAME = 'ycjsEventConsentInfo';
+    var GET_CONSENT_INFO_EVENT_NAME = 'ycjsEventGetConsentInfo';
+
+    // Jurisdiction Info
+    var GET_JURISDICTION_INFO_EVENT_NAME = 'ycjsEventGetJurisdictionInfo';
+    var JURISDICTION_INFO_EVENT_NAME = 'ycjsEventJurisdictionInfo';
+
+    // Sender IDs
+    var SENDER_ID_MARKETING = '_GTM_NS';
+    var SENDER_ID_YCJS = '_YCJS_CONSENTEVENTLISTENER';
+
+    // TCF API
+    var TCF_API_CALL_ID = 'gtm-wrapper-tcf-api-call';
+    var TCF_API_COMMAND = 'getTCData';
+    var TCF_API_VERSION = 2;
+
+    // Vendor IDs
+    var GOOGLE_VENDOR_ID = 755;
+    var VERIZON_MEDIA_VENDOR_ID = 25;
+
+    // Consent Types
+    var REQUIRED_GUCE_CONSENT_TYPES = [
+        'FIRST_PARTY_ADS',
+        'OATH_AS_THIRD_PARTY',
+        'SELL_PERSONAL_INFORMATION'
+    ];
+
+    // Purpose Bits
+    var REQUIRED_PURPOSE_CONSENT_BITS = [1, 2, 3, 4, 7, 10];
+
+    // List of domains allowed to send messages to this iframe
+    // Partial hostname matches are supported to allow for dynamic subdomains
+    // For example, "mail.yahoo.com" will match for "mail.yahoo.com" and "*.mail.yahoo.com"
+    var ALLOWED_DOMAIN_LIST = [
+        'https://apps.rokt.com/',
+        'https://canary-www.aol.com',
+        'https://canary.www.aol.com',
+        'https://currently.att.yahoo.com',
+        'https://dev.checkout.aol.com',
+        'https://dev.subscriptions.yahoo.com',
+        'https://discover.aol.com',
+        'https://finance.yahoo.com',
+        'https://football.fantasysports.yahoo.com',
+        'https://td-fantasy-stage.media.yahoo.com',
+        'https://td-fantasy-trunk.media.yahoo.com',
+        'https://mail.yahoo.com',
+        'https://membership-cdn.s3.amazonaws.com',
+        'https://membership-ycs-cdn.s3.amazonaws.com',
+        'https://qa.subscriptions.aol.com',
+        'https://s.yimg.com',
+        'https://sports.yahoo.com',
+        'https://subscriptions.aol.com',
+        'https://www.aol.ca',
+        'https://www.aol.co.uk',
+        'https://www.aol.com',
+        'https://www.aol.de',
+        'https://www.yahoo.com',
+        'https://www5.yahoo.com',
+        'https://local.sports.yahoo.com',
+        'https://bestball.fantasysports.yahoo.com',
+        'https://challenges.fantasysports.yahoo.com',
+        'https://test-tournament.fantasysports.yahoo.com',
+        'https://profiles.sports.yahoo.com',
+        'https://baseball.fantasysports.yahoo.com',
+        'https://hockey.fantasysports.yahoo.com',
+        'https://basketball.fantasysports.yahoo.com',
+        'https://college.fantasysports.yahoo.com',
+        'https://staging.www.yahoo.com'
+    ];
+
+    /*** State ***/
+    var state = {
+        consentInfoResponse: null,
+        didRunConsentChecks: false,
+        jurisdictionInfoResponse: null,
+        tcfApiResponse: null
+    };
+
+    /*** Helper Functions ***/
+
+    // Safely get nested object properties
+    // path can be an array (eg, ['foo', 'bar', 'baz']) or a period-delimited string (eg, 'foo.bar.baz')
+    var get = function (obj, path = '', defaultValue) {
+        var result = obj;
+        var hasValidPath = Array.isArray(path) || typeof path === 'string';
+
+        // Return default value if a valid path isn't provided
+        if (!hasValidPath) {
+            return defaultValue;
+        }
+
+        // Derive the path keys
+        var keys = Array.isArray(path) ? path : path.split('.');
+
+        for (var i = 0; i < keys.length; i++) {
+            if (result == null || typeof result !== 'object') {
+                return defaultValue;
+            }
+            result = result[keys[i]];
+        }
+
+        return result || defaultValue;
+    };
+
+    // Safely get a value from a Map
+    var getMapValue = function (map, key) {
+        return map && map.get && map.get(key);
+    };
+
+    // Sanitize alphanumeric value
+    var sanitizeValue = function (param) {
+        var alphaNumeric = /^[\w+\-]+$/;
+
+        return alphaNumeric.test(param) ? param : '';
+    };
+
+    // Get URL params object from url string
+    var getUrlParams = (url) => {
+        var params = {};
+        var decodedUrl = decodeURIComponent(url);
+        var urlObj = new URL(decodedUrl);
+
+        // Parse query parameters
+        for (var [key, value] of urlObj.searchParams) {
+            params[key] = value;
+        }
+
+        // Add additional properties
+        params.hostname = urlObj.hostname;
+        params.pathname = urlObj.pathname;
+        params.port = urlObj.port;
+        params.protocol = urlObj.protocol;
+        params.search = urlObj.search;
+
+        return params;
+    };
+
+    // Add the gtm.js script to the page
+    var injectGoogleTagManagerScript = function (gtmId) {
+        console.log(
+            '[gtm-wrapper] injecting gtm.js script and flushing the data layer',
+            window.dataLayer
+        );
+
+        // Note that this code is copy/pasted directly from the GTM docs and should probably not be changed:
+        // Source: https://developers.google.com/tag-platform/devguides/datalayer
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', gtmId);
+    };
+
+    // Add default event to the data layer
+    var addDefaultEventToDataLayer = function () {
+        var iframeUrl = get(window, 'document.location.href');
+        var encodedIframeUrl = encodeURIComponent(iframeUrl);
+        var gtmObj = getUrlParams(encodedIframeUrl);
+        var uniqueOrd = new Date().valueOf();
+
+        // Cat
+        if (gtmObj.cat) {
+            window.dataLayer.push({
+                cat: sanitizeValue(gtmObj.cat)
+            });
+        }
+
+        // Type
+        if (gtmObj.type) {
+            window.dataLayer.push({
+                type: sanitizeValue(gtmObj.type)
+            });
+        }
+
+        // Ord
+        window.dataLayer.push({
+            ord: uniqueOrd
+        });
+
+        // Initialize the u1-u100 variables
+        for (var i = 1; i <= 100; i++) {
+            var key = 'u' + i;
+
+            if (gtmObj[key] !== undefined) {
+                var obj = {};
+
+                obj[key] = sanitizeValue(gtmObj[key]);
+                window.dataLayer.push(obj);
+            }
+        }
+
+        // Default event
+        window.dataLayer.push({
+            event: 'uaevent',
+            eventAction: '',
+            eventCategory: 'default',
+            eventLabel: ''
+        });
+    };
+
+    // Add custom event to the data layer
+    // Note that this is only used for dynamic events that are triggered via post-message after load
+    var addCustomEventToDataLayer = function (eventObj) {
+        var dataGtm = get(eventObj, 'dataGtm');
+        var eventHref = get(eventObj, 'eventHref');
+
+        // Handle invalid dynamic event
+        if (!dataGtm) {
+            console.warn('[gtm-wrapper] invalid event object is required, skipping custom event');
+            return;
+        }
+
+        // Split the gtm string by semi-colon parts
+        var dataGtmObj = (dataGtm || '').split(';');
+
+        if (dataGtmObj[0]) {
+            var elmPair = (dataGtmObj[0] || '').split(':');
+
+            if (elmPair[0]) {
+                window.dataLayer.push({
+                    event: 'eventTracking',
+                    eventAction: sanitizeValue(elmPair[1]),
+                    eventCategory: '',
+                    eventLabel: eventHref
+                });
+            }
+        }
+    };
+
+    // Handle initial and dynamic GTM events
+    // Always push gtm events to data layer
+    // But note that data layer will only flush when gtm.js script is added after all consent checks pass
+    var triggerGtmEvent = function (eventObj) {
+        // Add default event metadata to data layer
+        addDefaultEventToDataLayer();
+
+        // Add custom event metadata to data layer for dynamic events only
+        if (eventObj) {
+            addCustomEventToDataLayer(eventObj);
+        }
+    };
+
+    // Request TCF API data via CMP frame post message
+    var requestTcfApiData = function () {
+        // Construct the TCF API payload
+        var payload = {
+            __tcfapiCall: {
+                callId: TCF_API_CALL_ID,
+                command: TCF_API_COMMAND,
+                parameter: [VERIZON_MEDIA_VENDOR_ID],
+                version: TCF_API_VERSION
+            }
+        };
+
+        // The "gtag_enable_tcf_support" flag enables the IAB Transparency & Consent Framework v2
+        // Source: https://support.google.com/google-ads/answer/10021549
+        window.gtag_enable_tcf_support = true;
+
+        // Message the parent window
+        window.parent.postMessage(payload, '*');
+    };
+
+    // Request consent info from consent js via parent window post message
+    var requestConsentInfo = function () {
+        var payload = {
+            eventName: GET_CONSENT_INFO_EVENT_NAME,
+            metadata: {
+                senderId: SENDER_ID_MARKETING
+            }
+        };
+
+        // Message the parent window
+        window.parent.postMessage(payload, '*');
+    };
+
+    // Request jurisdiction info from consent js via parent window post message
+    var requestJurisdictionInfo = function () {
+        var payload = {
+            eventName: GET_JURISDICTION_INFO_EVENT_NAME,
+            metadata: {
+                senderId: SENDER_ID_MARKETING
+            }
+        };
+
+        // Message the parent window
+        window.parent.postMessage(payload, '*');
+    };
+
+    // Request all required context data to determine consent status
+    var requestConsentContextData = function () {
+        // 1. Request TCF API data
+        requestTcfApiData();
+
+        // 2. Request consent info
+        requestConsentInfo();
+
+        // 3. Request jurisdiction info
+        requestJurisdictionInfo();
+    };
+
+    // Validate that the event is a TCF API event
+    var isTcfApiEvent = function (eventData) {
+        var eventCallId = get(eventData, '__tcfapiReturn.callId');
+
+        return eventCallId === TCF_API_CALL_ID;
+    };
+
+    // Validate that the event is a consent info event
+    var isConsentInfoEvent = function (eventData) {
+        var hasTypeMatch = get(eventData, 'type') === CONSENT_INFO_EVENT_NAME;
+        var hasSenderMatch = get(eventData, 'data.metadata.senderId') === SENDER_ID_YCJS;
+
+        return hasTypeMatch && hasSenderMatch;
+    };
+
+    // Validate that the event is a jurisdiction info event
+    var isJurisdictionInfoEvent = function (eventData) {
+        var hasTypeMatch = get(eventData, 'type') === JURISDICTION_INFO_EVENT_NAME;
+        var hasSenderMatch = get(eventData, 'data.metadata.senderId') === SENDER_ID_YCJS;
+
+        return hasTypeMatch && hasSenderMatch;
+    };
+
+    // Validate that the event is a dynamic tag event
+    var isDynamicTagEvent = function (eventData) {
+        var eventHref = get(eventData, 'eventHref');
+        var iframeSrc = get(eventData, 'iframeSrc');
+        var hasIframeSrc = !!iframeSrc;
+        var hasEventHref = !!eventHref;
+        var eventHrefParams = hasEventHref && getUrlParams(eventHref);
+        var hasPathName = !!get(eventHrefParams, 'pathname');
+
+        return hasIframeSrc && hasEventHref && hasPathName;
+    };
+
+    // Trigger dynamic tag GTM event
+    var handleDynamicTagEvent = function (eventData) {
+        triggerGtmEvent({
+            dataGtm: eventData.dataGtm || '',
+            eventHref: encodeURIComponent(eventData.eventHref)
+        });
+    };
+
+    // Validate that the event is from a valid origin
+    var isValidEventOrigin = function (event) {
+        try {
+            var eventOrigin = get(event, 'origin', '');
+            var eventOriginHostname = new URL(eventOrigin).hostname;
+
+            return ALLOWED_DOMAIN_LIST.some((allowedDomain) => {
+                var allowedDomainHostname = new URL(allowedDomain).hostname;
+                var hasDomainMatch = eventOriginHostname === allowedDomainHostname;
+                var hasSubdomainMatch = eventOriginHostname.endsWith('.' + allowedDomainHostname);
+
+                return hasDomainMatch || hasSubdomainMatch;
+            });
+        } catch (e) {
+            return false;
+        }
+    };
+
+    // Check if we are ready to run the consent checks
+    // To keep things simple, we only execute the consent check logic one time after all required event responses are available
+    // And we need the following responses to run the consent checks: (1) TCF API, (2) Consent Info, and (3) Jurisdiction Info
+    // If the consent checks pass, we can inject the GTM scripts and start pushing the data layer
+    // If the consent checks fail, we (1) should not inject the GTM scripts and (2) should remove all message event listeners
+    var canRunConsentChecks = function () {
+        var hasTcfApiResponse = !!state.tcfApiResponse;
+        var hasConsentInfoResponse = !!state.consentInfoResponse;
+        var hasJurisdictionInfoResponse = !!state.jurisdictionInfoResponse;
+
+        return hasTcfApiResponse && hasConsentInfoResponse && hasJurisdictionInfoResponse;
+    };
+
+    // Validate that the TCF API consent checks passed
+    var didPassTCFConsentChecks = function () {
+        var success = get(state, 'tcfApiResponse.__tcfapiReturn.success');
+        var tcData = get(state, 'tcfApiResponse.__tcfapiReturn.returnValue');
+        var gdprApplies = get(tcData, 'gdprApplies');
+        var vendorConsents = get(tcData, 'vendor.consents');
+
+        // Handle TCF API request failure
+        if (!success || !tcData) {
+            console.warn('[gtm-wrapper] TCF API request failed');
+            return false;
+        }
+
+        // If gdprApplies is not true, we can skip the vendor consent check and return true
+        if (gdprApplies !== true) {
+            console.log('[gtm-wrapper] gdpr does not apply, skipping vendor consent check');
+            return true;
+        }
+
+        // At this point, gdpr aplies and we need to check for vendor consent
+        var hasVerizonMediaVendorConsent = get(vendorConsents, [VERIZON_MEDIA_VENDOR_ID]) === true;
+
+        if (!hasVerizonMediaVendorConsent) {
+            console.warn('[gtm-wrapper] gdpr applies but no vendor consent, consent check failed');
+            return false;
+        }
+
+        return true;
+    };
+
+    // Validate that the consent info consent checks passed
+    var didPassConsentInfoChecks = function () {
+        // Note that "consentTypes" is a Map (not a plain object)
+        var consentTypes = get(state, 'consentInfoResponse.data.consentInfo.consentTypes');
+
+        // If consent types are not available, return false
+        if (!consentTypes) {
+            console.warn('[gtm-wrapper] consent info consent types are missing, check failed');
+            return false;
+        }
+
+        // Iterate over the required consent types and verify each one
+        for (var i = 0; i < REQUIRED_GUCE_CONSENT_TYPES.length; i++) {
+            var requiredConsentType = REQUIRED_GUCE_CONSENT_TYPES[i];
+            var consentTypeValue = getMapValue(consentTypes, requiredConsentType);
+
+            // Handle invalid consent type values
+            if (consentTypeValue !== true) {
+                console.warn(
+                    '[gtm-wrapper] required consent type not granted, consent check failed',
+                    requiredConsentType
+                );
+                return false;
+            }
+        }
+
+        // If all required consent types are available and consents are granted, return true
+        return true;
+    };
+
+    // Validate that the jurisdiction info consent checks passed
+    // Here is the original requirement: "If we are going to run in EMEA, we must check for consent for the IAB TCF "vendor bit" for Google (Google's vendor ID is 755) and IAB TCF "purpose bits" 1, 2, 3, 4, 7, 10."
+    var didPassJurisdictionInfoChecks = function () {
+        var tcData = get(state, 'tcfApiResponse.__tcfapiReturn.returnValue');
+        var vendorConsents = get(tcData, 'vendor.consents');
+        var purposeConsents = get(tcData, 'purpose.consents');
+
+        // TODO: update this logic and add support for proper EMEA jurisdiction when possible
+        // Phase #1: skip the EMEA checks for the US jurisdiction only
+        // Phase #2: add new logic to accurately detect and target all EMEA jurisdictions.
+        var region = get(state, 'jurisdictionInfoResponse.data.jurisdictionInfo.jurisdiction');
+        var formattedRegion = (region || '').toUpperCase();
+        var isUS = formattedRegion === REGION_US;
+
+        // For phase #1, skip the EMEA checks for the US jurisdiction
+        if (isUS) {
+            console.log('[gtm-wrapper] skipping jurisdiction checks for US only');
+            return true;
+        }
+
+        // If vendor or purpose consents are not available, return false
+        if (!vendorConsents || !purposeConsents) {
+            console.warn('[gtm-wrapper] vendor and/or purpose consents are missing, check failed');
+            return false;
+        }
+
+        // 1. Check for Google Vendor ID consent.
+        var hasGoogleVendorConsent = get(vendorConsents, [VERIZON_MEDIA_VENDOR_ID]) === true;
+
+        if (!hasGoogleVendorConsent) {
+            console.warn('[gtm-wrapper] vendor consent for google not granted, check failed');
+            return false;
+        }
+
+        // 2. Check for IAB TCF “purpose bits”
+        for (var i = 0; i < REQUIRED_PURPOSE_CONSENT_BITS.length; i++) {
+            const purposeType = REQUIRED_PURPOSE_CONSENT_BITS[i];
+
+            // Handle invalid purpose consent values
+            if (purposeConsents[purposeType] !== true) {
+                console.warn(
+                    '[gtm-wrapper] purpose consent for bit not granted, check failed',
+                    purposeType
+                );
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    // Validate that all required consent checks passed
+    var didPassAllConsentChecks = function () {
+        // 1. Handle TCF API consent checks
+        var hasValidTCFConsent = didPassTCFConsentChecks();
+
+        if (!hasValidTCFConsent) {
+            console.warn('[gtm-wrapper] TCF consent check failed');
+            return false;
+        }
+
+        // 2. Handle consent info checks
+        var hasValidConsentInfo = didPassConsentInfoChecks();
+
+        if (!hasValidConsentInfo) {
+            console.warn('[gtm-wrapper] consent info consent check failed');
+            return false;
+        }
+
+        // 3. Handle TCF API and jurisdiction info consent checks
+        var hasValidJurisdictionInfo = didPassJurisdictionInfoChecks();
+
+        if (!hasValidJurisdictionInfo) {
+            console.warn('[gtm-wrapper] jurisdiction info consent check failed');
+            return false;
+        }
+
+        return true;
+    };
+
+    // Handle consent checks failure
+    var handleConsentChecksFailure = function () {
+        console.warn('[gtm-wrapper] consent checks failed, beginning teardown');
+
+        // Remove all event listeners immediately when consent checks fail
+        teardownMessageEventListeners();
+    };
+
+    // Handle consent checks success
+    var handleConsentChecksSuccess = function () {
+        console.log('[gtm-wrapper] consent checks passed, injecting gtm.js script');
+
+        // At this point, all required consent checks have passed
+        // Now we can inject the gtm.js script
+        // Once gtm.js is injected, it will (1) flush everything in the current data layer and then (2) automatically handle any future data layer pushes
+        // Remember that we should only inject the gtm.js script once all consent checks are granted and confirmed
+        injectGoogleTagManagerScript(gtmId);
+    };
+
+    // After all required response data is available, run the consent checks and handle both the success and failure cases
+    var runConsentChecks = function () {
+        // Update state flag immediately
+        state.didRunConsentChecks = true;
+
+        // Validate all consent checks
+        var hasAllRequiredConsents = didPassAllConsentChecks();
+
+        // Handle consent checks failure
+        if (!hasAllRequiredConsents) {
+            handleConsentChecksFailure();
+            return;
+        }
+
+        // Handle consent checks success
+        handleConsentChecksSuccess();
+    };
+
+    // Run state change logic after each valid context data response
+    var handleContextDataStateChange = function () {
+        var shouldRunConsentChecks = !state.didRunConsentChecks && canRunConsentChecks();
+
+        // Exit early if we should not run the consent checks yet
+        if (!shouldRunConsentChecks) {
+            return;
+        }
+
+        // Run consent checks when all consent checks are ready
+        // Note that these consent checks will only run once right after all required data is available
+        runConsentChecks();
+    };
+
+    // Handle post message events
+    // Note that we need to handle four different message types here: (1) TCF API, (2) Consent Info, (3) Jurisdiction Info, and (4) Dynamic Tag
+    var handlePostMessageEvent = function (event) {
+        var eventData = event.data || {};
+
+        // 1. Check if origin is valid
+        var hasValidEventOrigin = isValidEventOrigin(event);
+
+        // Handle invalid event origin
+        if (!hasValidEventOrigin) {
+            return;
+        }
+
+        // Handle dynamic tag event and return immediately
+        if (isDynamicTagEvent(eventData)) {
+            console.log('[gtm-wrapper] received dynamic tag event', eventData);
+            handleDynamicTagEvent(eventData);
+            return;
+        }
+
+        // Exit early if we already ran the consent checks
+        if (state.didRunConsentChecks) {
+            console.log('[gtm-wrapper] consent checks already ran, ignoring post message event');
+            return;
+        }
+
+        // Validate and handle TCF API event if needed
+        if (isTcfApiEvent(eventData) && !state.tcfApiResponse) {
+            console.log('[gtm-wrapper] received tcf api event', eventData);
+
+            // Update context data state
+            state.tcfApiResponse = eventData;
+
+            // Run state change logic after each valid context data response
+            handleContextDataStateChange();
+            return;
+        }
+
+        // Validate and handle consent info event if needed
+        if (isConsentInfoEvent(eventData) && !state.consentInfoResponse) {
+            console.log('[gtm-wrapper] received consent info event', eventData);
+
+            // Update context data state
+            state.consentInfoResponse = eventData;
+
+            // Run state change logic after each valid context data response
+            handleContextDataStateChange();
+            return;
+        }
+
+        // Validate and handle jurisdiction info event if needed
+        if (isJurisdictionInfoEvent(eventData) && !state.jurisdictionInfoResponse) {
+            console.log('[gtm-wrapper] received jurisdiction info event', eventData);
+
+            // Update context data state
+            state.jurisdictionInfoResponse = eventData;
+
+            // Run state change logic after each valid context data response
+            handleContextDataStateChange();
+            return;
+        }
+    };
+
+    // Setup window post message events
+    var setupMessageEventListeners = function () {
+        window.addEventListener(POST_MESSAGE_EVENT_TYPE, handlePostMessageEvent);
+    };
+
+    // Remove window post message events
+    var teardownMessageEventListeners = function () {
+        window.removeEventListener(POST_MESSAGE_EVENT_TYPE, handlePostMessageEvent);
+    };
+
+    // Initialize the state machine
+    var init = function () {
+        // Log on init
+        console.log('[gtm-wrapper] initializing...');
+
+        // Setup post message listeners
+        setupMessageEventListeners();
+
+        // Request all context data for consent checks
+        requestConsentContextData();
+
+        // Trigger the initial GTM event immediately
+        triggerGtmEvent();
+        console.log(
+            '[gtm-wrapper] postmessage sent to request consent data. Now waiting for consent data...'
+        );
+    };
+
+    // Run init immediately
+    console.log('[gtm-wrapper] waiting 300ms to start...');
+    setTimeout(init, 300);
+})();
+</script>
+    </head>
+<body>
+</body></html>

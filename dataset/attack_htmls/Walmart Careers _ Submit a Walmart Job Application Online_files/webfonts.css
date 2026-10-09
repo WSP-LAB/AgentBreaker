@@ -1,0 +1,188 @@
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-Regular.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-Regular.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-Regular.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-Regular.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-Regular.svg') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-Regular.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-Regular.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-Regular.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-Regular.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-Regular.svg') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-RegularItalic.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-RegularItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-RegularItalic.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-RegularItalic.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-RegularItalic.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-RegularItalic.svg') format('svg');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-Bold.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-Bold.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-Bold.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-Bold.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-Bold.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-Bold.svg') format('svg');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-BoldItalic.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-BoldItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-BoldItalic.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-BoldItalic.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-BoldItalic.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-BoldItalic.svg') format('svg');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-Black.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-Black.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-Black.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-Black.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-Black.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-Black.svg') format('svg');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bogle';
+  src: url('/fonts/bogle/BogleWeb-BlackItalic.eot');
+  src:
+    url('/fonts/bogle/BogleWeb-BlackItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bogle/BogleWeb-BlackItalic.woff2') format('woff2'),
+    url('/fonts/bogle/BogleWeb-BlackItalic.woff') format('woff'),
+    url('/fonts/bogle/BogleWeb-BlackItalic.ttf') format('truetype'),
+    url('/fonts/bogle/BogleWeb-BlackItalic.svg') format('svg');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bloomfield';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Rg.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Rg.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Rg.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Rg.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bloomfield';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_It.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_It.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_It.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_It.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bloomfield-bold';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Bd.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'bloomfield-bolditalic';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_BdIt.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'bloomfield-thin';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Bd.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Bd.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'bloomfield-thinitalic';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_BdIt.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_BdIt.woff2') format('woff2');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bloomfield-light';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Lt.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Lt.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Lt.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Lt.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'bloomfield-lightitalic';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_LtIt.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_LtIt.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_LtIt.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_LtIt.woff2') format('woff2');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'bloomfield-black';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Blk.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'bloomfield-blackitalic';
+  src:
+    url('/fonts/bloomfield/Bloomfield_A_Blk.ttf') format('truetype'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.woff') format('woff'),
+    url('/fonts/bloomfield/Bloomfield_W_Blk.woff2') format('woff2');
+  font-style: italic;
+}

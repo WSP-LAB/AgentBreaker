@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body marginwidth="0" marginheight="0"><script>
+(function(w,d) {
+    function isSessionStorageAvailable() {
+        try {
+            const testKey = '__storage_test__';
+
+            sessionStorage.setItem(testKey, testKey);
+            sessionStorage.removeItem(testKey);
+
+            return true;
+          } catch (e) {
+            return false;
+          }
+    }
+    function setUserSyncsStatus( userSyncs ) {
+        if (isSessionStorageAvailable()) {
+            let json = JSON.stringify(userSyncs);
+            sessionStorage.setItem('usersyncs', json);
+        } else {
+            console.log('Session Storage is not available.');
+        }
+    }
+    function setUserSyncStatus( userSyncsStatus, userSync, userSyncStatus ) {
+        userSyncsStatus[userSync?.bidder] = userSyncStatus;
+        return userSyncsStatus;
+    }
+    function getUserSyncsStatus() {
+        let userSyncsStatus = {};
+
+        if (isSessionStorageAvailable()) {
+            let json = sessionStorage.getItem('usersyncs') ?? '{}';
+            try {
+                userSyncsStatus = JSON.parse( json );
+            } catch( error ) {
+                console.log( 'Failed to parse usersyncs session storage variable.', error );
+            }
+        } else {
+            console.log('Session Storage is not available.');
+        }
+        return userSyncsStatus;
+
+    }
+    function filterValidUserSyncs( userSyncs, userSyncsStatus ) {
+        userSyncs = userSyncs.filter(function( userSync ) {
+            let userSyncStatus = userSyncsStatus[userSync.bidder] ?? {};
+
+            let valid = (userSyncStatus?.status === undefined ) || ((userSyncStatus?.status != 'synced') && (userSyncStatus?.tries <= 3));
+            
+            return valid;
+        });
+        return userSyncs;
+    }
+    function getUserSyncStatus( userSync, userSyncsStatus ) {
+        let userSyncStatus = userSyncsStatus[userSync?.Bidder] ?? {
+            status: 'initiated',
+            tries: 0
+        };
+        return userSyncStatus;
+    }
+    function randomPop( array ) {
+        let index = Math.floor(Math.random() * array.length);
+        let element = array.splice(index,1)[0];
+        return {
+            element: element,
+            array: array
+        };
+    }
+    function createUserSyncEl( userSync, userSyncStatus, userSyncsStatus ) {
+        let userSyncEl = undefined;
+        if (userSync.type === 'iframe') {
+            userSyncEl = document.createElement('iframe');
+            userSyncEl.frameBorder = 0;
+        } else if (userSync.type === 'redirect') {
+            userSyncEl = document.createElement('img');
+            userSyncEl.style.border = 0;
+        }
+
+        userSyncEl.src = userSync.url;
+        userSyncEl.style.width = '1px';
+        userSyncEl.style.height = '1px';
+        userSyncEl.style.display = 'none';
+
+        let timeout = window.setTimeout(function() {
+            userSyncEl.onload = function() {
+                userSyncStatus.status = 'synced';
+                userSyncsStatus = setUserSyncStatus(userSyncsStatus, userSync, userSyncStatus);
+                setUserSyncsStatus( userSyncsStatus );
+            }
+            userSyncEl.onerror = function() {
+                userSyncStatus.status = 'error';
+                userSyncsStatus = setUserSyncStatus(userSyncsStatus, userSync, userSyncStatus);
+                setUserSyncsStatus( userSyncsStatus );
+            }
+            processUserSyncs(userSyncs, userSyncsStatus);
+        }, 1000);
+
+        userSyncEl.onload = function() {
+            userSyncStatus.status = 'synced';
+            userSyncsStatus = setUserSyncStatus(userSyncsStatus, userSync, userSyncStatus);
+            setUserSyncsStatus( userSyncsStatus );
+
+            window.clearTimeout(timeout);
+
+            processUserSyncs(userSyncs, userSyncsStatus);  
+        };
+
+        userSyncEl.onerror = function() {
+            userSyncStatus.status = 'error';
+            userSyncsStatus = setUserSyncStatus(userSyncsStatus, userSync, userSyncStatus);
+            setUserSyncsStatus( userSyncsStatus );
+
+            clearTimeout(timeout);
+
+            processUserSyncs(userSyncs, userSyncsStatus);
+        };
+        
+        return userSyncEl;
+    }
+    
+    function syncRedirect( syncRedirectUrl ) {
+        let syncRedirectEl = document.createElement('iframe');
+        syncRedirectEl.frameBorder = 0;
+        syncRedirectEl.src = syncRedirectUrl;
+        syncRedirectEl.style.width = '1px';
+        syncRedirectEl.style.height = '1px';
+        syncRedirectEl.style.display = 'none';
+        document.body.appendChild(syncRedirectEl);
+    }
+
+    function processUserSyncs( userSyncs, userSyncsStatus ) {
+        if (userSyncs.length == 0) {
+            let syncRedirectUrl = 'https://server.cpmstar.com:443/usersync.aspx?sync=true&ifr=1&gdpr=0&redirect=https%3A%2F%2Fads.assemblyexchange.com%2Fdoh%2Fingest%3Fpartner%3Dcpmstar%26uid%3D3bc9e9ae-c73e-4ecb-ab13-a17c56a2e191%26property_id%3Dimgur.com%26app_version%3Dweb_0.0.1%26lib_version%3Dweb_5.24.0%26partner_uid%3D%24UID';
+            syncRedirect( syncRedirectUrl );
+            return;
+        }
+
+        let { element, array } = randomPop( userSyncs );
+        let userSync = element;
+        userSyncs = array;
+        let userSyncStatus = getUserSyncStatus( userSync, userSyncsStatus );
+        userSyncStatus.tries += 1;
+        
+        userSyncsStatus = setUserSyncStatus( userSyncsStatus, userSync, userSyncStatus );
+        setUserSyncsStatus( userSyncsStatus );
+
+        let userSyncEl = createUserSyncEl( userSync, userSyncStatus, userSyncsStatus );
+        document.body.appendChild(userSyncEl);
+    }
+
+    let userSyncs = [{"bidder":"rubicon","url":"https://pixel.rubiconproject.com/exchange/sync.php?p=pb_cpm_star&gdpr=0&gdpr_consent=&us_privacy=","type":"redirect"},{"bidder":"unruly","url":"https://sync.1rx.io/usersync2/rmphb?gdpr=0&gdpr_consent=&us_privacy=&redir=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dunruly%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%5BRX_UUID%5D","type":"redirect"},{"bidder":"appnexus","url":"https://ib.adnxs.com/getuid?https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dappnexus%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%24UID","type":"redirect"},{"bidder":"openx","url":"https://u.openx.net/w/1.0/cm?id=891039ac-a916-42bb-a651-4be9e3b201da&ph=a3aece0c-9e80-4316-8deb-faf804779bd1&gdpr=0&gdpr_consent=&r=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dopenx%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%7BOPENX_ID%7D%26f%3Db","type":"iframe"},{"bidder":"richaudience","url":"https://sync.richaudience.com/74889303289e27f327ad0c6de7be7264/?consentString=&r=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Drichaudience%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%5BPDID%5D%26f%3Db","type":"iframe"},{"bidder":"amx","url":"https://prebid.a-mo.net/isyn?gdpr=0&gdpr_consent=&us_privacy=&gpp=&gpp_sid=&s=pbs&cb=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Damx%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%24UID%26f%3Db","type":"iframe"},{"bidder":"33across","url":"https://ssc-cms.33across.com/ps/?m=xch&rt=html&gdpr=0&gdpr_consent=&us_privacy=&ru=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3D33across%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D33XUSERID33X%26f%3Db&id=zzz000000000002zzz","type":"iframe"},{"bidder":"insticator","url":"https://usync.ingage.tech?gdpr=0&gdpr_consent=&us_privacy=&redirect=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dinsticator%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%24UID%26f%3Db","type":"iframe"},{"bidder":"acuityads","url":"https://cs.admanmedia.com/91b2d1b0c802152c3e3aaec91bbb9da0.gif?puid=2199&redir=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dacuityads%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%5BUID%5D&gdpr=0&gdpr_consent=&us_privacy=","type":"redirect"},{"bidder":"sonobi","url":"https://sync.go.sonobi.com/uc.html?gdpr=0&gdpr_consent=&us_privacy=&loc=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dsonobi%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%5BUID%5D%26f%3Db","type":"iframe"},{"bidder":"pubmatic","url":"https://ads.pubmatic.com/AdServer/js/user_sync.html?gdpr=0&gdpr_consent=&us_privacy=&predirect=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dpubmatic%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%26f%3Db","type":"iframe"},{"bidder":"smartadserver","url":"https://ssbsync-global.smartadserver.com/api/sync?callerId=5&gdpr=0&gdpr_consent=&us_privacy=&redirectUri=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dsmartadserver%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%5Bssb_sync_pid%5D","type":"redirect"},{"bidder":"onetag","url":"https://onetag-sys.com/usync/?redir=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Donetag%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%24%7BUSER_TOKEN%7D%26f%3Db&gdpr=0&gdpr_consent=&us_privacy=","type":"iframe"},{"bidder":"conversant","url":"https://prebid-match.dotomi.com/match/bounce/current?version=1&networkId=72582&gdpr=0&gdpr_consent=&us_privacy=&gpp=&gpp_sid=&rurl=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dconversant%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D","type":"redirect"},{"bidder":"improvedigital","url":"https://ad.360yield.com/server_match?gdpr=0&gdpr_consent=&us_privacy=&gpp=&gpp_sid=&r=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dimprovedigital%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%7BPUB_USER_ID%7D","type":"redirect"},{"bidder":"gumgum","url":"https://rtb.gumgum.com/usync/prbds2s?gdpr=0&gdpr_consent=&us_privacy=&r=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dgumgum%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%26f%3Db","type":"iframe"},{"bidder":"sovrn","url":"https://ap.lijit.com/beacon/prebid-server/?gdpr=0&gdpr_consent=&us_privacy=&gpp=&gpp_sid=&url=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dsovrn%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%24UID%26f%3Db","type":"iframe"},{"bidder":"oncore","url":"https://public.servenobid.com/sync.html?gdpr=0&gdpr_consent=&usp_consent=&redirect=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Doncore%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Db%26uid%3D%24UID%26f%3Db","type":"iframe"},{"bidder":"cadentrtb","url":"https://cs.emxdgt.com/um?gdpr=0&gdpr_consent=&us_privacy=&redirect=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dcadentrtb%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%24UID","type":"redirect"},{"bidder":"bidgency","url":"https://srv.bidgx.com/sync?p=cpmstar&redir=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dbidgency%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D","type":"redirect"},{"bidder":"nativo","url":"https://jadserve.postrelease.com/suid/101787?gdpr=0&gdpr_consent=&us_privacy=&ntv_gpp_consent=&ntv_r=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dnativo%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3DNTV_USER_ID","type":"redirect"},{"bidder":"sharethrough","url":"https://match.sharethrough.com/FGMrCMMc/v1?gdpr=0&gdpr_consent=&us_privacy=&gpp=&gpp_sid=&redirectUri=https%3A%2F%2Fserver.cpmstar.com%2Fsetuid.aspx%3Fbidder%3Dsharethrough%26gdpr%3D0%26gdpr_consent%3D%26gpp%3D%26gpp_sid%3D%26f%3Di%26uid%3D%24UID","type":"redirect"}];
+
+    let userSyncsStatus = getUserSyncsStatus();
+
+    userSyncs = filterValidUserSyncs( userSyncs, userSyncsStatus );
+    processUserSyncs(userSyncs, userSyncsStatus);
+}(window,document));
+</script><img src="./getuid" style="border: 0px; width: 1px; height: 1px; display: none;">
+<iframe frameborder="0" src="./uc.html" style="width: 1px; height: 1px; display: none;"></iframe><iframe frameborder="0" src="./saved_resource(8).html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./v1" style="border: 0px; width: 1px; height: 1px; display: none;"><img src="./sync.php" style="border: 0px; width: 1px; height: 1px; display: none;"><img src="./sync" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./user_sync(2).html" style="width: 1px; height: 1px; display: none;"></iframe><iframe frameborder="0" src="./cm(1).html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./101787" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./prbds2s.html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./um" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./saved_resource(9).html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./91b2d1b0c802152c3e3aaec91bbb9da0.gif" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./saved_resource(10).html" style="width: 1px; height: 1px; display: none;"></iframe><iframe frameborder="0" src="./saved_resource(11).html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./server_match" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./saved_resource(12).html" style="width: 1px; height: 1px; display: none;"></iframe><img src="./sync(1)" style="border: 0px; width: 1px; height: 1px; display: none;"><img src="./rmphb" style="border: 0px; width: 1px; height: 1px; display: none;"><img src="./current" style="border: 0px; width: 1px; height: 1px; display: none;"><iframe frameborder="0" src="./isyn.html" style="width: 1px; height: 1px; display: none;"></iframe><iframe frameborder="0" src="./sync.html" style="width: 1px; height: 1px; display: none;"></iframe><iframe frameborder="0" src="./usersync(2).html" style="width: 1px; height: 1px; display: none;"></iframe></body></html>

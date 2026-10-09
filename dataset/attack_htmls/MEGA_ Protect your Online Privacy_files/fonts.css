@@ -1,0 +1,356 @@
+/**
+ * Font-face declarations common to all MEGA Wordpress sites.
+ */
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Poppins-Regular.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: bold;
+  src: url('../fonts/Poppins-Bold.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/Poppins-SemiBold.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Inter-Regular.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: bold;
+  src: url('../fonts/Inter-Bold.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/Inter-SemiBold.woff2') format("woff2");
+  font-display: swap;
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Inter-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: normal;
+    src: url('../fonts/Inter-Italic.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Almarai';
+    font-style: normal;
+    font-weight: 800;
+    src: url('../fonts/Almarai-ExtraBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Almarai';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Almarai-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Almarai';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Almarai-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Lexend-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Lexend-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Lexend-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Lexend-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 800;
+    src: url('../fonts/Mulish-ExtraBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/Mulish-Black.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Mulish-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Mulish-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Mulish-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mulish';
+    font-style: italic;
+    font-weight: normal;
+    src: url('../fonts/Mulish-Italic.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M PLUS 1p';
+    font-style: normal;
+    font-weight: 800;
+    src: url('../fonts/MPLUS1p-ExtraBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M PLUS 1p';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/MPLUS1p-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M PLUS 1p';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/MPLUS1p-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'M PLUS 1p';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/MPLUS1p-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/NotoSansKR-Black.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/NotoSansKR-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/NotoSansKR-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/NotoSansKR-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/NotoSansKR-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/NotoSansSC-Black.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/NotoSansSC-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Noto Sans SC';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/NotoSansSC-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/NotoSansSC-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/NotoSansSC-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/NotoSansTC-Black.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/NotoSansTC-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/NotoSansTC-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/NotoSansTC-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans TC';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/NotoSansTC-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Prompt-Bold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Prompt-SemiBold.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Prompt-Regular.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/Prompt-Medium.woff2') format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    font-style: italic;
+    font-weight: normal;
+    src: url('../fonts/Prompt-Italic.woff2') format("woff2");
+    font-display: swap;
+}

@@ -1,0 +1,10 @@
+- x86
+- ≥100 GB available disk space
+- ≥32 CPU cores
+- ≥16 GB RAM
+- Ubuntu 22.04+
+- NVIDIA GPU (≥4 GB VRAM)
+- NVIDIA driver ≥ 570.26 (CUDA 12.8+)
+- NVIDIA Container Toolkit
+- Docker Engine >= 29.0
+- `GPT_API_KEY` and `LLAMA_API_KEY`

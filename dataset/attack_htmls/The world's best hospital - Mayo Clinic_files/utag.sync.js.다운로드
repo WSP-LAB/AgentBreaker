@@ -1,0 +1,9 @@
+//tealium universal tag - utag.sync ut4.0.202509231527, Copyright 2025 Tealium.com Inc. All Rights Reserved.
+try{try{const urlsAJO=['/diseases-conditions/multiple-myeloma/symptoms-causes/syc-20353378','/diseases-conditions/multiple-myeloma/diagnosis-treatment/drc-20353383','/patient-visitor-guide/minnesota','/patient-visitor-guide/florida','/patient-visitor-guide/arizona','/about-mayo-clinic/contact','/departments-centers/mayo-clinic-cancer-center'];const url=document.location.pathname;let sdkLoadAsync=true;let prehide=".noContentHasThisClass { opacity: 0 !important }";if(urlsAJO.some(function(path){return url===path})){sdkLoadAsync=false;prehide=".content, #textcard-3c85e53e84, #textcard-e7a3d0c350, #textcard-4c929ccaed, #textcard-080e5d7103, #textcard-e49ee0a2ba, #textcard-4f65339fca  { opacity: 0 !important }";}
+function addAdobeSDKScript(sdkLoadAsync){const head=document.getElementsByTagName("head")[0];!function(n,o){o.forEach(function(o){n[o]||((n.__alloyNS=n.__alloyNS||[]).push(o),n[o]=function(){var u=arguments;return new Promise(function(i,l){n[o].q.push([i,l,u])})},n[o].q=[])})}
+(window,["alloy"]);AlloyBase=document.createElement("script");AlloyBase.src="https://cdn1.adoberesources.net/alloy/2.27.0/alloy.js";AlloyBase.async=sdkLoadAsync;head.appendChild(AlloyBase);}
+function configureAdobeSDKScript(prehide){alloy("configure",{"edgeConfigId":"a1dd0d60-166d-4ddd-a5be-2df13bfa7403","orgId":"77D34F2A61A8975E0A495F95@AdobeOrg","thirdPartyCookiesEnabled":false,"prehidingStyle":prehide,"clickCollectionEnabled":false});}
+if(typeof window.alloy!=='function'){try{addAdobeSDKScript(sdkLoadAsync);}
+catch(error){console.error("Error fetching Adobe SDK, aka alloy.js",error.message);}
+try{configureAdobeSDKScript(prehide)}
+catch(error){console.error("Error configuring Adobe SDK, aka alloy.js",error.message);}}}catch(e){console.log(e)}}catch(e){console.log(e);}

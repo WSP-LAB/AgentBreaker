@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)https://www.webmd.com/aiq.html?tid=a11eb6ff-a433-4952-b13e-8f62d8b5cfa9 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>AIQ B Tracking Pixel</title>
+</head>
+
+<body>
+	<script>
+		var urlParams = new URLSearchParams(window.location.search),
+			tid = urlParams.get('tid'),
+			tapCookie = '';
+			function readCookie(e) {
+					e = document.cookie.match(new RegExp("(^| )" + e + "=([^;]+)"));
+					return !!e && e[2].trim().toLowerCase()
+			}
+			function postToParent(data,url){
+					window.parent.postMessage(data, url);
+			}
+			function readCookie(name) {
+				// Split cookie string and get all individual name=value pairs in an array
+				var cookieArr = document.cookie.split(';');
+				// Loop through the array elements
+				for (var i = 0; i < cookieArr.length; i++) {
+					var cookiePair = cookieArr[i].split('=');
+					/* Removing whitespace at the beginning of the cookie name
+					and compare it with the given string */
+					if (cookiePair[0] && name == cookiePair[0].trim()) {
+						// Decode the cookie value and return
+						return decodeURIComponent(cookiePair[1]);
+					}
+				}
+				return null;
+			}
+
+		function executeTid (){
+					// to read the tap cookie 
+					var ref = document.referrer;
+		
+				tapCookie = readCookie('TapAd_DID');
+				if(ref && ref.includes("vitals.com")){
+					return false;
+				}
+				if(ref && (ref.includes('rxlist.com') || ref.includes("medicinenet.com") || ref.includes("emedicinehealth.com"))){
+					postToParent({ 'wbmd': { 'func': 'dropCookies', 'cookiename': 'TapAd_DID', 'value': tid, 'tapReset': false } }, document.referrer);
+					return;
+				}
+				if (tid) {
+					postToParent({ 'wbmd': { 'func': 'dropCookiesTap', 'cookiename': 'TapAd_DID', 'value': tid, 'tapReset': false } }, document.referrer);
+						// if there is no did
+				} else {
+					postToParent({ 'wbmd': { 'func': 'dropCookiesTap', 'cookiename': 'TapAd_DID', 'value': '', 'tapReset':false } }, document.referrer);
+						
+				}
+
+				// Observed the adobe launch code for post message is not available in time, so adding some extra check to drop the cookie again if not dropped
+				setTimeout(function(){
+					if (tid && !readCookie('TapAd_DID')) {
+						postToParent({ 'wbmd': { 'func': 'dropCookiesTap', 'cookiename': 'TapAd_DID', 'value': tid, 'tapReset': false } }, document.referrer);
+						// if there is no did
+					} else  if(!tid) {
+						postToParent({ 'wbmd': { 'func': 'dropCookiesTap', 'cookiename': 'TapAd_DID', 'value': '', 'tapReset':false } }, document.referrer);
+						
+					}
+				},5000)
+		}
+		executeTid();
+		
+
+
+	</script>
+
+
+</body></html>

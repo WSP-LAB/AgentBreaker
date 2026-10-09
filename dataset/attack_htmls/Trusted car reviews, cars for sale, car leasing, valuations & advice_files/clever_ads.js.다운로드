@@ -1,0 +1,7 @@
+﻿// The file name matches a commonly used ad script that all ad blockers block.
+// This script creates a unique identifiable div that we can use to determine whether an adblocker is in use.
+// If the div does not exist, this means this script was blocked.
+var createdElement = document.createElement('div');
+createdElement.id = 'wLPWKVIAaMdz';
+createdElement.style.display = 'none';
+document.body.appendChild(createdElement);

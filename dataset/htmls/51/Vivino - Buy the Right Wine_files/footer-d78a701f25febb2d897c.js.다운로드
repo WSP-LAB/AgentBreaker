@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[31],{13:function(a,n,o){o("3yYM"),o("LNcM"),o("M2wf"),o("M9ov"),a.exports=o("JVpy")},JVpy:function(a,n,o){"use strict";o.r(n);var w=o("wMPa"),e=o("iOCP");(window.ReactOnRails=window.ReactOnRails||o("a4dp").default).register({Footer:Object(e.a)(w.a)})}},[[13,1,0,2]]]);
+//# sourceMappingURL=footer-d78a701f25febb2d897c.js.map

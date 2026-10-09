@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="376" height="251" viewBox="0 0 376 251">
+  <defs>
+    <clipPath id="clip-NYSE-homepage-pattern-02">
+      <rect width="376" height="251"/>
+    </clipPath>
+  </defs>
+  <g id="NYSE-homepage-pattern-02" clip-path="url(#clip-NYSE-homepage-pattern-02)">
+    <g id="SVG-02">
+      <path id="Path_5151" data-name="Path 5151" d="M96.845,109.738v59.107H37.738V109.738H96.845M98.584,108H36v62.584H98.584V108Z" transform="translate(26.584 79.751)"/>
+      <rect id="Rectangle_3703" data-name="Rectangle 3703" width="63" height="63" transform="translate(63 63)"/>
+      <path id="Path_5152" data-name="Path 5152" d="M132.845,73.738v59.107H73.738V73.738h59.107M134.584,72H72v62.584h62.584V72Z" transform="translate(53.167 53.167)"/>
+      <rect id="Rectangle_3704" data-name="Rectangle 3704" width="62" height="63" transform="translate(188 63)"/>
+      <rect id="Rectangle_3705" data-name="Rectangle 3705" width="62" height="62" transform="translate(188 188)" fill="#71c5e8"/>
+      <path id="Path_5153" data-name="Path 5153" d="M204.845,1.738V60.845H145.738V1.738h59.107M206.584,0H144V62.584h62.584V0Z" transform="translate(106.334)"/>
+      <rect id="Rectangle_3706" data-name="Rectangle 3706" width="63" height="63" transform="translate(313 63)"/>
+      <path id="Path_5154" data-name="Path 5154" d="M29.553,91.738v27.815H1.738V91.738H29.553M31.292,90H0v31.292H31.292V90Z" transform="translate(0 66.459)"/>
+      <path id="Path_5155" data-name="Path 5155" d="M191.553,100.738v27.815H163.738V100.738h27.815M193.292,99H162v31.292h31.292V99Z" transform="translate(119.626 73.105)"/>
+      <path id="Path_5156" data-name="Path 5156" d="M108,108v17.384h45.2v45.2h17.384V108Z" transform="translate(79.751 79.751)"/>
+      <path id="Path_5157" data-name="Path 5157" d="M234.141,89.264H213.28V35.911H157.65V15.05h76.491Z" transform="translate(116.414 11.113)" fill="#71c5e8"/>
+      <path id="Path_5158" data-name="Path 5158" d="M126.141,125.264H105.28V71.911H49.65V51.05h76.491Z" transform="translate(36.663 37.697)" fill="#71c5e8"/>
+    </g>
+  </g>
+</svg>

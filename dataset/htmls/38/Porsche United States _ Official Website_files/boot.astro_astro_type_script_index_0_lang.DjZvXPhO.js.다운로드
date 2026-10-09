@@ -1,0 +1,1 @@
+import{r as a}from"./timing.BdHZ65s2.js";const o=async()=>{await a({timeout:2e3}),document.querySelectorAll('[data-src]:not([data-src=""])').forEach(t=>{t.dataset.src&&(t.src=t.dataset.src,t.removeAttribute("data-src"))})},e=()=>{o()};document.readyState!=="loading"?e():document.addEventListener("DOMContentLoaded",e);

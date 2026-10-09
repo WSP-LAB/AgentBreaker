@@ -1,0 +1,147 @@
+#velarochat {
+    z-index : 999999;
+    position : relative;
+}
+
+#velarochat #chatwindow-01 {
+    background : #0363ad;
+}
+
+#velaro-chat-overlay {
+    z-index : 1000000 !important;
+    position : absolute !important;
+}
+
+#velarochat #widget-area-01 {
+    position : static !important;
+}
+
+#velaro-social-links {
+    background-color : #7F0020;
+}
+
+#powered-by-velaro {
+    background : #7F0020;
+    display : none;
+}
+
+#velarochat .submit {
+    background : #0363ad;
+}
+
+#velarochat .operator-name {
+    color : #0D0003;
+}
+
+#velarochat .author_client {
+    color : #0D0103;
+}
+
+#velarochat .author_operator {
+    color : #B3CF22;
+}
+
+#velarochat .operator-role {
+    color : #9DB51E;
+}
+
+#velarochat .velaro-survey-submit {
+    padding-top : 10px;
+    padding-left : 5px;
+}
+
+#velarochat .survey-submit {
+    background : #0363ad;
+    color : #FFFFFF;
+    right : 0;
+    border-radius : 2px;
+    padding : 5px 4px;
+    margin : 2px;
+    width : 45%;
+    max-width : 185px;
+    font-size : 1.3em;
+    border : none;
+    text-align : center;
+    cursor : pointer;
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    margin-right : 10px;
+}
+
+#velarochat .velaro-survey-cancel {
+    float : left;
+    padding-top : 20px;
+    padding-left : 10px;
+}
+
+#velarochat .survey-cancel {
+    right : 0;
+    border-radius : 2px;
+    margin : 2px;
+    max-width : 185px;
+    font-size : 1.3em;
+    border : none;
+    text-align : center;
+    cursor : pointer;
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    background-color : white;
+    color : gray;
+}
+
+#velarochat .velaro-survey-questiontext {
+    color : #6D6E70;
+}
+
+#velarochat .velaro-survey-header {
+    color : #6D6E70;
+    font-size : 12px;
+    font-weight : normal;
+}
+
+#velaro-action-container #velaro-action-cancel-button {
+    background-color : #7F0020;
+}
+
+#velaro-action-container .velaro-action-container-button {
+    background-color : #1C912F;
+}
+
+#velarochat #end-chat {
+    color : #FFFFFF;
+}
+
+#velarochat .chatwindow-top-available {
+    color : #FFFFFF;
+}
+
+#velarochat .chatwindow-top-unavailable {
+    color : #FF0F0F;
+}
+
+#velarochat #velaro-content {
+    background : #FFFFFF;
+}
+
+#velarochat .time_operator, .velaro_time_client {
+    color : #5C5C5C;
+}
+
+#velarochat .msg-text {
+    color : #5C5C5C;
+}
+
+#velarochat .toolbar-icon {
+    color : #080808;
+}
+
+#velarochat .option a,#velarochat .option-text {
+    color : #080808;
+}
+
+#velarochat .error {
+    border : solid 0px #f00;
+}
+

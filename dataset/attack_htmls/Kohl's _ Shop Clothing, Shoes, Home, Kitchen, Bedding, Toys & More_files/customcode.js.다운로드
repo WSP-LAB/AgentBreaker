@@ -1,0 +1,158 @@
+window.unifiedSDK.registerCustomCode(async () => {
+   const { loader, logger } = window.unifiedSDK;
+   const [visitor, rulesEngine] = await loader.requireModules(["visitor", "rulesEngine"]);
+
+ visitor.defineProperty("isLoggedIn", () => {
+    const dataLayerJson = localStorage.getItem('dataLayerCustomerDetails'); 
+    if (dataLayerJson) {
+        const dataLayerObj = JSON.parse(dataLayerJson);
+        return dataLayerObj.isLoggedIn; 
+    }
+    return false; 
+});
+visitor.defineProperty("customerID", () => {
+   const dataLayerJson = localStorage.dataLayerCustomerDetails;
+   if (dataLayerJson) {
+     const dataLayerObj = JSON.parse(dataLayerJson);
+     return dataLayerObj.customerID;
+   }
+   });
+   visitor.defineProperty("kohlsLoyaltyID", () => {
+   const dataLayerJson = localStorage.getItem('dataLayerCustomerDetails');
+   if (dataLayerJson) {
+     const dataLayerObj = JSON.parse(dataLayerJson);
+     return dataLayerObj.kohlsLoyaltyID;
+   }
+   });
+
+
+function insertButton(afterSelector, buttonText, buttonId, options = {}) {
+  const {
+    wrapperClass = 'verint-feeback-button-click',
+    fullBleed = false,
+    align = 'left'
+  } = options;
+
+  const targetElement = document.querySelector(afterSelector);
+  if (!targetElement) {
+    console.log(`Element not found for selector: ${afterSelector}`);
+    return null;
+  }
+
+ 
+  const wrapper = document.createElement('div');
+
+
+  if (Array.isArray(wrapperClass)) {
+    wrapper.classList.add(...wrapperClass);
+  } else if (typeof wrapperClass === 'string' && wrapperClass.trim()) {
+    wrapper.className = wrapperClass.trim();
+  }
+
+  wrapper.style.width = '100%';
+  wrapper.style.display = 'block';
+  wrapper.style.boxSizing = 'border-box';
+  wrapper.style.padding = '12px 16px'; 
+
+  if (align === 'center') wrapper.style.textAlign = 'center';
+  else if (align === 'right') wrapper.style.textAlign = 'right';
+  else wrapper.style.textAlign = 'left';
+
+  if (fullBleed) {
+    wrapper.style.position = 'relative';
+    wrapper.style.left = '50%';
+    wrapper.style.right = '50%';
+    wrapper.style.marginLeft = '-50vw';
+    wrapper.style.marginRight = '-50vw';
+    wrapper.style.width = '100vw';
+    wrapper.style.backgroundColor = 'transparent'; 
+  }
+
+  const button = document.createElement('button');
+  button.type = 'button'; 
+  button.textContent = buttonText;
+
+
+  button.style.backgroundColor = 'black';
+  button.style.color = 'white';
+  button.style.padding = '10px 20px';
+  button.style.border = 'none';
+  button.style.cursor = 'pointer';
+  button.style.fontSize = '16px';
+  button.style.borderRadius = '4px';
+  button.style.display = 'inline-block';
+
+
+  if (buttonId) {
+    if (document.getElementById(buttonId)) {
+      let i = 1;
+      let uniqueId = `${buttonId}-${i}`;
+      while (document.getElementById(uniqueId)) {
+        i += 1;
+        uniqueId = `${buttonId}-${i}`;
+      }
+      button.id = uniqueId;
+      console.warn(`Button id "${buttonId}" existed. Assigned "${uniqueId}" instead.`);
+    } else {
+      button.id = buttonId;
+    }
+  }
+
+  wrapper.appendChild(button);
+  targetElement.insertAdjacentElement('afterend', wrapper);
+
+  return { wrapper, button };
+}
+
+
+
+
+insertButton(
+  '.footer-slot.--back-to-top',
+  'Share Feedback',
+  'footer-black-button',
+  {
+    wrapperClass: 'verint-feeback-button-footer', // using class instead of id
+    // fullBleed: true, // enable if you need full viewport width
+    align: 'left'
+  }
+);
+
+// Checkout - Black button with white font
+insertButton(
+  '#checkoutV3Hook',
+  'Share Feedback',
+  'checkoutFeedback-button',
+  {
+    wrapperClass: 'verint-feeback-button-click',
+    // fullBleed: true,
+    align: 'left'
+  }
+);
+
+// Cart - Black button with white font
+insertButton(
+  '#shoppingBagHook',
+  'Share Feedback',
+  'cartFeedback-button',
+  {
+    wrapperClass: 'verint-feeback-button-click',
+    // fullBleed: true,
+    align: 'left'
+  }
+);
+
+// Sign-In Page - Black button with white font
+insertButton(
+  '#signInComponent',
+  'Share Feedback',
+  'signInFeedback-button',
+  {
+    wrapperClass: 'verint-feeback-button-click',
+    // fullBleed: true, // enable if needed
+    align: 'left'
+  }
+);
+
+});
+

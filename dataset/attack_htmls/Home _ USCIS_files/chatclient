@@ -1,0 +1,382 @@
+:root{
+    --dhs-blue: #005288;
+    --dhs-blue-60: #003e67;
+    --dhs-light-blue: #0078ae;
+    --dhs-gray: #c0c2c4;
+    --dhs-gray-15: #f5f5f6;
+    --dhs-green: #5e9732;
+    --dhs-red: #c41230;
+    --chasitor-green: #09A761;
+}
+
+/*
+   Chat Container
+*/
+
+.modalContainer{
+    z-index: 6000 !important;
+}
+
+.dockableContainer{
+    /* font-family: 'Source Sans Pro'; */
+
+    border-radius: 0px !important;
+    animation: none !important;
+    width: 450px !important;
+    max-height: 90% !important;
+    height: 90% !important;
+    transform: none !important;
+    bottom: 45px !important;
+    margin-right: 5px !important;
+    right: 5px !important;
+}
+
+/*
+   Header
+*/
+
+.chatHeaderBranding{
+    background: var(--dhs-gray-15) !important;
+    color: #000000 !important;
+    font-weight: bold !important;
+    display: inline-table !important;
+}
+
+.sidebarHeader{
+    color: inherit !important;
+    padding: 16px 14px !important;
+}
+
+.sidebarHeader h2 {
+    font-weight: bold !important;
+}
+
+.closeButton{
+    margin-left: 15px !important;
+   
+}
+
+.minimizeButton,
+.closeButton{
+    padding: 0 !important;
+    color:#000000;
+}
+
+.minimizeButton:hover,
+.closeButton:hover{
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border-radius: 50% !important;
+    color:#000000;
+}
+
+.slds-icon-text-default{
+    fill: currentColor !important;
+    height: 1em !important;
+    width: 1em !important;   
+}
+
+.headerAnnouncement{
+    background-color: var(--dhs-light-blue) !important;
+    position: relative !important;
+    margin-top: 3px !important;
+}
+
+.reconnecting{
+    color: var(--dhs-gray-15) !important;
+}
+
+.endChatBtn{
+    cursor: pointer;
+    border: none;
+    background-color: var(--dhs-light-blue) !important;
+    color: white;
+    font-weight: bold;
+    padding: 4px;
+    transition: background-color 0.5s ease;
+    border-radius: 0;
+    width: 100%;
+   
+}
+
+.endChatBtn:hover{
+    background-color: var(--dhs-red) !important;
+}
+
+.headerAnnouncement .hideLoadingAnimation{
+    visibility: hidden !important;
+}
+
+.headerAnnouncement .text{
+    position: absolute !important;
+}
+
+.endChatContainer {
+    margin-top: 10px;
+    background-color: white;
+}
+
+
+/*
+   Body
+*/
+.messageArea,
+.wrapper {
+    background-color: var(--dhs-blue-60) !important;
+}
+
+.messageArea{
+    padding-top: 12px !important;
+}
+
+.messageWrapper,
+.typingIndicatorContainer{
+    padding: 8px !important;
+}
+
+.wrapper{
+    padding: 0px !important;
+}
+
+.plaintextContent,
+.embeddedServiceLiveAgentStateChatFileTransferMessage .chatContent{
+    background-color: var(--dhs-gray-15) !important;
+    color: #000000 !important;
+    padding: 16px !important;
+    border-radius: 4px !important;
+    max-width: 100% !important;
+    font-size: 1rem !important;
+}
+
+.plaintextContent a {
+    color: var(--dhs-blue) !important;
+}
+
+.embeddedServiceLiveAgentStateChatItem .avatar{
+    border: 1px solid white !important;
+}
+
+.eventMessage{
+    color: var(--dhs-gray-15) !important;
+}
+
+.unseenMessageBubble{
+    background-color: var(--dhs-light-blue) !important;
+}
+
+.fileIcon svg g path{
+    fill: var(--dhs-light-blue) !important;
+}
+
+.fileTransferMessage .progressIndicator{
+    background-color: var(--dhs-light-blue) !important;
+}
+
+/*
+   Input
+*/
+
+.chasitorInputWrapper{
+    background: var(--dhs-gray-15) !important;
+}
+
+.chasitorControls{
+    border: 1px var(--dhs-gray) solid !important;
+}
+
+.chasitorText{
+    background: none !important;
+    border: none !important;
+    font-size: 16px !important;
+}
+ 
+#sendBtn{
+    background-color: inherit !important;
+    cursor: pointer !important;
+    border: none !important;
+    color: var(--chasitor-green) !important;
+    display: grid;
+    place-items: center !important;
+    padding: 0 20px !important;
+    transition: background-color 0.5s ease !important;
+}
+
+#sendBtn:hover,
+.chasitorText:hover {
+   box-shadow: 0 0 2px rgba(0,0,0,.12), 0 0 4px rgba(0,0,0,.24) !important;
+}
+
+#sendBtn:hover{
+    background-color: rgba(9, 167, 97, 0.04) !important;
+}
+
+.chasitorText:focus{
+    box-shadow: 0 0 3px #036 !important;
+}
+
+.chasitorControls:focus-within{
+    border: 2px solid var(--chasitor-green) !important;
+}
+
+.charCounter{
+    font-size: 0.75rem !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+}
+
+/*
+   Hidden
+*/
+
+#chatWindowCurrentDesc,
+.nameAndTimeContent{
+    display: none !important;
+}
+
+.Send,
+.Enviar {
+    display: none !important;
+}
+
+/*
+    Loading window
+*/
+
+
+.loading-window-header h2{
+    margin: 0;
+    align-self: center;
+    flex-grow: 1;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: inherit;
+    font-weight: normal;
+    letter-spacing: 0.025em;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+.loading-window{
+    background-color: var(--lwc-esColorBackgroundInverse,#fff);
+    border-radius: 0px !important;
+    position: fixed;
+    animation: none !important;
+    width: 450px !important;
+    max-height: 90% !important;
+    height: 90% !important;
+    transform: none !important;
+    bottom: 45px !important;
+    margin-right: 5px !important;
+    right: 5px !important;
+    z-index: 5000;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.loading-window-header{    
+    background: var(--dhs-gray-15) !important;
+    color: #000000 !important;
+    font-weight: bold !important;
+    padding: 8px 22px;    
+    height: 50px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;    
+    background: #f5f5f6 !important;
+    font-weight: bold !important;
+}
+/*
+    ISO-35810 - removed important tag
+*/
+
+.hidden{
+    display: none;
+}
+
+.chat-invite-button{
+    background-color: #006699;
+    background-image: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    height: 48px;
+    border-radius: 3px;
+    padding: 12px 16px;
+    max-width: 504px;
+    min-width: 154px;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+
+}
+
+.chat-invite-button:hover{
+    background-color: #00476B;
+}
+
+.loading-indicator-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 2;
+    min-height: 10%;
+    background-color: #fff;
+}
+
+/*
+    Mobile Friendly Styles
+*/
+
+@media (max-width: 768px){
+    .loading-window,
+    .dockableContainer{
+        bottom: 0 !important;
+        right: 0 !important;
+        
+        max-height: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .minimizedContainer{
+        bottom: 0 !important;
+        right: 0 !important;
+        
+        max-width: 100% !important;
+        width: 100% !important;
+
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .chatHeaderBranding {
+        height: auto !important;
+    }
+
+    .messageContent{
+        flex-direction: row !important;
+    }
+
+    .Send,
+    .Enviar {
+        display: none !important;
+    }
+}
+
+
+/*
+    Offline Support Form
+*/
+.offlineFormConfirmation{
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 15px !important;
+}

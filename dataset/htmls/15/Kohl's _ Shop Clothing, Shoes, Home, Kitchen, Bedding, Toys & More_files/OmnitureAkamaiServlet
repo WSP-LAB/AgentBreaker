@@ -1,0 +1,175 @@
+if(SCTrackingBean.pageName=="null")
+	SCTrackingBean.pageName="";
+if(SCTrackingBean.siteSections=="null")
+	SCTrackingBean.siteSections="";
+if(SCTrackingBean.subSections=="null")
+	SCTrackingBean.subSections="";
+if(SCTrackingBean.subSectionsLevel2=="null")
+	SCTrackingBean.subSectionsLevel2="";
+
+if(SCTrackingBean.eVar86=="null")
+	SCTrackingBean.eVar86="";
+if(SCTrackingBean.eVar87=="null")
+	SCTrackingBean.eVar87="";
+var visitorId = getCookieByName("VisitorId");
+var trackingCookieValue = getCookieByName("null"+visitorId);
+var eVar39_Value = visitorId;
+var userStatus = "kohls not logged in|loyalty not logged in";
+
+var eVar70_Value = visitorId;
+var eVar71_Value =  "klsbrwcki:" + visitorId;
+var eVar73_value = getCookieByName("loyalty_id");
+var customerNameCookie = getCookieByName( 'VisitorUsaFullName' );
+if(customerNameCookie == '' || customerNameCookie == null ){
+	eVar39_Value = "";
+}else{
+	if(eVar73_value == '' || eVar73_value == null ){
+		userStatus = "kohls logged in|loyalty not logged in";		
+	}else{
+		userStatus = "kohls logged in|loyalty logged in";
+	}	
+} 
+var y2yTablet = ""; 
+var y2yMobile = ""; 
+var y2yDesktop = "";
+var eVar42_Value = "no cart";
+var prop4_Value = SCTrackingBean.pageType;
+var prop63_Value = "";
+prop63_Value = "";
+
+var eVar19_Value = "Tuesday"
+var eVar18_Value = "08:00 PM"
+eVar18_Value = "Tue|WeekDay|08:00 PM"
+var eVar20_Value = "WeekDay"
+var eVar40_Value = "atg";
+eVar40_Value = "cloud17";
+var eVar68_Value = SCTrackingBean.pageName;
+var eVar3_Value = SCTrackingBean.productFindingMethod;
+var eVar8_Value = SCTrackingBean.searchTerm;
+var prop9_Value = SCTrackingBean.siteSections;
+var pageName_Value = SCTrackingBean.pageName;
+var eVar22_Value = "null";
+eVar22_Value = "desktop";
+var CartPersistence = getCookieByName("CartPersistence");
+var visitorName = getCookieByName( 'VisitorUsaFullName' );
+var total = getCookieByName( 'VisitorBagTotals' );
+var values = total.split("|");
+var visitorBagTotals = values[1];
+var PageUrl  = window.location.pathname;
+if ((/mobi/i.test((navigator.userAgent).toLowerCase())) && window.screen.width > 600 && window.screen.width < 1024)
+{
+	y2yTablet = "true";
+}
+else if(/mobi/i.test((navigator.userAgent).toLowerCase()) == true )
+{
+	y2yMobile = "true";
+}
+else {
+	y2yDesktop = "true";
+}	
+if(CartPersistence == "" || CartPersistence == null)
+{
+	if(customerNameCookie != "" && visitorBagTotals >= "1")
+	{
+		eVar42_Value = "Registered";
+	}
+	else if(visitorBagTotals >= "1")
+	{
+		eVar42_Value = "Guest";
+	}
+}
+else 
+{
+	if(customerNameCookie != "" && CartPersistence === "2")
+	{
+		eVar42_Value = "Registered";
+	}
+	else if(CartPersistence === "1" && visitorBagTotals >= "1")
+	{
+		eVar42_Value = "Guest";
+	}
+}	
+
+if(typeof(SCTrackingBean) === 'undefined'){
+	SCTrackingBean = new Object();
+	console.warn("SCTrackingBean is undefined, some values will n't captured in SC Report!!");
+}
+if(SCTrackingBean.viewSortType || SCTrackingBean.pageIndex){
+	SCTrackingBean.viewSortValue = (SCTrackingBean.viewSortType? SCTrackingBean.viewSortType:'') + ":" +
+	(SCTrackingBean.pageIndex?SCTrackingBean.pageIndex:'');
+}
+$env('omniture', function _trackinganalytics(){
+window['o'] = window[$env.contentPagesUIProperties.sharedAnalyticsVariable];
+	o.currencyCode="USD";
+	o.pageName=pageName_Value;
+	o.pageType=prop4_Value;
+	o.prop1=SCTrackingBean.department;
+	o.prop2=SCTrackingBean.category;
+	o.prop3=SCTrackingBean.subCategory;
+	o.prop4=prop4_Value;
+	o.prop5=eVar8_Value;
+	o.prop6=SCTrackingBean.searchResultsCount;
+	o.prop7=SCTrackingBean.lowLevelSubCategory;
+	o.prop8="";
+	o.prop9=prop9_Value;
+	o.prop10=SCTrackingBean.subSections;
+	o.prop11=SCTrackingBean.subSectionsLevel2;
+	o.prop16=eVar3_Value;
+	o.prop17=userStatus;
+	o.prop18=userStatus;
+	o.prop18=eVar18_Value;
+	o.prop22="2025-07-29";
+	o.prop37="";
+	o.prop38="";
+	o.prop39=SCTrackingBean.refinementTypes;
+	o.prop40=SCTrackingBean.refinementTypes;
+	o.prop41=SCTrackingBean.refinementValues;
+	o.prop42=SCTrackingBean.refinementValues;
+	o.prop45="";
+	o.prop46="";
+	o.prop50="D=s_tempsess";
+	o.prop53=eVar68_Value;
+	o.events=SCTrackingBean.events;
+	o.products=SCTrackingBean.productString;
+	o.eVar8=eVar8_Value;
+	o.eVar3 = eVar3_Value;
+	o.eVar17=userStatus;
+	o.eVar18=eVar18_Value;
+	/* o.eVar19=eVar19_Value;
+	o.eVar20=eVar20_Value; */
+	o.eVar22=eVar22_Value;
+	o.eVar23=SCTrackingBean.refinementTypes;
+	o.eVar24=SCTrackingBean.refinementValues;
+	o.eVar25=SCTrackingBean.department;
+	o.eVar26=SCTrackingBean.category;
+	o.eVar27=SCTrackingBean.subCategory;
+	o.eVar28=SCTrackingBean.lowLevelSubCategory;
+	o.eVar29=SCTrackingBean.viewSortValue;
+	o.eVar35="";
+	o.eVar36="";
+	o.eVar39=eVar39_Value;
+	o.eVar40=eVar40_Value;
+	o.eVar42=eVar42_Value;
+	o.eVar43="";
+	o.eVar44="";
+	o.eVar45="";
+	o.eVar55="";
+	o.eVar56="";
+	o.eVar59=SCTrackingBean.pageTypeView;
+	o.eVar68=eVar68_Value;
+	o.eVar70=eVar70_Value;
+	o.eVar71=eVar71_Value;
+	o.eVar73 = eVar73_value;
+	o.prop63 = prop63_Value;		
+	o.eVar86 = SCTrackingBean.eVar86;
+	o.eVar87 = SCTrackingBean.eVar87;
+ o.eVar54 = getCookieByName( 'dy-test-5050' ) != 'true' ? 'false' : 'true';
+	/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+	if(typeof(enableTHCOmniture) != 'undefined' && enableTHCOmniture){
+		document.addEventListener("thcOmniture", function(e){ var s_code=o.t();if(s_code)document.write(s_code); });
+		Kjs.log.info('THCOmniture event triggered');
+	}else{
+		var s_code=o.t();if(s_code)document.write(s_code);
+		Kjs.log.info('THCOmniture event NOT triggered');
+	}	
+});

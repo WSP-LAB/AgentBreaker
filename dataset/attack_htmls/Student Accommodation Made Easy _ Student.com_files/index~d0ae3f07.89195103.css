@@ -1,0 +1,55 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+.App {
+  /* width: 100vw; */
+  /* height: 100vh; */
+}
+
+.Overlay {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.dragOverlay {
+  position: absolute;
+  display: block;
+  background-color: rgba(50, 50, 50, .4);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+}
+.dragOverlay.drag {
+  display: block;
+}
+
+@font-face {
+  font-family: Avenir-Roman;
+  src: url(https://chat.sleekflow.io/static/fonts/Avenir-Roman.ttf);
+  font-weight: normal;
+}
+@font-face {
+  font-family: Avenir;
+  src: url(https://chat.sleekflow.io/static/fonts/Avenir-Book.ttf);
+  font-weight: normal;
+}
+@font-face {
+  font-family: Avenir;
+  src: url(https://chat.sleekflow.io/static/fonts/Avenir-Medium.ttf);
+  font-weight: 500;
+}
+@font-face {
+  font-family: Avenir;
+  src: url(https://chat.sleekflow.io/static/fonts/Avenir-Heavy.ttf);
+  font-weight: 900;
+}

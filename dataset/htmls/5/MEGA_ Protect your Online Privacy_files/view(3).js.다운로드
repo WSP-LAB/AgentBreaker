@@ -1,0 +1,43 @@
+/**
+ * Frontend scripting for the alternating feature module.
+ */
+
+class FeatureAlternating {
+    features = [];
+
+    constructor(element) {
+        this.element = element
+        this.buttons = this.element.querySelectorAll('.text-button');
+        this.typeBTextPanes = this.element.querySelectorAll('.features .type-b .text-pane');
+        this.videos = this.element.querySelectorAll('video');
+
+        for (const child of this.element.querySelector('.features').children) {
+            this.block = child;
+
+            if (child.classList.contains('coming-soon')) {
+                this.features.push(new ComingSoon(child));
+            }
+            else {
+                this.videos = this.block.querySelectorAll('video');
+                for (const video of this.videos) {
+                    if (video.loop) {
+                        VideoPauser.instance.registerVideo(video);
+                    }
+                }
+            }
+        }
+
+        Breakpointer.breakpointChangedEvent.addListener((newBreakpoint) => {
+            const sizeClass = newBreakpoint.lt(Breakpoint.LG) ? 'md' : 'lg';
+
+            for (const button of this.buttons) {
+                button.classList.remove('xl', 'lg', 'md', 'sm');
+                button.classList.add(sizeClass);
+            }
+
+            for (const pane of this.typeBTextPanes) {
+                pane.classList.toggle('main-grid', newBreakpoint.eq(Breakpoint.MD));
+            }
+        });
+    }
+}

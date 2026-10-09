@@ -1,0 +1,11 @@
+/**
+ * Frontend scripting for the competitor matrix module
+ */
+
+class CompetitorMatrixCard {
+    constructor(element) {
+        const valueElement = element.querySelector('.price .value');
+        valueElement.textContent = Formatter.formatEuros(valueElement.textContent);
+        element.classList.remove('loading');
+    }
+}

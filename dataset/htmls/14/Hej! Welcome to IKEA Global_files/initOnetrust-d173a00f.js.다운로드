@@ -1,0 +1,84 @@
+window.ikeaExternalScriptOptions={"onetrust":{"id":2,"apiKey":"80238e1a-3de0-4556-9817-3c9165b937f2"},"ga":{"id":2,"trackingIds":"G-S4EX53B760","excludeForIsoCountries":null},"episod":{"id":2,"cookieDomain":".ikea.com","url":"https://web-api.ikea.com/episod/collect","xClientId":"1ea83eeb-f16f-43d0-a11d-2487f62fb456","event_origin":null,"sendEpisodErrorsToSentry":null},"sentry":{"id":2,"dsn":"https://dbd2cafcc55a561881245207e11f7211@o514642.ingest.us.sentry.io/4507106698199040","env":"production","scriptSrc":"https://browser.sentry-cdn.com/9.12.0/bundle.tracing.min.js","scriptIntegrity":"sha384-sXzDnJPIgEorSX+Hynyi01F5cinkpwE4CJ3Vu+EHRFhqH6+HtMSEY80H86csuwdL","sampleRate":0.1,"tracesSampleRate":0.1,"replaysSessionSampleRate":null,"replaysOnErrorSampleRate":null}};
+
+(function initOnetrust() {
+  let currentCategories;
+
+  window.OptanonWrapper = function () {
+    _initCustomCookie();
+
+    _setCurrentCategoriesOnInitial();
+
+    _onCategoryEnableChanged((enabledCategories) =>
+      _onCookieChange(enabledCategories)
+    );
+  };
+
+  function _setCurrentCategoriesOnInitial() {
+    if (!currentCategories) {
+      currentCategories =
+        window.OnetrustActiveGroups &&
+        window.OnetrustActiveGroups.split(',').filter((x) => x);
+    }
+  }
+
+  function _onCookieChange(enabledCategories) {
+    const hasRemovedConsent = !currentCategories.every((cC) =>
+      enabledCategories.includes(cC)
+    );
+
+    if (hasRemovedConsent) {
+      window.location.reload();
+    }
+    currentCategories = enabledCategories;
+  }
+
+  function _onCategoryEnableChanged(callbackFn) {
+    window.addEventListener('OneTrustGroupsUpdated', (e) => {
+      callbackFn(e.detail || []);
+    });
+  }
+
+  function _initCustomCookie() {
+    var opts = {
+      domain: '.' + window.location.hostname,
+      onetrustCookieName: 'OptanonAlertBoxClosed',
+      customCookieName: 'interIkeaConsent',
+      customCookieVersion: 'v1.0',
+    };
+
+    var hasOnetrustCookie = !!_getCookie(opts.onetrustCookieName);
+    var hasCustomCookie =
+      _getCookie(opts.customCookieName) === opts.customCookieVersion;
+    var shouldHideBanner = hasOnetrustCookie || hasCustomCookie;
+
+    if (shouldHideBanner) {
+      _setCookie(opts.customCookieName, opts.customCookieVersion, 365, false);
+      _setCookie(opts.onetrustCookieName, '', -1, opts.domain);
+      document.querySelector('html').classList.add('onetrust-box-closed');
+    }
+  }
+
+  function _getCookie(cname) {
+    var name = cname + '=';
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return '';
+  }
+  function _setCookie(cname, cvalue, exdays, domain) {
+    var d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    var expires = 'expires=' + d.toUTCString();
+    var setDomain = domain ? 'domain=' + domain + ';' : '';
+    document.cookie =
+      cname + '=' + cvalue + ';' + setDomain + expires + ';path=/';
+  }
+})();

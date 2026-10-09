@@ -1,0 +1,231 @@
+/* Badge Button */
+button.uws-badge.uws-badge--right.\.GlobalTab {
+  padding-left: 8px !important;
+  font-family: Helvetica, Arial, sans-serif !important;
+  height: 28px !important;
+  background-color: black !important;
+}
+
+/* Button Scale */
+.uws-choose-one-button-scale__buttons {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+/* General Button Styles */
+.uws-button {
+  margin: 18px;
+  width: 245px;
+  height: 30px !important;
+  background-color: #fff;
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+.uws-button.uws-button-- {
+  width: 245px;
+  height: 30px !important;
+  background-color: #fff;
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+.uws-button.uws-button--primary {
+  color: #ffffff;
+  font-family: Helvetica, Arial, sans-serif;
+  border: 2px solid #000000;
+  background-color: #000000;
+  width: 245px;
+  height: 30px !important;
+  font-size: 14px !important;
+}
+.uws-button.uws-button--primary.uws-survey-button__next {
+  text-align: center;
+  padding: 15px;
+  height: 35px;
+}
+.uws-button.uws-button--primary.uws-waypoint__button {
+  margin: 5px !important;
+  max-width: 250px !important;
+  width: 100% !important;
+  line-height: 3 !important;
+}
+
+/* Star Rating */
+.uws-choose-one-star-rating__star {
+  border: 0;
+  border-bottom: 2px solid #0000;
+  color: var(--colors-gray);
+  cursor: pointer;
+  height: 45px !important;
+  outline: none;
+  transition: color 125ms ease 0s;
+  width: 45px !important;
+}
+.uws-choose-one-star-rating__star.uws-choose-one-star-rating__star--colored {
+  color: black;
+  border-bottom: none !important;
+}
+.uws-choose-one-star-rating__row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Section and Heading */
+.uws-section {
+  color: var(--heading-foreground);
+  font-family: var(--heading-fontFamily);
+  font-size: var(--heading-fontSize);
+  font-weight: var(--heading-fontWeight);
+  line-height: var(--heading-lineHeight);
+  text-align: center;
+}
+.uws-question-heading__title {
+  font-family: var(--fieldLabel-fontFamily);
+  font-size: 14px !important;
+  font-weight: var(--fieldLabel-fontWeight);
+  line-height: var(--fieldLabel-lineHeight);
+  margin-top: 5% !important;
+}
+.uws-question-heading__description {
+  color: var(--fieldDescription-foreground);
+  font-family: var(--fieldDescription-fontFamily);
+  font-weight: var(--fieldDescription-fontWeight);
+  line-height: var(--fieldDescription-lineHeight);
+  margin-top: var(--fieldDescription-spacing);
+  word-spacing: 12vw;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+/* Survey Element Spacing */
+.uws-survey-element:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+/* Modern Question Styles */
+.modern .question.chooseone.buttonscale .response input[type=radio] + label,
+.modern .question.chooseone.buttonscale .first-last-choice-group label {
+  display: contents;
+  text-align: center;
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+/* Modal Styles */
+.uws-modal__footer {
+  position: static !important;
+  bottom: 0;
+  padding: 0% !important;
+  background-color: var(--modal-background);
+}
+.uws-modal.uws-survey.uws-survey-modal {
+  padding-top: 2%;
+  width: 450px !important;
+}
+.uws-modal__header {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+.uws-modal__logo {
+  background-image: var(--modal-logoUrl);
+  background-repeat: no-repeat;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 220px !important;
+  width: 100% !important;
+}
+.uws-modal__bottom-spacer {
+  height: 10px;
+  flex-shrink: 0;
+}
+
+/* Survey Control */
+.uws-survey-control {
+  padding-top: 0% !important;
+  background: var(--general-background);
+}
+.uws-survey-form__elements {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* Waypoint Button List */
+.uws-waypoint__button-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Miscellaneous */
+.mobileBadge {
+  font-family: Helvetica, Arial, sans-serif !important;
+  background-color: black !important;
+}
+.verint-feeback-button-click {
+  background-color: white !important;
+}
+
+/* Footer and Checkout Buttons */
+button#footer-black-button,
+button#checkoutFeedback-button,
+button#signInFeedback-button {
+  display: flex !important;
+  justify-self: center !important;
+}
+#footer-black-button,
+#checkoutFeedback-button,
+#signInFeedback-button {
+  font-size: 13px !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  padding: 10px 20px !important;
+  margin: 0 auto !important;
+  font-family: "Gotham 4r", Helvetica, Arial, sans-serif !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+}
+@media screen and (max-width: 768px) {
+  #footer-black-button {
+    margin-top: 3% !important;
+  }
+}
+
+/* Miscellaneous Fixes */
+body > uws-wrapper:nth-child(28) > div.uws-modal_wrapper > div > div.uws-modal__body > div > form > div > div:nth-child(3) > div > div > span {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Headings in Wrapper */
+uws-wrapper h3 {
+  font-size: 15px;
+  margin: -4%;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold !important;
+  color: black;
+  text-align: center;
+  padding: 0px;
+}
+
+/* Button Hover */
+@media (hover: hover) {
+  .uws-button--primary:not(:focus):hover {
+    border: 2px solid #70002d !important;
+    background-color: black !important;
+    line-height: 3 !important;
+    outline: none !important;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .verint-feeback-button-click {
+    padding-bottom: 25% !important;
+    margin-bottom: 10% !important;
+  }
+}

@@ -1,0 +1,176 @@
+function sanitizeString(str){
+    str = str.replace(/[^a-z0-9\-]/gim,"");
+    return str.trim();
+}
+
+(function($, Drupal){
+
+
+
+
+  Drupal.behaviors.ThemeBehaviours = {
+
+    attach: function (context, settings) {
+
+      $( "#main-content div.region-content  a , #main-content div.region-sidebar-second a" ).each(function( index ) {
+          if($( this ).parent().prop('tagName') == 'P'){
+            var $childNodes = $(this).parent().contents(); 
+            if($childNodes
+              .not($childNodes.filter('a').first())
+              .not(function() {
+                  return this.nodeType === 3 && this.nodeValue.trim() === '';
+              }).length === 0){
+                $( this ).addClass("linkonly");
+              }  
+          }else if(!$(this).hasClass("usa-button")){
+            $( this ).addClass("linkonly");
+          }
+      });
+// $( "#main-content div.region-content div.text-formatted li a, #main-content div.region-sidebar-second div.text-formatted li 
+
+$( "#main-content div.region-content a, #main-content div.region-sidebar-second a" ).each(function() {
+  var nextSibling = this.nextSibling;
+  if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE && nextSibling.nodeValue.trim() !== "") {
+        // Perform actions if the link is followed by text out.print.
+  } else {
+    var linkText = $(this).text();
+    var charCount = linkText.length;
+      	if(charCount <= 6) {	
+        $( this ).addClass("addRPadding");
+	};
+  }
+});
+
+$( "div.usa-footer-container a.usa-footer__primary-link" ).each(function() {
+   	$( this ).addClass("footerPadding");	  
+});
+
+
+    }
+  }
+
+  // quick hack to apply slick slider outside Drupal config
+
+
+  Drupal.behaviors.AccordionOpenAnchor = {
+
+    attach: function (context, settings) {
+      let hash = DOMPurify.sanitize(window.location.hash) ;
+      if(hash != null){
+        $(hash).find(".usa-accordion__button").attr("aria-expanded",true);
+      }
+    }
+  }
+
+
+
+  Drupal.behaviors.CBPSubThemeAccordionExpandall = {
+        attach: function(context, settings) {
+
+
+                $('button.usa-accordion__control-all:not(.dhssubtheme-expand-all-processed)')
+                  .addClass('dhssubtheme-expand-all-processed')
+                  .click(function(event) {
+                        if($(this).hasClass('accordion-close')) {
+                            $(this).parent().parent().parent().find('.usa-accordion__button[aria-expanded="true"]').click();
+                        } else {
+                          // lock scroll position, but retain settings for later
+                          var scrollPosition = [
+                            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+                            self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+                          ];
+                          if(scrollPosition[0] == 0 && scrollPosition[1] == 0) {
+                            scrollPosition[1] = 1;
+                            window.scrollTo(0, 2);
+                          }
+                          var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
+                          html.data('scroll-position', scrollPosition);
+                          html.data('previous-overflow', html.css('overflow'));
+                          html.css('overflow', 'hidden');
+                          window.scrollTo(scrollPosition[0], scrollPosition[1]);
+
+                          $(this).parent().parent().parent().find('.usa-accordion__button[aria-expanded="false"]').click();
+
+                          // un-lock scroll position
+                          var html = jQuery('html');
+                          var scrollPosition = html.data('scroll-position');
+                          html.css('overflow', html.data('previous-overflow'));
+                          window.scrollTo(scrollPosition[0], scrollPosition[1])
+                        }
+
+                        return false;
+                });
+        }
+    }
+
+
+    Drupal.behaviors.CBPVideoPlayPause = {
+          attach: function(context, settings) {
+            $('.hero-video-play-pause-button').click(function(event) {
+              var playing =  true;
+              if(  $('.play-pause-wrapper .hero-video-play-pause-button').hasClass("playing-bg-videos")){
+                playing =  true;
+                $('.play-pause-wrapper .hero-video-play-pause-button').addClass("paused-bg-videos");
+                $('.play-pause-wrapper .hero-video-play-pause-button').removeClass("playing-bg-videos");
+              }else{
+                playing =  false;
+                $('.play-pause-wrapper .hero-video-play-pause-button').addClass("playing-bg-videos");
+                $('.play-pause-wrapper .hero-video-play-pause-button').removeClass("paused-bg-videos");
+              }
+
+              $( 'video.background-video' ).each(function(index) {
+
+                  var mediaVideo = $(this).get(0);
+                   if (playing) {
+                       mediaVideo.pause();
+                   } else {
+                       mediaVideo.play();
+                   }
+              });
+
+
+            });
+
+  /*          $('.video-card-play-pause-button').click(function(event) {
+
+              var mediaVideo = $(this).closest(".video-text-card-wrapper").find("video").get(0);
+               if (mediaVideo.paused) {
+                   mediaVideo.play();
+                   $(this).text('Pause');
+               } else {
+                   mediaVideo.pause();
+                   $(this).text('Play');
+               }
+
+            });
+*/
+          }
+    }
+
+    Drupal.behaviors.cbpReset = {
+    attach: function (context, settings) {
+
+      let $resetLink = $('#views-exposed-form-documents-by-type-block-1 input[data-drupal-selector="edit-reset"]');
+      $resetLink.click(function(){
+        location.reload();
+        return false;
+      });
+
+    }
+  };
+
+
+
+      Drupal.behaviors.csvTableSearch = {
+
+        attach: function (context, settings) {
+          $(".csv_table_search").on("keyup", function() {
+              var value = $(this).val().toLowerCase();
+              $(".usa-table.csv-table tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+              });
+            });
+        }
+      }
+
+})(jQuery, Drupal);

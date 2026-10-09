@@ -1,0 +1,948 @@
+
+var showSignInBottomSheet = function(screenNumber, initiator, postAuthenticateAction, postAuthenticateItemId, linkReturnTo) {};
+var saveSearchQuery = function(queryString) {};
+var removeSearchQuery = function(queryString) {};
+var copyToClipboard = function () {};
+
+$(function () {
+  var pageBody = $('body');
+  var xhr, captchaWidgetElement, signInInitiatorName;
+  var searchWrapperBlock = $('.search-suggestions-holder');
+  var headerSearchInput = $('.jsInputWithClearButton');
+  var headerSearchClearBtn = $('.jsClearModalSearch');
+  var fileName = $('.jsParams').find('.jsFileName').val();
+  var currentSearchQuery = '';
+  var isIOS = pageBody.hasClass('is-ios');
+  var isDesktopSize = $('[data-page-size="lg"]');
+  var isLoggedIn = $('.jsSiteHeader').attr('data-logged-in') === 'true';
+  var headerMenuWR = $('.jsHeaderMenuWrapper');
+  var headerMenuDD = $('.jsHeaderMenu');
+  var headerLangDD = $('.jsLangDropdown');
+  var showLangBtn = $('.jsShowLangListBtn');
+  var langBackBtn = $('.jsLangBackBtn');
+  const mobAnonUploadButton = $('.jsStartAnonUploadButton');
+  const headerAnonUploadButton = $('.jsHeaderAnonUploadButton');
+  let uploadClickFlag = '';
+  const SHOW_SEARCH_BLOCK_CLASS = 'jsShowSearchHistoryAndSuggestions';
+
+  // --------------------- header menu dropdown ---------------------
+  pageBody.click(function (e) {
+    var isOpenMenuBtnClick = $(e.target).hasClass('jsHeaderMenuBtn') || $(e.target).hasClass('avatar') || $(e.target).hasClass('user-name');
+    var isShowLangListClick = $(e.target).hasClass('jsShowLangListBtn') || $(e.target).parents().hasClass('jsShowLangListBtn');
+    var isLangBackClick = $(e.target).hasClass('jsLangBackBtn');
+    var isUploadClick = $(e.target).hasClass('jsUploadMenuItem') || $(e.target).parents().hasClass('jsUploadMenuItem');
+
+    if (!isOpenMenuBtnClick && !isShowLangListClick && !isLangBackClick && !isUploadClick) {
+      headerMenuDD.hide();
+      headerMenuWR.removeClass('show-lang-list active');
+    }
+  })
+
+  $('.jsHeaderMenuBtn').click(function () {
+    headerMenuDD.toggle();
+    headerMenuWR.toggleClass('active');
+  })
+
+  // --------------------- scrolled header ---------------------
+  function listenStickyHeader() {
+    var top = $(window).scrollTop();
+
+    if (top > 60) {
+      pageBody.addClass('sticky-header-enabled');
+    } else {
+      pageBody.removeClass('sticky-header-enabled');
+    }
+  }
+
+  listenStickyHeader();
+  $(document).on('scroll', listenStickyHeader);
+
+  // --------------------- header search ---------------------
+  headerSearchInput.on('focus', function () {
+    if (!pageBody.hasClass(SHOW_SEARCH_BLOCK_CLASS)) {
+      filterHistory();
+      AjaxSuggestion.loadSuggestions();
+      currentSearchQuery = headerSearchInput.val();
+    }
+
+    pageBody.addClass(SHOW_SEARCH_BLOCK_CLASS);
+
+    if (Config.isMobileVersion || !pageBody.hasClass('jsIndexPage')) {
+      pageBody.addClass('showModalSearchScreen');
+    }
+  }).on('keyup change input', function () {
+    showClearButton()
+    pageBody.addClass('jsSearchInputWasChanged');
+  })
+
+  function returnToBaseSearchField() {
+    pageBody.removeClass('showModalSearchScreen');
+    pageBody.removeClass(SHOW_SEARCH_BLOCK_CLASS);
+
+    showClearButton();
+  }
+
+  $('.jsHideModalSearch').click(returnToBaseSearchField);
+
+  isDesktopSize.click(function (event) {
+    const $searchBlock = $('.search-wrapper');
+
+    if (!$searchBlock.is(event.target) && $searchBlock.has(event.target).length === 0 && !$(event.target).hasClass('close-button')) {
+      returnToBaseSearchField();
+    }
+  });
+
+  headerSearchClearBtn.on('touchstart mousedown', function () {
+    headerSearchInput.val('');
+    showClearButton();
+    filterHistory();
+    AjaxSuggestion.hidePopup();
+
+    if (!pageBody.hasClass(SHOW_SEARCH_BLOCK_CLASS)) {
+      $('#search').submit();
+    }
+  }).on('touchend', function (event) {
+    // do not hide mobile keyboard
+    event.preventDefault();
+  })
+
+  if (navigator.userAgent.includes('iPhone')) {
+    searchWrapperBlock.on('touchstart', function () {
+      headerSearchInput.blur();
+    })
+  }
+
+  function showClearButton() {
+    if (headerSearchInput.val().length > 0) {
+      pageBody.addClass('searchInputNotEmpty');
+      headerSearchClearBtn.show();
+    } else {
+      pageBody.removeClass('searchInputNotEmpty');
+      pageBody.removeClass('jsHasSuggestions');
+      headerSearchClearBtn.hide();
+    }
+  }
+
+  showClearButton();
+
+  if (location.search.indexOf('ref=amp-search') !== -1) {
+    headerSearchInput.focus();
+  }
+
+  showLangBtn.click(function() {
+    headerMenuWR.addClass('show-lang-list');
+  })
+
+  langBackBtn.click(function() {
+    headerMenuWR.removeClass('show-lang-list');
+  })
+
+  // extend button click area
+  $('.jsUploadMenuItem').click(function (e) {
+    headerAnonUploadButton.click();
+  });
+
+  // Prevent the click on the fake input from bubbling up
+  headerAnonUploadButton.add('.index-upload-button').click(function (e) {
+    e.stopPropagation();
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // --------------------- bottom sheet blocks hide ---------------------
+  $('.jsCloseBottomSheet').click(hideAllBS);
+
+  function hideAllBS() {
+    // pageBody.removeClass('showDescriptionBS showCommentsBS showShareBS showSignInBS showLibraryBS showOpenInBS');
+    pageBody.removeAttr('data-bottom-sheet');
+  }
+
+
+  // --------------------- SIGN IN bottom sheet ---------------------
+  var signInButton = $('.jsShowSignIn', pageBody);
+  var signInBS = $('.jsSignInBottomSheet', pageBody);
+  var signInBack = $('.jsBottomSheetBack', signInBS);
+  var signInForm = $('.jsSignInForm', signInBS);
+  var returnTo = $('.jsReturnTo', signInBS).val();
+
+  // structure
+  var signInMainScreen = $('.jsMainScreen', signInBS);
+  var facebookSignInButton = $('.jsFBLoginButton', signInBS);
+  var googleSignInButton = $('.jsGPLoginButton', signInBS);
+  var showSecondaryScreen = $('.jsGoEmailLogic', signInBS);
+  var signInSecondaryScreen = $('.jsSecondaryScreen', signInBS);
+  var continueSignInButton = $('.jsContinueSignInButton', signInBS);
+  var remindPasswordButton = $('.jsRemindPassword', signInBS);
+  var emailPasswordBlock = $('.jsEmailPasswordBlock', signInBS);
+  var signInLogin = $('.jsInputLogin', signInBS);
+  var signInPassword = $('.jsInputPassword', signInBS);
+  var signInUserName = $('.jsInputUsername', signInBS);
+  var showHidePassword = $('.jsShowPassword', signInBS);
+  var privacyBlock = $('.jsPrivacyBlock', signInBS);
+  var gdprAgreeCheckboxPop = $('.jsGdprAgreeCheckboxPop', signInBS);
+  var disclosureAgreeCheckboxPop = $('.jsDisclosureAgreeCheckboxPop', signInBS);
+  var PIPLCheckboxPop = $('.jsPIPLCheckboxPop', signInBS);
+  var crossBorderCheckboxPop = $('.jsCrossBorderCheckboxPop', signInBS);
+  var isAdultCheckbox = $('.jsIsAdultCheckbox', signInBS);
+  var signInChangeOrVerifyScreen = $('.jsChangeOrVerify', signInBS);
+  var captchaScreen = $('.jsCaptchaScreen', signInBS);
+
+  // errors
+  var allErrors = $('.jsError', signInBS);
+  var errorInvalidEmail = $(".jsEmailNotValid", signInBS);
+  var errorEmptyEmail = $(".jsEmailRequired", signInBS);
+  var errorEmptyPassword = $(".jsPasswordRequired", signInBS);
+  var errorEmptyName = $(".jsFirstNameRequired", signInBS);
+  var errorConcernRequired = $(".jsGDPRAgreeRequired", signInBS);
+  var errorFromServer = $(".jsErrorFromServer", signInBS);
+  var errorInvalidPassword = $(".jsInvalidPassword", signInBS);
+
+  // hints
+  var remindPasswordHint = $('.jsRemindPasswordHint', signInBS);
+  var remindPasswordEmail = $('.jsEmailForInstructions', signInBS);
+
+  // params for login from www.4s.io
+  var SIGNIN_PARAMS_PREFIX = "signInParams=";
+  var postLoginHash = document.location.hash !== '' ? document.location.hash : document.location.search;
+  var postLoginHashIndex = postLoginHash.indexOf(SIGNIN_PARAMS_PREFIX);
+
+
+  signInButton.click(function () {
+    showSignInBottomSheet(1, 'header');
+  });
+
+  // screen 1 - main login buttons (via social or via email)
+  // screen 2 - enter email
+  // screen 3 - enter user name
+  // screen 4 - enter password
+  // screen 5 - privacy checkboxes
+  // screen 6 - verify email
+  // screen 7 - validate captcha
+
+  showSignInBottomSheet = function (screenNumber, initiator, postAuthenticateAction, postAuthenticateItemId, linkReturnTo) {
+
+    postAuthenticateItemId = typeof postAuthenticateItemId == 'object' ? JSON.stringify(postAuthenticateItemId) : postAuthenticateItemId;
+
+    if (pageBody.hasClass("site4sIo")) {
+      var options = {
+        screenNumber : screenNumber,
+        initiator : initiator,
+        postAuthenticateAction : postAuthenticateAction,
+        postAuthenticateItemId : postAuthenticateAction === "add_folder_to_library" ? JSON.parse(postAuthenticateItemId) : postAuthenticateItemId,
+        linkReturnTo : linkReturnTo
+      }
+
+      var url = document.location.href.replace(location.origin + "/", Config.mainSiteUrlHttpsPath);
+
+      if (options && options.linkReturnTo) {
+        options.linkReturnTo = options.linkReturnTo.replace(location.origin + "/", Config.mainSiteUrlHttpsPath);
+      }
+
+      var stringJSONParams = JSON.stringify(options);
+      var paramsURLEncoded = encodeURIComponent(stringJSONParams).replace(/'/g, "%27");
+
+      document.location.href = url + (options ? (url.indexOf("?") !== -1 && "&" || "?") + SIGNIN_PARAMS_PREFIX + paramsURLEncoded : "");
+
+      return;
+    }
+
+    sessionStorage.setItem('post-login-signin-initiator-element', initiator);
+
+    if (postAuthenticateAction) {
+      sessionStorage.setItem('post-login-action', postAuthenticateAction);
+    }
+
+    if (postAuthenticateItemId) {
+      sessionStorage.setItem('post-login-action-item-id', postAuthenticateItemId);
+    }
+
+    hideAllBS();
+
+    setCurrentScreen(screenNumber || 1);
+    signInInitiatorName = initiator ? initiator : 'header';
+
+    pageBody.attr('data-bottom-sheet', 'showSignInBS').attr('data-signin-initiator', signInInitiatorName);
+
+    if (!linkReturnTo) {
+      linkReturnTo = document.location.href;
+    }
+
+    trackAnalyticsEventClicks('Login_Popup', 'login_popup_view');
+
+    setReturnTo(googleSignInButton, linkReturnTo);
+    setReturnTo(facebookSignInButton, linkReturnTo);
+    returnTo = linkReturnTo || $('.jsReturnTo', signInBS).val();
+  }
+
+  function isJsonString(str) {
+    try {
+      return (JSON.parse(str) && !!str);
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+  // --------------------- post login actions analytics -------------------
+  var postLoginAction = sessionStorage.getItem('post-login-action');
+  sessionStorage.removeItem('post-login-action');
+  var postLoginActionItemId = sessionStorage.getItem('post-login-action-item-id');
+  sessionStorage.removeItem('post-login-action-item-id');
+
+  if (isLoggedIn && postLoginAction) {
+    setTimeout(function() {
+    switch (postLoginAction) {
+      case 'download_file':
+        Events.fireEvent('download_file');
+        break;
+      case 'add_file_to_account':
+        Events.fireEvent('add_file_to_account', postLoginActionItemId);
+        break;
+      case 'add_folder_to_account':
+        Events.fireEvent('add_folder_to_account', postLoginActionItemId);
+        break;
+      case 'add_folder_to_library':
+        Events.fireEvent('add_folder_to_library', postLoginActionItemId);
+        break;
+      case 'add_file_to_library':
+        Events.fireEvent('add_file_to_library', postLoginActionItemId);
+        break;
+      case 'add_new_comment':
+        Events.fireEvent('add_new_comment');
+        break;
+      case 'watch_later':
+        Events.fireEvent('watch_later');
+        break;
+      case 'liked_track':
+        Events.fireEvent('liked_track');
+        break;
+    }
+
+    }, 200)
+  }
+
+  // check sign-in prompt params in url
+  if (postLoginHashIndex !== -1) {
+    if (isLoggedIn) { // check for redirect after social sign-in
+      window.history.pushState('', document.title, (document.location.href).replace(postLoginHash.substring(postLoginHashIndex-1), ''));
+      return;
+    }
+
+    var paramsURLEncoded = postLoginHash.substring(postLoginHashIndex + SIGNIN_PARAMS_PREFIX.length, postLoginHash.length);
+
+    if (paramsURLEncoded) {
+      var stringJSONParams = decodeURIComponent(paramsURLEncoded).replace("%27", "'");
+
+      try {
+        var postLoginParams = JSON.parse(stringJSONParams);
+
+        showSignInBottomSheet(postLoginParams.screenNumber, postLoginParams.initiator, postLoginParams.postAuthenticateAction, postLoginParams.postAuthenticateItemId, postLoginParams.linkReturnTo);
+      } catch (e){
+        Utils.log("Something wrong happened during execute hash-callback, " + e);
+      }
+    }
+  }
+
+
+  $('.jsCloseBottomSheet', signInBS).click(function () {
+    sessionStorage.removeItem('post-login-action');
+    sessionStorage.removeItem('post-login-action-item-id');
+
+    trackAnalyticsEventClicks('Login_Popup', 'login_popup_close');
+  })
+
+  function setReturnTo(el, linkReturnTo) {
+    if  (!linkReturnTo) {
+      // el.attr('data-href', encodeURIComponent(el.attr('data-def')));
+      el.attr('data-href', encodeUrl(el.attr('data-def')));
+
+      return;
+    }
+    var href = new URL(el.attr('data-def'));
+    href.searchParams.set('fp', encodeURIComponent(linkReturnTo));
+    el.attr('data-href', href);
+  }
+
+  function encodeUrl(url) {
+    const urlObj = new URL(url);
+    const params = new URLSearchParams(urlObj.search);
+
+    for (let [key, value] of params.entries()) {
+      params.set(key, encodeURIComponent(value));
+    }
+
+    return `${urlObj.origin}${urlObj.pathname}?${params.toString()}`;
+  }
+
+  function getCurrentScreen() {
+    return signInBS.attr('data-screen');
+  }
+
+  function setCurrentScreen(val) {
+    signInBS.attr('data-screen', val);
+    $('input:visible', emailPasswordBlock).focus();
+  }
+
+  googleSignInButton.click(function () {
+    trackAnalyticsEventClicks('Login_Popup', 'login_popup_google');
+    document.location.href = googleSignInButton.attr('data-href');
+  });
+
+  facebookSignInButton.click(function () {
+    trackAnalyticsEventClicks('Login_Popup', 'login_popup_facebook');
+    document.location.href = facebookSignInButton.attr('data-href');
+  });
+
+  showSecondaryScreen.click(function () {
+    setCurrentScreen(2);
+    signInLogin.focus();
+
+    trackAnalyticsEventClicks('Login_Popup', 'login_popup_email');
+  });
+
+  signInBack.click(function () {
+    if (getCurrentScreen() === '4' && signInBS.hasClass('jsUserExists')) {
+      setCurrentScreen(2);
+    } else {
+      setCurrentScreen(1 * getCurrentScreen() - 1);
+    }
+
+    allErrors.hide();
+  });
+
+  continueSignInButton.click(function () {
+    if (!validateTextInputs()) return;
+
+    trackAnalyticsContinueClickEvent(getCurrentScreen());
+
+    if (getCurrentScreen() === '2') {
+      checkGoLoginOrRegistration();
+      return;
+    }
+
+    if (getCurrentScreen() === '4' && signInBS.hasClass('jsUserExists')) {
+      validateUserLogin();
+      return;
+    }
+
+    if (getCurrentScreen() === '5') {
+      doSignIn(true)
+      return;
+    }
+
+    setCurrentScreen(1 * getCurrentScreen() + 1);
+  });
+
+  $('input', emailPasswordBlock).on('keydown change', function () {
+    allErrors.hide();
+  });
+
+  function checkGoLoginOrRegistration() {
+    if (xhr) xhr.abort();
+
+    xhr = $.ajax({
+      type: 'GET',
+      url: '/web/rest/usersWeb/validate',
+      data: {
+        email: signInLogin.val()
+      },
+      success: function () {
+        console.log('unregistered user, proceed registration');
+        signInBS.removeClass('jsUserExists');
+        signInLogin.attr('name', 'email');
+        setCurrentScreen(3);
+      },
+      error: function (data) {
+        console.log('user exists, go to login');
+        signInBS.addClass('jsUserExists');
+        signInLogin.attr('name', 'login');
+        setCurrentScreen(4);
+      }
+    });
+  }
+
+  function validateTextInputs() {
+    if (getCurrentScreen() === '2' && !signInLogin[0].checkValidity()) {
+      if (signInLogin.val().trim() === '') {
+        errorEmptyEmail.show();
+      } else {
+        errorInvalidEmail.show();
+      }
+      return false;
+    } else if (getCurrentScreen() === '4' && !signInPassword[0].checkValidity()) {
+      errorEmptyPassword.show();
+      return false;
+    } else if (getCurrentScreen() === '3' && !signInUserName[0].checkValidity()) {
+      errorEmptyName.show();
+      return false;
+    } else if (getCurrentScreen() === '5' && !validatePrivacyCheckboxes()) {
+      errorConcernRequired.show();
+      return false;
+    } else {
+      allErrors.hide();
+      return true;
+    }
+  }
+
+  function validatePrivacyCheckboxes() {
+    var inputsCount = $('input[type="checkbox"]', privacyBlock).length;
+    var checkedCount = $(':checked', privacyBlock).length;
+
+    return inputsCount === checkedCount;
+  }
+
+  showHidePassword.click(function () {
+    $(this).toggleClass('is-visible');
+    signInPassword.attr('type', function (index, attr) {
+      return attr === 'password' ? 'text' : 'password';
+    })
+  });
+
+  function doSignIn(newRegistration) {
+    signInBS.addClass('isLoading');
+
+    $.ajax({
+      type: 'POST',
+      url: newRegistration ? '/web/rest/usersWeb/signUp' : '/web/login',
+      data: signInForm.serialize(),
+      success: function () {
+        signInBS.removeClass('isLoading');
+        hideAllBS();
+
+        sessionStorage.setItem('email-login-in-process', newRegistration ? 'signup' : 'email');
+
+        if (returnTo === "") {
+          document.location = document.location.origin + "/account/home.jsp";
+          return;
+        }
+
+        if (postLoginHashIndex !== -1) { // only for www.4s.io case
+          window.history.pushState('', document.title, (document.location.href).replace(postLoginHash.substring(postLoginHashIndex-1), ''));
+          returnTo = returnTo.replace(postLoginHash.substring(postLoginHashIndex-1), '');
+        }
+
+        if (document.location.hash) {
+          document.location.reload();
+        } else {
+          document.location.href = decodeURIComponent(returnTo);
+        }
+
+      },
+      error: function (data) {
+        signInBS.removeClass('isLoading');
+
+        trackAnalyticsEventLogins('Login_Fail', newRegistration ? 'signup_fail' : 'email_fail');
+
+        var parsedJSON = JSON.parse(data.responseText);
+        if (parsedJSON.code === "429.0107") {
+          var msg1 = fileName && fileName.length ? $('.jsMsgToDownload').val() : $('.jsMsgForFree').val();
+          var msg2 = fileName && fileName.length ? fileName : $('.jsMsgFreeSpace').val();
+          showCaptchaScreen(data.responseText, msg1, msg2);
+        } else {
+          showServerError(data);
+        }
+      }
+    });
+  }
+
+  function validateUserLogin() {
+    signInBS.addClass('isLoading');
+
+    $.ajax({
+      type: "get",
+      url: Config.mainSiteUrlHttpsPath + "web/login/validate",
+      data: {
+        login: signInLogin.val(),
+        password: signInPassword.val()
+      },
+      dataType: "jsonp",
+      success: function (data) {
+        if (!data.success) {
+          errorInvalidPassword.show();
+          signInBS.removeClass('isLoading');
+        } else {
+          doSignIn(false);
+        }
+      },
+      error: function (data) {
+        errorFromServer.text(data.responseText).show();
+        signInBS.removeClass('isLoading');
+      }
+    });
+  }
+
+  remindPasswordButton.click(function () {
+    trackAnalyticsEventClicks('Login_Popup', 'login_page_password_forgot');
+
+    $.ajax({
+      type: 'POST',
+      url: '/remindPassword.jsp',
+      data: signInForm.serialize(),
+      success: function () {
+        allErrors.hide();
+        remindPasswordHint.show();
+        remindPasswordEmail.text(signInLogin.val());
+        remindPasswordButton.hide();
+      },
+      error: function (data) {
+        console.log(data);
+      }
+    });
+  })
+
+  signInBS.click(function () {
+    if (remindPasswordHint.is(':visible')) {
+      remindPasswordHint.hide();
+      remindPasswordButton.removeAttr('style');
+    }
+  })
+
+  function showServerError(data) {
+    if (data.responseText && data.responseText.length) {
+      var parsedJSON = JSON.parse(data.responseText);
+      var msg = (!parsedJSON.message) ? data.statusText : parsedJSON.message;
+      var errorCode = parsedJSON.code.substring(4);
+      if (errorCode === '0228') {
+        msg.replace('$[p1]', signInLogin.val())
+      }
+      errorFromServer.text(msg).show();
+    }
+  }
+
+  function showCaptchaScreen(responseText, msg1, msg2) {
+    var wrapElement = $(".jsContentCaptchaBlock");
+
+    signInBS.addClass('showCaptcha');
+
+    $('.jsCaptchaMsg1').text(msg1 ? msg1 : "");
+    $('.jsCaptchaMsg2').text(msg2 ? msg2 : "");
+
+    if (typeof captchaWidgetElement != 'undefined') {
+      grecaptcha.reset(captchaWidgetElement);
+    } else {
+      captchaWidgetElement = grecaptcha.render(wrapElement.find('#reCaptchaBlock')[0], {
+        'sitekey': Config.captchaSiteKey,
+        'theme': 'light',
+        'size': 'normal',
+        'callback': function () {
+          $.post('/web/rest/api/reCaptcha',
+              {
+                limitKey: Utils.parseResponseText(responseText, 'limitKey'),
+                response: $('#g-recaptcha-response').val()
+              },
+              function (data) {
+                if (data && data.valid) {
+                  hideAllBS();
+                  signInBS.removeClass('showCaptcha');
+                  doSignIn(true);
+                }
+              }
+          )
+        }
+      });
+    }
+  }
+
+  $('.jsResendVerification').click(function () {
+    var self = $(this);
+
+    $.ajax({
+      type: 'get',
+      dataType: 'jsonp',
+      url: '/account/sendEmailVerification.jsp',
+      success: function (data) {
+        if (data.ok) {
+          self.hide();
+          signInBS.find('.jsConfirmationResent').show();
+        } else {
+          signInBS.find('.jsSendingError').text(data.errorMessage);
+        }
+      }
+    });
+  });
+
+  // --------------------- search history block ---------------------
+  var searchHistoryList = $('.jsSearchHistory');
+
+  saveSearchQuery = function(queryString) {
+    var searchHistoryArr = JSON.parse(localStorage.getItem("search-history-array")) || [];
+    var query = (queryString.toLowerCase()).trim();
+
+    if (query === '') return;
+
+    if (searchHistoryArr.includes(query)) {
+      searchHistoryArr.splice(searchHistoryArr.indexOf(query), 1);
+    }
+
+    searchHistoryArr.push(query);
+
+    if (searchHistoryArr.length > 100) { /* store last 100 searches */
+      searchHistoryArr.shift();
+    }
+
+    // var uniqueArray = [...new Set(searchHistoryArr)];
+
+    localStorage.setItem('search-history-array', JSON.stringify(searchHistoryArr));
+  }
+
+  removeSearchQuery = function(queryString) {
+    var searchHistoryArr = JSON.parse(localStorage.getItem("search-history-array"));
+    var query = (queryString.toLowerCase()).trim();
+
+    if (searchHistoryArr.includes(query)) {
+      searchHistoryArr.splice(searchHistoryArr.indexOf(query), 1);
+    }
+
+    localStorage.setItem('search-history-array', JSON.stringify(searchHistoryArr));
+
+    filterHistory();
+  }
+
+  function buildSearchHistoryList(searchHistoryArr) {
+    $('.jsSearchHistory').html('');
+
+    if (searchHistoryArr.length === 0) {
+      pageBody.removeClass('jsHasSearchHistory');
+      return;
+    }
+
+    pageBody.addClass('jsHasSearchHistory');
+
+    var searchHistoryArrSliced = searchHistoryArr.slice(pageBody.hasClass('jsHasSuggestions') ? -3 : -10);
+
+    for (let i = 0; i < searchHistoryArrSliced.length; i++) {
+      const suggestionsLine = $('<div class="search-history-link"></div>');
+      const link = $('<a></a>');
+      const closeBtn = $('<div class="close-button"></div>');
+
+      const queryText = searchHistoryArrSliced[i];
+      const query = Config.searchSeparator + "query=" + Utils.encodeSearchParam(queryText);
+      let category = $('.jsDefSearchCategory').val();
+      category = category ? category : '0';
+      let categoryParam = category > 0 ? ('&category=' + category) : '';
+
+      link.attr('href', Config.mainSiteSecure + "/web/q" + query + categoryParam);
+      link.text(queryText);
+      link.click(function() {
+        saveSearchQuery(queryText);
+      });
+
+      closeBtn.click(function() {
+        removeSearchQuery(queryText);
+        $(this).parent().remove();
+      });
+
+      suggestionsLine.append(link);
+      suggestionsLine.append(closeBtn);
+
+      searchHistoryList.prepend(suggestionsLine);
+    }
+  }
+
+  $('#search').submit(function () {
+    returnToBaseSearchField();
+    saveSearchQuery(headerSearchInput.val());
+  });
+
+  $('#doSearch').click(function () {
+    saveSearchQuery(headerSearchInput.val());
+  });
+
+  headerSearchInput.keyup(function (event) {
+    const ignoredKeys = [
+      "Enter",
+      "ArrowUp",
+      "ArrowDown",
+    ];
+
+    if (ignoredKeys.includes(event.key)) {
+      return;
+    }
+
+    filterHistory();
+  })
+
+  function filterHistory() {
+    var query = headerSearchInput.val().replace(/\s{2,}/g, ' ').replace(/^[\s\u00A0][\s\u00A0]*/, '');  //clear space in string start and all double spaces
+    var allHistoryQueriesArray = JSON.parse(localStorage.getItem('search-history-array'));
+
+    if (!allHistoryQueriesArray) return;
+
+    var filteredResults = allHistoryQueriesArray;
+
+    if (query !== '') {
+      filteredResults = allHistoryQueriesArray.filter(element => element.startsWith(query.toLowerCase()));
+    }
+
+    buildSearchHistoryList(filteredResults);
+  }
+
+
+  // --------------------- sign-in analytics ---------------------
+  var analyticsPageName = $('.jsAnalyticsPageName').val();
+
+  function trackAnalyticsEventClicks(eventName, action) {
+    gtag('event', eventName, {
+      'action': action,
+      'source': eventName.toLowerCase() + '_' + analyticsPageName + '_' + signInInitiatorName,
+    });
+  }
+
+  function trackAnalyticsEventLogins(eventName, action, callback) {
+    gtag('event', eventName, {
+      'login': action,
+      'source': eventName.toLowerCase() + '_' + analyticsPageName + '_' + signInInitiatorName,
+      // 'event_callback': {callback}
+    });
+  }
+
+  function trackAnalyticsContinueClickEvent(screenNumber) {
+    var eventName = '';
+
+    switch (screenNumber) {
+      case '2':
+        eventName = 'login_popup_email_continue'
+        break;
+      case '3':
+        eventName = 'login_popup_name_view_continue'
+        break;
+      case '4':
+        eventName = 'login_popup_password_continue'
+        break;
+      case '5':
+        eventName = 'login_popup_policy_continue'
+        break;
+    }
+
+    if (eventName !== '') {
+      trackAnalyticsEventClicks('Login_Popup', eventName);
+    }
+  }
+
+  var facebookLoginFlag = sessionStorage.getItem('facebook-login-in-process');
+  var googleLoginFlag = sessionStorage.getItem('google-login-in-process');
+  var emailLoginFlag = sessionStorage.getItem('email-login-in-process');
+
+  if (emailLoginFlag || googleLoginFlag || facebookLoginFlag) {
+    signInInitiatorName = sessionStorage.getItem('post-login-signin-initiator-element');
+
+    var eventName = googleLoginFlag ? 'google' : (facebookLoginFlag ? 'facebook' : emailLoginFlag);
+
+    trackAnalyticsEventLogins('Login', eventName);
+
+    sessionStorage.removeItem('email-login-in-process')
+    sessionStorage.removeItem('facebook-login-in-process')
+    sessionStorage.removeItem('google-login-in-process');
+    sessionStorage.removeItem('post-login-signin-initiator-element');
+  }
+
+
+  if (mobAnonUploadButton.length && !pageBody.hasClass("site4sIo")) {
+    mobAnonUploadButton.click(function () {
+      uploadClickFlag = 'page';
+      headerAnonUploadButton.click();
+    })
+  }
+
+  headerAnonUploadButton.change(function () {
+    $('.jsHeaderMenu').hide();
+
+
+    if (!pageBody.hasClass('uploadPage')) {
+      if (uploadClickFlag !== 'page') {
+        uploadClickFlag = 'header';
+      }
+
+      sessionStorage.setItem('upload-source-header', uploadClickFlag);
+    }
+
+  })
+
+  //copy sharing link
+  copyToClipboard = function (e) {
+    var inputContent = $(e.target).parent().find('.jsToCopy')[0];
+
+    inputContent.select();
+    inputContent.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text to the clipboard
+    navigator.clipboard.writeText(inputContent.value)
+        .then(() => {
+          showToastNotification($('.jsCopyMessage').val())
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err);
+        });
+  }
+
+  $('.jsCopyLink').click(copyToClipboard);
+
+});
+
+// --------------------- bottom toast notification -------------------
+
+function showToastNotification(notificationText, actionButtonText, actionButtonFunc) {
+  const toastWrapper = $('#toast-notification');
+  const toastText = $('.toast-text', toastWrapper);
+  const toastClose = $('.toast-close', toastWrapper);
+  const toastAction = $('.toast-action', toastWrapper);
+
+  toastText.text(notificationText);
+  toastAction.text(actionButtonText).on('click', actionButtonFunc);
+
+  if (!actionButtonText) {
+    toastAction.hide();
+  } else {
+    toastAction.show();
+  }
+
+  toastClose.on('click', function() {
+    toastAction.off('click', actionButtonFunc);
+    toastWrapper.fadeOut(100);
+  });
+
+  toastWrapper.fadeIn(300);
+
+  setTimeout(function () {
+    toastWrapper.fadeOut(300);
+  }, 7000)
+}
+
+function setLimitMsgStickyOnScrollReached(customTopOffset, limitBlock) {
+  $('body').addClass('limit-block-enabled');
+
+  if (!limitBlock.length) {
+    limitBlock = $('.jsLimitMessageBlock');
+    console.log('race issue occurred');
+  }
+
+  const stickyElement = $('.limit-title-holder');
+  const topOffset = customTopOffset || 0;
+
+  function handleScroll() {
+    if ($(window).scrollTop() > (limitBlock.offset().top - topOffset)) {
+      stickyElement.addClass('sticky-limit-msg-enabled').css('top', topOffset + 'px');
+    } else {
+      stickyElement.removeClass('sticky-limit-msg-enabled').css('top', '0');
+    }
+  }
+
+  $(document).off('scroll', handleScroll).on('scroll', handleScroll);
+
+  setTimeout(function () {
+    handleScroll();
+  }, 0)
+
+}
+
